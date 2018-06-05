@@ -1,0 +1,32 @@
+{
+  "name": "normalize-street",
+  "version": "1.0.5",
+  "description": "function for normalizing street name",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "yarn run clean",
+    "build": "yarn run tsc",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "bump": "npm version patch",
+    "tsc":"tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.47",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.3",
+	"rimraf": "^2.6.2"
+  },
+  "dependencies": {}
+}

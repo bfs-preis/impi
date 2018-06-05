@@ -1,0 +1,58 @@
+<div style="padding-top:20px">
+    <span i18n="processInfo|ProcessInfo Title@@processInfoTitle">Process Info</span>
+    <table>
+        <tr>
+            <td i18n="label|ProcessInfo StartTime@@processInfoStartTime">StartTime:</td>
+            <td>{{startTime}}</td>
+
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo EndTime@@processInfoEndTime">EndTime:</td>
+            <td>{{endTime}}</td>
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo Duration@@processInfoDuration">Duration:</td>
+            <td colspan="3">{{duration}}</td>
+        </tr>
+
+        <tr>
+            <td i18n="label|ProcessInfo Output Zip File@@processInfoFile">File:</td>
+            <td>{{result?.OutZipFile}}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td i18n="label|ProcessInfo DbPeriodFrom@@processInfoDbPeriodFrom">DbPeriodFrom:</td>
+            <td>{{dbPeriodFrom}}</td>
+
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo DbPeriodTo@@processInfoDbDbPeriodTo">DbPeriodTo:</td>
+            <td>{{dbPeriodTo}}</td>
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo DbVersion@@processInfoDbVersion">DbVersion:</td>
+            <td colspan="3">{{result?.Options.DbVersion}}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td i18n="label|ProcessInfo CsvSeparator@@processInfoCsvSeparator">CsvSeparator:</td>
+            <td>{{result?.Options.CsvSeparator}}</td>
+
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo CsvEncoding@@processInfoCsvEncoding">CsvEncoding:</td>
+            <td>{{result?.Options.CsvEncoding}}</td>
+        </tr>
+        <tr>
+            <td i18n="label|ProcessInfo CsvRowCount@@processInfoCsvRowCount">CsvRowCount:</td>
+            <td colspan="3">{{result?.Options.CsvRowCount}}</td>
+        </tr>
+    </table>
+    <div *ngIf="result?.Error!=null">
+        {{result?.Error.message}}
+    </div>
+
+</div>

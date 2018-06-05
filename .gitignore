@@ -59,3 +59,14 @@ typings/
 
 # next.js build output
 .next
+
+electron/app/log.txt
+electron/app
+**/dist
+**/*.db
+**/*.csv
+package-lock.json
+yarn-error.log
+test-files
+.vagrant
+.Trash-1000

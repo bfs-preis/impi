@@ -1,0 +1,27 @@
+<mat-card class="step-card">
+  <mat-card-header>
+      <mat-card-title>
+          {{'Csv.Title' | translate}}
+      </mat-card-title>
+      <mat-card-subtitle>
+          <app-select-file [defaultPath]="_file" [disabled]="disabled"  [buttonText]="'Csv.SelectFile' | translate" dialogType="0" [filters]="_csvFilter" (selected)="selectedFile($event)"></app-select-file>
+          
+      </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+      <div class="myGrid" >
+          <div >
+              <div>{{'Csv.File' | translate}}</div>
+              <div [matTooltip]="this._file">{{getFileName()}}</div>
+          </div>
+          <div >
+              <div>{{'Csv.Rows' | translate}}</div>
+              <div>{{this.RowCount}}</div>
+          </div>
+      </div>
+       <div class="check-icon">
+          <mat-icon color="accent" *ngIf="this._isValid">check</mat-icon>
+          <mat-icon color="warn" *ngIf="!this._isValid" [matTooltip]="this._error">error</mat-icon>
+      </div>
+  </mat-card-content>
+</mat-card>

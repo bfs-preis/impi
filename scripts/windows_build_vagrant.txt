@@ -1,0 +1,18 @@
+vagrant box : mrh1997/vanilla-win7-32bit
+
+Als Admin:
+choco install dotnet4.5.2 -y (build tools brauchen das)
+choco install nodejs-lts -y
+choco install git -y
+choco install poshgit -y
+choco install notepadplusplus -y
+npm install --global --production --add-python-to-path windows-build-tools
+
+Als vagrant:
+
+git clone https:git.softrain.ch/impi.git
+
+npm install --global projecto
+npm install --global rimraf
+npm install --global yarn
+npm install --global pkg

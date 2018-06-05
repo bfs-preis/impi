@@ -1,0 +1,28 @@
+<div>
+  <div class="title" style="display:block;margin-bottom:40px;text-align:center">
+    <h2>{{'Main.Title' | translate}}</h2>
+    {{'Main.Description' | translate}}
+  </div>
+  <div class="contentSteps" style="display:block">
+    <div style="display:flex;flex-direction:row;align-items:flex-start;justify-content:space-around;align-content:center;width:100%;">
+      <app-db (isValid)="setState(0,$event)" [disabled]="this._isProcessing"></app-db>
+      <app-csv (isValid)="setState(1,$event)" [disabled]="this._isProcessing"></app-csv>
+      <app-out (isValid)="setState(2,$event)" [disabled]="this._isProcessing"></app-out>
+    </div>
+  </div>
+  <div class="contentProcess" style="display:block;margin-top:40px;text-align:center">
+    <button mat-fab [disabled]="!allValid() || this._isProcessing" (click)="process()" matTooltip="Daten verarbeitung starten">
+      <mat-icon>airplay</mat-icon>
+    </button>
+  </div>
+  <div style="display:block;margin-top:20px;text-align:center">
+    <div class="title" style="font-size:12px">
+      <label>{{'Main.Row' | translate }}{{this._processedRows}}/{{this._maxRows}}</label>
+      <label>{{'Main.Time' | translate }}{{this.getTime()}}</label>
+      <label>{{'Main.ETA' | translate }}{{this.getEta()}}</label>
+      <mat-icon *ngIf="_error!=null" [matTooltip]="_error" matTooltipPosition="above" style="color:red">error</mat-icon>
+    </div>
+    <mat-progress-bar color="accent" mode="determinate" [value]="getProgressValue()">
+    </mat-progress-bar>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+{
+  "name": "impi-types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist && rimraf node_modules",
+    "prebuild": "npm run clean",
+    "build": "yarn && tsc",
+    "bump": "npm version patch",
+    "tsc":"tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^2.6.1"
+	"rimraf": "^2.6.2"
+  }
+}

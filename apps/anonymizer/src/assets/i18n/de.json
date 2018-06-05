@@ -1,0 +1,52 @@
+{
+    "Main":{
+        "Title":"IMPI Daten Anreicherung",
+        "Description":"Mit diesem Tool werden die Bankdaten mit Geodaten angereichert und anonymisiert!",
+        "Row":"Zeile:",
+        "Time":"Zeit:",
+        "ETA":"ETA:",
+        "Error":"Fehler",
+        "Finished":"Abgeschlossen",
+        "Duration":"Dauer:"
+    },
+    "Db":{
+        "Title":"Geodaten Datei",
+        "File":"Datei:",
+        "Period":"Periode:",
+        "Version":"Version:",
+        "SelectFile":"Auswählen der DB Datei"
+    },
+    "Csv":{
+        "Title":"Bankdaten Datei",
+        "File":"Datei:",
+        "Rows":"Zeilen:",
+        "SelectFile":"Auswählen der Csv Datei"
+    },
+    "Out":{
+        "Title":"Ausgabe Verzeichnis",
+        "Directory":"Pfad:",
+        "SelectFile":"Auswählen des Ausgabe Verzeichnises"
+    },
+    "Settings":{
+        "Title":"Einstellungen",
+        "CSVEncoding":"CSV Kodierung",
+        "CSVSeparater":"CSV Separater",
+        "SedexMessageId":"Sedex Message Id",
+        "Theme":"Thema",
+        "ThemeDark":"Dunkel",
+        "ThemeLight":"Hell",
+        "Language":"Sprache",
+        "LanguageEn":"Englisch",
+        "LanguageDe":"Deutsch",
+        "LanguageFr":"Französisch",
+        "LanguageIt":"Italienisch",
+        "ButtonClose":"Speichern & Schliessen"
+    },
+    "Help":{
+        "Title":"Hilfe",
+        "Documentation":"Dokumentation (in Arbeit..)",
+        "SourceCode":"SourceCode (in Arbeit..)",
+        "DevelopedBy":"Entwickelt von",
+        "ButtonClose":"Schliessen"
+    }
+}

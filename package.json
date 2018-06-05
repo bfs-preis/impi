@@ -1,0 +1,14 @@
+{
+  "name": "impi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://git.softrain.ch/impi.git",
+  "author": "Adrian Bähler <adrian.baehler@softrain.ch>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start:rv": "cd apps/result-viewer && yarn start",
+    "start:a": "cd apps/anonymizer && yarn start",
+    "start:electron": "cd electron && yarn start"
+  }
+}

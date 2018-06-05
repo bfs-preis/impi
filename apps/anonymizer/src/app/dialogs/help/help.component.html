@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>{{'Help.Title' | translate}}</h1>
+<div mat-dialog-content>
+  <div style="margin-top:10px;margin-right:10px;border:none">
+    <h2>{{'Main.Title' | translate}}</h2>
+    <span>Version {{this.appVersion}}</span>
+    <mat-nav-list>
+      <a mat-list-item href="https://www.github.com" target="_blank">{{'Help.Documentation' | translate}}</a>
+      <a mat-list-item href="https://www.github.com" target="_blank">{{'Help.SourceCode' | translate}}</a>
+    </mat-nav-list>
+
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button [mat-dialog-close]="">{{'Help.ButtonClose' | translate}}</button>
+  <div style="position:relative;left:200px">
+    <span>{{'Help.DevelopedBy' | translate}}</span>
+    <a href="http://softrain.ch" target="_blank">
+      <img src="./assets/softrain_logo.gif" width="50px" style="vertical-align: middle" />
+    </a>
+  </div>
+</div>

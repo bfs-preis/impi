@@ -1,0 +1,49 @@
+{
+    "name": "impi",
+    "productName": "ImPI",
+    "version": "1.0.0",
+    "description": "ImPI Data enrichment tool",
+    "main": "app/index.js",
+    "scripts": {
+        "copyAnonHtml": "cpr ../apps/anonymizer/dist/ ./app/anonymizer -o",
+        "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
+        "copyBackground": "cpr ./src/background/*.html ./app/background/ -o",
+        "createBuildPackageJson":"node ./scripts/createPackageJSON.js",
+        "clean": "rimraf app",
+        "tsc": "tsc",
+        "start": "yarn copyBackground && yarn tsc && electron ./app/index.js -l silly --debug --development",
+        "release": "yarn build && electron-builder",
+        "rebuildNative": "electron-builder install-app-deps",
+        "build": "yarn clean && yarn createBuildPackageJson && yarn copyAnonHtml && yarn copyResultHtml && yarn copyBackground && yarn tsc"
+    },
+    "keywords": [],
+    "author": "adi",
+    "license": "MIT",
+    "build": {
+        "directories": {
+            "output": "package"
+        },
+        "linux": {
+            "asar": false,
+            "files": [
+                "!src/"
+            ]
+        }
+    },
+    "dependencies": {
+        "cpr": "^3.0.1",
+        "electron-log": "^2.2.11",
+        "electron-settings": "^3.1.4",
+        "impilib": "file:../libs/impilib/",
+        "yargs": "^11.0.0"
+    },
+    "devDependencies": {
+        "@types/electron": "^1.6.10",
+        "@types/electron-settings": "^3.1.0",
+        "@types/yargs": "^11.0.0",
+        "electron": "^1.6.6",
+        "electron-builder": "^19.45.4",
+        "rimraf": "^2.6.2",
+        "typescript": "^2.6.1"
+    }
+}

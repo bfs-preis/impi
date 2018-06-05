@@ -1,0 +1,52 @@
+{
+    "Main":{
+        "Title":"IMPI Data Enrichement",
+        "Description":"Tool to enriche bankdata with geodate and anonymize!",
+        "Row":"Row:",
+        "Time":"Time:",
+        "ETA":"ETA:",
+        "Error":"Error",
+        "Finished":"Finished",
+        "Duration":"Duration:"
+    },
+    "Db":{
+        "Title":"Geodata File",
+        "File":"File:",
+        "Period":"Period:",
+        "Version":"Version:",
+        "SelectFile":"Select DB File"
+    },
+    "Csv":{
+        "Title":"Bankdata File",
+        "File":"File:",
+        "Rows":"Rows:",
+        "SelectFile":"Select CSV File"
+    },
+    "Out":{
+        "Title":"Output Directory",
+        "Directory":"Directory:",
+        "SelectFile":"Select Output Directory"
+    },
+    "Settings":{
+        "Title":"Settings",
+        "CSVEncoding":"CSV Encoding",
+        "CSVSeparater":"CSV Separater",
+        "SedexMessageId":"Sedex Message Id",
+        "Theme":"Theme",
+        "ThemeDark":"Dark",
+        "ThemeLight":"Light",
+        "Language":"Language",
+        "LanguageEn":"English",
+        "LanguageDe":"German",
+        "LanguageFr":"French",
+        "LanguageIt":"Italien",
+        "ButtonClose":"Save & Close"
+    },
+    "Help":{
+        "Title":"Help",
+        "Documentation":"Documentation (work in progress...)",
+        "SourceCode":"SourceCode (work in progress...)",
+        "DevelopedBy":"Developed by",
+        "ButtonClose":"Close"
+    }
+}

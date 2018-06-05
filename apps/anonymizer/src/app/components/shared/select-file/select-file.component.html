@@ -1,0 +1,5 @@
+<div #divfocus style="display:flex;justify-content:center" tabindex="-1" class="noOutline">
+  <button mat-fab (click)="buttonClicked()" [disabled]="disabled" [matTooltip]="buttonText">
+    <mat-icon>{{getIcon()}}</mat-icon>
+  </button>
+</div>

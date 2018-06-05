@@ -1,0 +1,4 @@
+  Rquiered Node Modules for PKG:
+        better-Sqlite3
+        integer
+        bindings

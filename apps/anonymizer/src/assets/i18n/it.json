@@ -1,0 +1,52 @@
+{
+    "Main":{
+        "Title":"IMPI Arricchimento dati",
+        "Description":"Con questa applicazione i dati bancari vengono arricchiti e anonimizzati con i geodati!",
+        "Row":"Linea:",
+        "Time":"Ora:",
+        "ETA":"ETA:",
+        "Error":"Errore",
+        "Finished":"Completato",
+        "Duration":"Durata"
+    },
+    "Db":{
+        "Title":"File geodati",
+        "File":"File:",
+        "Period":"Periodo:",
+        "Version":"Versione:",
+        "SelectFile":"Scelta file banca dati"
+    },
+    "Csv":{
+        "Title":"File banca dati",
+        "File":"File:",
+        "Rows":"Linee:",
+        "SelectFile":"Scelta del file CSV"
+    },
+    "Out":{
+        "Title":"Output directory",
+        "Directory":"Directory:",
+        "SelectFile":"Scelta output-directory"
+    },
+    "Settings":{
+        "Title":"Impostazioni",
+        "CSVEncoding":"Codifica CSV",
+        "CSVSeparater":"Separatore CSV",
+        "SedexMessageId":"Id messaggio Sedex",
+       "Theme":"Tema",
+        "ThemeDark":"Scuro",
+        "ThemeLight":"Chiaro",
+        "Language":"Lingua",
+        "LanguageEn":"Inglese",
+        "LanguageDe":"Tedesco",
+        "LanguageFr":"Francese",
+        "LanguageIt":"Italiano",
+        "ButtonClose":"Salva & chiudi"
+    },
+    "Help":{
+        "Title":"Aiuto",
+        "Documentation":"Documentazione (in corso..)",
+        "SourceCode":"Codice sourceCode (in corso..)",
+        "DevelopedBy":"Sviluppato da",
+        "ButtonClose":"Chiudi"
+    }
+}

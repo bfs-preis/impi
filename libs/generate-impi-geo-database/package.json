@@ -1,0 +1,39 @@
+{
+  "name": "generate-impi-geo-database",
+  "version": "1.0.1",
+  "description": "generate the impi sqlite3 db from csv files",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "yarn run clean",
+    "build": "tsc",
+    "bump": "npm version patch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build_win32": "pkg . --targets win-x86"
+  },
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^8.0.47",
+    "node-gyp": "^3.6.2",
+    "rimraf": "^2.6.2",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^4.0.3",
+    "commander": "^2.11.0",
+    "csv-parse": "^2.0.0",
+    "iconv-lite": "^0.4.19",
+    "normalize-street": "file:../normalize-street",
+    "ora": "^2.1.0",
+    "winston": "^2.4.0"
+  },
+  "bin": {
+    "generate-impi-db": "dist/generate-impi-db-cli.js"
+  }
+}

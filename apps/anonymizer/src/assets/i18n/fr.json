@@ -1,0 +1,53 @@
+{
+    "Main":{
+        "Title":"IMPI Daten enrichissement des données",
+        "Description":"Avec cet outil les données bancaires sont enrichi et anonymisé avec avec des géodonnées!",
+        "Row":"Ligne:",
+        "Time":"Heure:",
+        "ETA":"ETA:",
+        "Error":"Erreur",
+        "Finished":"Terminé",
+        "Duration":"Durée:"
+    },
+    "Db":{
+        "Title":"Fichier des géodonnées",
+        "File":"Fichier:",
+        "Period":"Période:",
+        "Version":"Version:",
+        "SelectFile":"Choisir le fichier de base de données"
+    },
+    "Csv":{
+        "Title":"Fichier données bancaires",
+        "File":"Fichier:",
+        "Rows":"Lignes:",
+        "SelectFile":"Choisir le fichier Csv"
+    },
+    "Out":{
+        "Title":"Répertoire de sortie",
+        "Directory":"Répertoire:",
+        "SelectFile":"Choisir le répertoire de sortie"
+    },
+    "Settings":{
+        "Title":"Paramètres",
+        "CSVEncoding":"Codage CSV",
+        "CSVSeparater":"Séparateur CSV",
+        "SedexMessageId":"Sedex message Id",
+       "Theme":"Thème",
+        "ThemeDark":"Sombre",
+        "ThemeLight":"Brillant",
+        "Language":"Langue",
+        "LanguageEn":"Anglais",
+        "LanguageDe":"Allemand",
+        "LanguageFr":"Français",
+        "LanguageIt":"Italien",
+        "ButtonClose":"Enregistrer et fermer"
+    },
+    "Help":{
+        "Title":"Aide",
+        "Documentation":"Documentation (en cours ..)",
+        "SourceCode":"SourceCode (en cours ..)",
+        "DevelopedBy":"Développé par",
+        "ButtonClose":"Fermer"
+    }
+
+}

@@ -1,0 +1,49 @@
+{
+  "name": "impilib",
+  "version": "1.0.5",
+  "description": "transforms bank data to impi output",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "yarn run clean",
+    "build": "yarn run tsc",
+    "bump": "npm version patch",
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^2.0.0",
+    "big-integer": "^1.6.23",
+    "csv-parse": "^1.2.0",
+    "csv-stringify": "^1.0.4",
+    "iconv-lite": "^0.4.18",
+    "moment": "^2.18.1",
+    "normalize-street": "file:../normalize-street",
+    "rxjs": "^5.4.2",
+    "sqlite3": "^3.1.8",
+    "stream-transform": "^0.1.2",
+    "unzip": "^0.1.11",
+    "xmlbuilder": "^9.0.1",
+    "xmlreader": "^0.2.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/csv-parse": "^1.1.11",
+    "@types/csv-stringify": "^1.4.1",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.47",
+    "@types/sqlite3": "^3.1.1",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.3"
+  }
+}

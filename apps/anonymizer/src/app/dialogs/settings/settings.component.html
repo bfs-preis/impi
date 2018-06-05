@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>{{'Settings.Title' | translate}}</h1>
+<div mat-dialog-content style="max-height:100%">
+  <div style="margin-top:10px;margin-right:10px;border:none">
+    <mat-form-field style="width:100%">
+      <mat-select [placeholder]="'Settings.CSVEncoding' | translate" name="encoding" [(ngModel)]="_selectedEncoding">
+        <mat-option *ngFor="let enc of encodings" [value]="enc">
+          {{enc}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style="width:100%">
+      <input matInput [placeholder]="'Settings.CSVSeparater' | translate" [value]="_selectedSeparater">
+    </mat-form-field>
+    <mat-form-field style="width:100%">
+      <input matInput [placeholder]="'Settings.SedexMessageId' | translate" value="Google">
+    </mat-form-field>
+    <mat-form-field style="width:100%">
+      <mat-select [placeholder]="'Settings.Theme' | translate" name="theme" [(ngModel)]="_selectedTheme">
+        <mat-option value="Light">
+          {{'Settings.ThemeLight' | translate}}
+        </mat-option>
+        <mat-option value="Dark">
+          {{'Settings.ThemeDark' | translate}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style="width:100%">
+      <mat-select [placeholder]="'Settings.Language' | translate" name="theme" [(ngModel)]="_selectedLanguage">
+        <mat-option value="en">
+          {{'Settings.LanguageEn' | translate}}
+        </mat-option>
+        <mat-option value="fr">
+          {{'Settings.LanguageFr' | translate}}
+        </mat-option>
+        <mat-option value="de">
+          {{'Settings.LanguageDe' | translate}}
+        </mat-option>
+        <mat-option value="it">
+          {{'Settings.LanguageIt' | translate}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="saveResult()" [mat-dialog-close]="getResult()">{{'Settings.ButtonClose' | translate}}</button>
+</div>
