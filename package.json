@@ -11,4 +11,7 @@
     "start:a": "cd apps/anonymizer && yarn start",
     "start:electron": "cd electron && yarn start"
   }
+  "projecto":{
+    "debug":true
+  }
 }
