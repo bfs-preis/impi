@@ -11,11 +11,10 @@ install:
   - npm install projecto -g
 build_script:
  - po i
- - cd electron
- - .\node_modules\.bin\electron-builder -w
+ - .\electron\node_modules\.bin\electron-builder -w
 after_build:
  - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\electron\package\*
 artifacts:
- - path: .electron\package\*.exe
+ - path: .\electron\package\*.exe
  - path: impi-win-build.zip
   
