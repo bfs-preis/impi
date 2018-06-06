@@ -1,0 +1,13 @@
+image: Visual Studio 2017
+environment:
+  nodejs_version: "LTS"
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install npm@latest -g
+  - npm install projecto -g
+build_script:
+ - po i
+artifacts:
+  - path: .\dist\*.msi
+  - path: .\dist\*.log
