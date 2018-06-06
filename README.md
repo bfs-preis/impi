@@ -1,13 +1,14 @@
 # impi
-#Requirements:
+[![Build status](https://ci.appveyor.com/api/projects/status/h2byktxy6q8kisbm?svg=true)](https://ci.appveyor.com/project/adrian-bfs/impi)
+# Requirements:
 
-###Install NVM
+### Install NVM
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 
-###Install Node 8.9
+### Install Node 8.9
 nvm install lts/carbon
 
-###Global Packages
+### Global Packages
 npm install -g yarn
 
 edit .bashrc
