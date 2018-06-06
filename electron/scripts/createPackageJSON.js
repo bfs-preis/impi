@@ -11,8 +11,4 @@ newPackage.devDependencies=undefined;
 newPackage.dependencies.impilib="file:../../libs/impilib/";
 
 let json = JSON.stringify(newPackage,null,4);
-fs.writeFile('./app/package.json', json, (err) => {
-    if (!err) {
-        console.log('done');
-    }
-});
+fs.writeFileSync('./app/package.json', json);
