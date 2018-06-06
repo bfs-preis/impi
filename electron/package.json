@@ -14,7 +14,7 @@
         "start": "yarn copyBackground && yarn tsc && electron ./app/index.js -l silly --debug --development",
         "release": "yarn build && electron-builder",
         "rebuildNative": "electron-builder install-app-deps",
-        "build": "yarn clean && yarn createBuildPackageJson && yarn copyAnonHtml && yarn copyResultHtml && yarn copyBackground && yarn tsc"
+        "build": "yarn clean && yarn tsc && yarn copyAnonHtml && yarn copyResultHtml && yarn copyBackground && yarn createBuildPackageJson"
     },
     "keywords": [],
     "author": "adi",

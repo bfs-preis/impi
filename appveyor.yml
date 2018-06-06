@@ -16,7 +16,7 @@ install:
 build_script:
  - po i
  - cd electron
- - dir .\app
+ - dir app
  - .\node_modules\.bin\electron-builder -w
  - cd ..
 after_build:
