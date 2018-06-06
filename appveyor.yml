@@ -1,6 +1,10 @@
+version: 1.0.{build}
+skip_non_tags: true
 image: Visual Studio 2017
 environment:
   nodejs_version: "LTS"
+  GH_TOKEN:
+    secure: rL8lPOB7u89JzHvdPLe1xC4XpZ2XIeaZj7mrCPGBuW6KuNEUxKXjDn8PNoBnBcNK
 cache:
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
@@ -12,6 +16,7 @@ install:
 build_script:
  - po i
  - cd electron
+ - dir .\app
  - .\node_modules\.bin\electron-builder -w
  - cd ..
 after_build:
