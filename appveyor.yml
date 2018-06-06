@@ -2,9 +2,9 @@ image: Visual Studio 2017
 environment:
   nodejs_version: "LTS"
 cache:
-  - node_modules
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
+  - "%LOCALAPPDATA%\\Yarn"
 install:
   - ps: Install-Product node $env:nodejs_version
   - npm install npm@latest -g
@@ -16,5 +16,6 @@ build_script:
 after_build:
  - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\electron\package\*
 artifacts:
- - path: .\package\*.*
+ - path: .electron\package\*.exe
+ - path: impi-win-build.zip
   
