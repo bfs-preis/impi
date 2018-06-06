@@ -7,7 +7,7 @@
     "scripts": {
         "copyAnonHtml": "cpr ../apps/anonymizer/dist/ ./app/anonymizer -o",
         "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
-        "copyBackground": "cpr ./src/background/*.html ./app/background/ -o",
+        "copyBackground": "cpr ./src/background/index-background.html ./app/background/index-background.html -o",
         "createBuildPackageJson":"node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
