@@ -3,8 +3,8 @@ skip_non_tags: true
 image: Visual Studio 2017
 environment:
   nodejs_version: "LTS"
-  GH_TOKEN:
-    secure: rL8lPOB7u89JzHvdPLe1xC4XpZ2XIeaZj7mrCPGBuW6KuNEUxKXjDn8PNoBnBcNK
+  #GH_TOKEN:
+  #  secure: rL8lPOB7u89JzHvdPLe1xC4XpZ2XIeaZj7mrCPGBuW6KuNEUxKXjDn8PNoBnBcNK
 cache:
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
