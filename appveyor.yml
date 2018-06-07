@@ -3,8 +3,6 @@ skip_non_tags: true
 image: Visual Studio 2017
 environment:
   nodejs_version: "LTS"
-  #GH_TOKEN:
-  #  secure: rL8lPOB7u89JzHvdPLe1xC4XpZ2XIeaZj7mrCPGBuW6KuNEUxKXjDn8PNoBnBcNK
 cache:
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
@@ -23,8 +21,17 @@ build_script:
  - .\node_modules\.bin\electron-builder -w
  - cd ..
 after_build:
- - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\electron\package\*
+ - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\electron\package\win-ia32-unpacked\*
 artifacts:
  - path: .\electron\package\*.exe
+   name: win32-installer
  - path: impi-win-build.zip
-  
+   name: win32-package
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: tGHs5BA07AQsDHT0zHThU4UaxEcsi468agSk4IeWrvd5qAhtrFkBx1hvm6xLt9Fu
+    artifact: win32-installer,win32-package
+    draft: true
+    prerelease: false
+    force_update: true
