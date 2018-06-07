@@ -17,6 +17,9 @@ build_script:
  - po i
  - cd electron
  - dir app
+ - cd app
+ - yarn install --production
+ - cd ..
  - .\node_modules\.bin\electron-builder -w
  - cd ..
 after_build:
