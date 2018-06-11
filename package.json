@@ -5,13 +5,18 @@
   "author": "Adrian Bähler <adrian.baehler@softrain.ch>",
   "license": "MIT",
   "private": true,
-  "repository" :
-  { "type" : "git",
-    "url" : "https://github.com/bfs-preis/impi.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bfs-preis/impi.git"
   },
   "scripts": {
     "start:rv": "cd apps/result-viewer && yarn start",
     "start:a": "cd apps/anonymizer && yarn start",
-    "start:electron": "cd electron && yarn start"
+    "start:electron": "cd electron && yarn start",
+    "release-win": "node ./scripts/release_win.js",
+    "release-linux": "node ./scripts/release_linux.js"
+  },
+  "devDependencies": {
+    "projecto": "^1.0.12"
   }
 }

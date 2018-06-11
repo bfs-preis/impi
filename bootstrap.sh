@@ -11,10 +11,7 @@ source /home/vagrant/.profile
 #node lts 8.11.2
 nvm install --lts
 
-#projecto
-npm install -g projecto
-npm install -g rimraf
-
+# install yarn
 npm install -g yarn
 
 sudo apt-get install libatk-adaptor libgail-common topmenu-gtk-common topmenu-gtk2 -y

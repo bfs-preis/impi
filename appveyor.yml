@@ -10,16 +10,8 @@ cache:
 install:
   - ps: Install-Product node $env:nodejs_version
   - npm install npm@latest -g
-  - npm install projecto -g
 build_script:
- - po i
- - cd electron
- - dir app
- - cd app
- - yarn install --production
- - cd ..
- - .\node_modules\.bin\electron-builder -w
- - cd ..
+ - yarn release-win
 after_build:
  - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\electron\package\win-ia32-unpacked\*
 artifacts:
