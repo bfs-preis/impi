@@ -6,5 +6,5 @@ require('./install&build.js');
 
 console.log("Current Folder:" + process.cwd());
 process.chdir('./electron');
-child_process.execSync("./node_modules/.bin/electron-builder -w", execSyncOption);
+child_process.execSync("npx electron-builder -w", execSyncOption);
 process.chdir('..');
