@@ -1,5 +1,9 @@
 language: node_js
 node_js: lts/*
+matrix:
+  include:
+    - os: osx
+    - os: linux
 cache:
   yarn: true
   directories:
