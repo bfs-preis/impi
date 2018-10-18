@@ -15,8 +15,3 @@ before_script:
 
 script:
   - yarn release-linux
-deploy:
-  provider: releases
-  api_key: 
-    secure: tGHs5BA07AQsDHT0zHThU4UaxEcsi468agSk4IeWrvd5qAhtrFkBx1hvm6xLt9Fu
-  skip_cleanup: true
