@@ -9,7 +9,10 @@ cache:
   - node_modules
   - $HOME/.cache/electron
   - $HOME/.cache/electron-builder
-before_script:
+install:
   - npm -g install projecto
+before_script:
+
 script:
+  - yarn release-linux
 before_cache:
