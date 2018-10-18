@@ -21,10 +21,11 @@ artifacts:
  - path: impi-win-build.zip
    name: win32-package
 deploy:
-  - provider: GitHub
-    auth_token:
-      secure: tGHs5BA07AQsDHT0zHThU4UaxEcsi468agSk4IeWrvd5qAhtrFkBx1hvm6xLt9Fu
-    artifact: win32-installer,win32-package
-    draft: true
-    prerelease: false
-    force_update: true
+  provider: GitHub
+  auth_token:
+    secure: tGHs5BA07AQsDHT0zHThU4UaxEcsi468agSk4IeWrvd5qAhtrFkBx1hvm6xLt9Fu
+  artifact: win32-installer,win32-package
+  draft: true
+  prerelease: false
+  force_update: true
+  tag: $(APPVEYOR_REPO_TAG_NAME) 
