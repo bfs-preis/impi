@@ -9,6 +9,7 @@ cache:
   - "%LOCALAPPDATA%\\Yarn"
 install:
   - ps: Install-Product node $env:nodejs_version
+  - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
   - npm install npm@latest -g
   - set CI=true
 build_script:
@@ -28,4 +29,4 @@ deploy:
   draft: true
   prerelease: false
   force_update: true
-  tag: $(APPVEYOR_REPO_TAG_NAME) 
+  tag: $(package_version)
