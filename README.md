@@ -1,5 +1,7 @@
 # impi
-[![Build status](https://ci.appveyor.com/api/projects/status/h2byktxy6q8kisbm?svg=true)](https://ci.appveyor.com/project/adrian-bfs/impi)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/h2byktxy6q8kisbm?svg=true)](https://ci.appveyor.com/project/adrian-bfs/impi)
+[![Travis Build Status](https://travis-ci.org/bfs-preis/impi.svg?branch=master)](https://travis-ci.org/bfs-preis/impi)
+
 # Requirements:
 
 ### Install NVM
