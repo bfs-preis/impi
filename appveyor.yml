@@ -29,4 +29,4 @@ deploy:
   draft: true
   prerelease: false
   force_update: true
-  tag: $(package_version)
+  tag: v$(package_version)
