@@ -1,7 +1,7 @@
 {
     "Main":{
-        "Title":"IMPI Daten Anreicherung",
-        "Description":"Mit diesem Tool werden die Bankdaten mit Geodaten angereichert und anonymisiert!",
+        "Title":"IMPI Datenanreicherung",
+        "Description":"Mit diesem Tool werden die Bankdaten mit Geoinformationen angereichert und anschliessend anonymisiert.",
         "Row":"Zeile:",
         "Time":"Zeit:",
         "ETA":"ETA:",

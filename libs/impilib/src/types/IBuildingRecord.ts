@@ -14,7 +14,6 @@ export interface IBuildingRecord {
     noise_exposure: number,
     slope: number,
     exposure: number,
-    land_view: number,
     lake_view: number,
     mountain_view: number,
     distance_to_lakes: number,

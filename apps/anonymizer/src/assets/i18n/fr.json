@@ -1,7 +1,7 @@
 {
     "Main":{
-        "Title":"IMPI Daten enrichissement des données",
-        "Description":"Avec cet outil les données bancaires sont enrichi et anonymisé avec avec des géodonnées!",
+        "Title":"IMPI Enrichissement des Données",
+        "Description":"Par cet outil, les données bancaires sont enrichies avec des données géolocalisées et anonymisées ensuite.",
         "Row":"Ligne:",
         "Time":"Heure:",
         "ETA":"ETA:",

@@ -73,7 +73,6 @@ export const BuildingsTable: ITableDefinition = {
         { Name: "noise_exposure", Type: "INTEGER" },
         { Name: "slope", Type: "INTEGER" },
         { Name: "exposure", Type: "INTEGER" },
-        { Name: "land_view", Type: "INTEGER" },
         { Name: "lake_view", Type: "INTEGER" },
         { Name: "mountain_view", Type: "INTEGER" },
         { Name: "distance_to_lakes", Type: "INTEGER" },

@@ -1,7 +1,7 @@
 {
     "Main":{
-        "Title":"IMPI Arricchimento dati",
-        "Description":"Con questa applicazione i dati bancari vengono arricchiti e anonimizzati con i geodati!",
+        "Title":"IMPI Arricchimento Dati",
+        "Description":"Con questa applicazione i dati bancari vengono arricchiti con i geodati e anonimizzati.",
         "Row":"Linea:",
         "Time":"Ora:",
         "ETA":"ETA:",

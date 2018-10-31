@@ -25,7 +25,6 @@ export class ResultDataCsv {
     noiseexposure: string="";
     slope: string="";
     exposure: string="";
-    landview: string="";
     lakeview: string="";
     mountainview: string="";
     distancetolakes: string="";

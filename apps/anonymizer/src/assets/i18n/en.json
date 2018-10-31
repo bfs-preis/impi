@@ -1,7 +1,7 @@
 {
     "Main":{
-        "Title":"IMPI Data Enrichement",
-        "Description":"Tool to enriche bankdata with geodate and anonymize!",
+        "Title":"IMPI Data Enrichment",
+        "Description":"Using this tool, the bankdata is enriched with geodata and then anonymized.",
         "Row":"Row:",
         "Time":"Time:",
         "ETA":"ETA:",
@@ -39,7 +39,7 @@
         "LanguageEn":"English",
         "LanguageDe":"German",
         "LanguageFr":"French",
-        "LanguageIt":"Italien",
+        "LanguageIt":"Italian",
         "ButtonClose":"Save & Close"
     },
     "Help":{
