@@ -153,7 +153,7 @@ export const ValidationRules: IValidationRule[] = [
     {
         Id: 24, Message: "ObjectType = Einfamilienhaus and SingleFamilyHouseType ≠ Freistehend, Doppelhaushälfte, Reiheneckhaus, Reihenmittelhaus, Terrassenhaus, Andere", ValCode: (row: IBankDataCsv): boolean => {
             if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.singlefamilyhousetype.length == 0) return true;
-            return !(Number(row.objecttype) == 1 && (!isNumeric(row.singlefamilyhousetype) || (Number(row.singlefamilyhousetype) > 6 || (Number(row.singlefamilyhousetype) < 1)));
+            return !(Number(row.objecttype) == 1 && (!isNumeric(row.singlefamilyhousetype) || Number(row.singlefamilyhousetype) > 6 || Number(row.singlefamilyhousetype) < 1));
         }, RedFlag: false
     },
     {
@@ -194,8 +194,7 @@ export const ValidationRules: IValidationRule[] = [
     {
         Id: 31, Message: "YearOfConstruction != 1,2,3,4,5,6,7", ValCode: (row: IBankDataCsv): boolean => {
             if (row.yearofconstruction.length === 0 || !isNumeric(row.yearofconstruction)) return true;
-            if(row.yearofconstruction.length === 1)
-                return !(Number(row.yearofconstruction) < 1 || Number(row.yearofconstruction) > 7);
+            return !(Number(row.yearofconstruction) < 1 || Number(row.yearofconstruction) > 7);
         }, RedFlag: true
     },
     {
