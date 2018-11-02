@@ -9,10 +9,13 @@ echo "source /home/vagrant/.nvm/nvm.sh" >> /home/vagrant/.profile
 source /home/vagrant/.profile
 
 #node lts 8.11.2
-nvm install --lts
+nvm install lts/carbon
 
 # install yarn
 npm install -g yarn
+
+#install projecto
+npm install -g projecto
 
 sudo apt-get install libatk-adaptor libgail-common topmenu-gtk-common topmenu-gtk2 -y
 
@@ -33,6 +36,7 @@ XKBOPTIONS=""
 BACKSPACE="guess"
 EOF
 
+sudo update-initramfs -k all -u
 
 #xdg-mime default code.desktop text/plain 
 sudo update-alternatives --set editor /usr/bin/code
