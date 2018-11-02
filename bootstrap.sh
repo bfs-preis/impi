@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-ln -s /vagrant /home/vagrant/Desktop/Source
 # git
 sudo apt-get install -y git-core curl
 
@@ -43,3 +42,4 @@ sudo update-alternatives --set editor /usr/bin/code
 
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
+git clone https://github.com/bfs-preis/impi /home/vagrant/impi
