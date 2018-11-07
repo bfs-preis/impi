@@ -3,7 +3,7 @@ export interface IFieldDefinition {
     Type: string
 }
 
-export interface IUniqueKeyDefinition {
+export interface IIndexDefinition {
     Name: string,
     Fields: String[]
 }
@@ -11,7 +11,7 @@ export interface IUniqueKeyDefinition {
 export interface ITableDefinition {
     TableName: string,
     Fields: IFieldDefinition[],
-    UniqueKeys: IUniqueKeyDefinition[] | null
+    Indexes: IIndexDefinition[] | null
 }
 
 
@@ -22,7 +22,7 @@ export const VersionTable: ITableDefinition = {
         { Name: "period_from", Type: "TEXT" },
         { Name: "period_to", Type: "TEXT" }
     ],
-    UniqueKeys: null
+    Indexes: null
 }
 
 export const CenterStreetsTable: ITableDefinition = {
@@ -33,7 +33,7 @@ export const CenterStreetsTable: ITableDefinition = {
         { Name: "street", Type: "TEXT" },
         { Name: "egid", Type: "INTEGER" }
     ],
-    UniqueKeys: [{ Name: "I_UQ_CENTERSTREETS", Fields: ["street", "zip_code", "community"] }]
+    Indexes: [{ Name: "I_CENTERSTREETS", Fields: ["street", "zip_code", "community"] }]
 }
 
 export const CenterCommunitiesTable: ITableDefinition = {
@@ -43,7 +43,7 @@ export const CenterCommunitiesTable: ITableDefinition = {
         { Name: "community", Type: "TEXT" },
         { Name: "egid", Type: "INTEGER" }
     ],
-    UniqueKeys: [{ Name: "I_UQ_CENTERCOMMUNITIES", Fields: ["zip_code", "community"] }]
+    Indexes: [{ Name: "I_CENTERCOMMUNITIES", Fields: ["zip_code", "community"] }]
 }
 
 export const AdditionalCommunitiesTable: ITableDefinition = {
@@ -52,7 +52,7 @@ export const AdditionalCommunitiesTable: ITableDefinition = {
         { Name: "Original", Type: "INTEGER" },
         { Name: "Alternativ", Type: "INTEGER" }
     ],
-    UniqueKeys: [{ Name: "I_UQ_ADDITIONALCOMMUNITIES", Fields: ["Original", "Alternativ"] }]
+    Indexes: [{ Name: "I_ADDITIONALCOMMUNITIES", Fields: ["Original", "Alternativ"] }]
 }
 
 export const BuildingsTable: ITableDefinition = {
@@ -80,7 +80,7 @@ export const BuildingsTable: ITableDefinition = {
         { Name: "distance_to_highvoltage_powerlines", Type: "INTEGER" },
         { Name: "year_of_construction", Type: "INTEGER" },
     ],
-    UniqueKeys: [{ Name: "I_UQ_BUILDINGS", Fields: ["street", "street_number", "zip_code", "community"] }]
+    Indexes: [{ Name: "I_BUILDINGS", Fields: ["street", "street_number", "zip_code", "community"] }]
 }
 
 

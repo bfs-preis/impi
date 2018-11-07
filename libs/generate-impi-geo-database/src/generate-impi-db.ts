@@ -14,10 +14,10 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     db.prepare("DROP TABLE IF EXISTS " + def.TableName).run();
     db.prepare("CREATE TABLE " + def.TableName + " (" + def.Fields.map(c => { return c.Name + " " + c.Type; }).join(",") + ")").run();
 
-    if (def.UniqueKeys) {
-        for (let uq of def.UniqueKeys) {
+    if (def.Indexes) {
+        for (let uq of def.Indexes) {
             db.prepare("DROP INDEX IF EXISTS " + uq.Name).run();
-            db.prepare("CREATE UNIQUE INDEX " + uq.Name + " ON " + def.TableName + " (" + uq.Fields.join(",") + ")").run();
+            db.prepare("CREATE INDEX " + uq.Name + " ON " + def.TableName + " (" + uq.Fields.join(",") + ")").run();
         }
     }
 
@@ -167,5 +167,87 @@ export function generate(database: string, version: string, periodFrom: string, 
             }, errorHandling);
         }, errorHandling);
     }, errorHandling);
+}
+
+export function checkDoubles(database: string): ({ Buildings: number, CenterStreets: number, CenterCommunities: number }) {
+    let sqlBuildings = `SELECT street,street_number,zip_code,community
+                        ,COUNT(street) count
+                        FROM BUILDINGS
+                        GROUP BY street,street_number,zip_code,community
+                        HAVING (COUNT(street) > 1)`;
+    let sqlCenterStreets = `SELECT street,zip_code,community
+                            ,COUNT(street) count
+                            FROM CENTERSTREETS
+                            GROUP BY street,zip_code,community
+                            HAVING (COUNT(street) > 1)`;
+    let sqlCenterCommunities = `SELECT zip_code,community
+                                ,COUNT(zip_code) count
+                                FROM CENTERCOMMUNITIES
+                                GROUP BY zip_code,community
+                                HAVING (COUNT(zip_code) > 1)`;
+
+    let buildingsCount = 0;
+    let centerStreetsCount = 0;
+    let centerCommunitiesCount = 0;
+
+    let db = new Database(database);
+
+    let rows = db.prepare(sqlBuildings).all();
+    if (rows) {
+        rows.forEach((element: any) => {
+            winston.warn("Double Buildings:" + JSON.stringify(element));
+            buildingsCount+=element.count;
+        });
+    }
+
+    rows = db.prepare(sqlCenterStreets).all();
+    if (rows) {
+        rows.forEach((element: any) => {
+            winston.warn("Double CenterStreets:" + JSON.stringify(element));
+            centerStreetsCount+=element.count;
+        });
+    }
+
+    rows = db.prepare(sqlCenterCommunities).all();
+    if (rows) {
+        rows.forEach((element: any) => {
+            winston.warn("Double CenterCommunities:" + JSON.stringify(element));
+            centerCommunitiesCount+=element.count;
+        });
+    }
+
+    return { Buildings: buildingsCount, CenterCommunities: centerCommunitiesCount, CenterStreets: centerStreetsCount };
+}
+
+export function checkKFactor(database: string): boolean {
+
+    let sqlQuery = `SELECT 
+                    (SELECT COUNT(CAT_BAU) FROM (
+                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
+                    FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    FROM BUILDINGS WHERE year_of_construction!=10)
+                    GROUP BY CAT_BAU
+                    HAVING (COUNT(CAT_BAU) < 3))) a,
+                    
+                    (SELECT COUNT(CAT_LAGE) FROM (
+                    SELECT  CAT_LAGE ,COUNT(CAT_LAGE)
+                    FROM ( SELECT  (canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines) AS CAT_LAGE
+                    FROM BUILDINGS )
+                    GROUP BY CAT_LAGE
+                    HAVING (COUNT(CAT_LAGE) < 3))) b`;
+
+    let db = new Database(database);
+    let row = db.prepare(sqlQuery).get();
+
+    return ((row.a + row.b) == 0);
+
 }
 

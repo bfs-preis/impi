@@ -1,4 +1,4 @@
-    Mit diesem Tool kann eine Impi Sqlite3 Geodatenbank erzeugt werden.
+    Mit diesem Tool kann eine IMPI Sqlite3 Geodatenbank erzeugt werden.
     Dazu braucht es 4 Csv Files, in folgendem Format:
 
     CenterStreet:
@@ -31,7 +31,7 @@
     -l, --LogLevel <level>                 LogLevel (default: info)                                
     -h, --help                             output usage information                                
                                                                                                  
-    Anstelle der Argumente kann auch eine JSON Datei angegeben werden (option -C) in welcher alle Sachen defniert werden.
+    Anstelle der Argumente kann auch eine JSON Datei angegeben werden (option -C) in welcher alle Optionen definiert werden.
 
     Folgendes Format:
 

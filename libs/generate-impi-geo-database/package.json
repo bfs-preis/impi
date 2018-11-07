@@ -1,7 +1,7 @@
 {
   "name": "generate-impi-geo-database",
   "version": "1.0.1",
-  "description": "generate the impi sqlite3 db from csv files",
+  "description": "generate the IMPI sqlite3 db from csv files",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {

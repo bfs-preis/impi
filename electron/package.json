@@ -1,14 +1,14 @@
 {
     "name": "impi",
-    "productName": "ImPI",
+    "productName": "IMPI",
     "version": "1.0.0",
-    "description": "ImPI Data enrichment tool",
+    "description": "IMPI Data enrichment tool",
     "main": "app/index.js",
     "scripts": {
         "copyAnonHtml": "cpr ../apps/anonymizer/dist/ ./app/anonymizer -o",
         "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
         "copyBackground": "cpr ./src/background/index-background.html ./app/background/index-background.html -o",
-        "createBuildPackageJson":"node ./scripts/createPackageJSON.js",
+        "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
         "start": "yarn copyBackground && yarn tsc && electron ./app/index.js -l silly --debug --development",
@@ -32,6 +32,7 @@
     },
     "dependencies": {
         "electron-log": "^2.2.11",
+        "electron-rebuild": "^1.8.2",
         "electron-settings": "^3.1.4",
         "impilib": "file:../libs/impilib/",
         "yargs": "^11.0.0"
@@ -40,9 +41,9 @@
         "@types/electron": "^1.6.10",
         "@types/electron-settings": "^3.1.0",
         "@types/yargs": "^11.0.0",
+        "cpr": "^3.0.1",
         "electron": "^1.6.6",
         "electron-builder": "^19.45.4",
-        "cpr": "^3.0.1",
         "rimraf": "^2.6.2",
         "typescript": "^2.6.1"
     }

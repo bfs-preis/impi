@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { generate } from './generate-impi-db';
+import { generate,checkDoubles,checkKFactor } from './generate-impi-db';
 
 const ora = require('ora');
 const colors = require('colors/safe');
@@ -11,7 +11,7 @@ import * as path from 'path';
 import program = require('commander');
 
 program
-    .version('0.2.0')
+    .version(require('../package.json').version)
     .option('-g, --geodb <file>', 'Database filename')
     .option('-q, --dbversion <version>', 'Database Version')
     .option('-f, --from <date>', 'Database Period From [dd.MM.YYYY]')
@@ -123,6 +123,8 @@ const spinners = [
     { name: 'Generate CenterCommunities', spinner: ora('Generate CenterCommunities') },
     { name: 'Generate Buildings', spinner: ora('Generate Buildings') },
     { name: 'Additional PLZs', spinner: ora('Additional PLZs') },
+    { name: 'Log Doubles', spinner: ora('Log Doubles') },
+    { name: 'Check K-Factor', spinner: ora('Check K-Factor') },
 ]
 
 let currentSpinnerIndex = 0;
@@ -172,6 +174,18 @@ generate(config.output, config.db.version, config.db.from, config.db.to, config.
 
 }, () => {
     succeedText(currentSpinnerIndex, rowAdditionalCommunities, start);
+
+    currentSpinnerIndex++;
+    let counts=checkDoubles(config.output);
+    spinners[currentSpinnerIndex].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name)+ " | Buildings --> " + colors.yellow(counts.Buildings.toString()) + " | CenterStreets --> " + colors.yellow(counts.CenterStreets.toString()) + " | CenterCommunities --> " + colors.yellow(counts.CenterCommunities.toString()));
+    currentSpinnerIndex++;
+    if (checkKFactor(config.output)){
+        spinners[currentSpinnerIndex].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name));
+    }
+    else{
+        spinners[currentSpinnerIndex].spinner.fail();
+    }
+
     console.log("Overall Time: " + colors.yellow(nicetime((Date.now() - top_start))));
 }, (err) => {
     spinners[currentSpinnerIndex].spinner.fail();
