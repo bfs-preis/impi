@@ -181,9 +181,11 @@ generate(config.output, config.db.version, config.db.from, config.db.to, config.
     currentSpinnerIndex++;
     if (checkKFactor(config.output)){
         spinners[currentSpinnerIndex].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name));
+        winston.info('K-Factor Test succeed!');
     }
     else{
         spinners[currentSpinnerIndex].spinner.fail();
+        winston.warn('K-Factor Test failed!');
     }
 
     console.log("Overall Time: " + colors.yellow(nicetime((Date.now() - top_start))));
