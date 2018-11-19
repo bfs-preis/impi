@@ -3,7 +3,6 @@ import { IBankDataCsv } from '../types/IBankDataCsv';
 import { IBuildingRecord } from '../types/IBuildingRecord';
 import { normalizeStreet } from 'normalize-street';
 import { normalizeCity } from 'normalize-city';
-import { resolveSoa } from "dns";
 
 export enum MatchingTypeEnum {
     PointMatching = 0,
