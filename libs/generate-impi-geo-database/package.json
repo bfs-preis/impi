@@ -30,6 +30,7 @@
     "csv-parse": "^2.0.0",
     "iconv-lite": "^0.4.19",
     "normalize-street": "file:../normalize-street",
+    "normalize-city": "file:../normalize-city",
     "ora": "^2.1.0",
     "winston": "^2.4.0"
   },

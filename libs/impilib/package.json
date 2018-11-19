@@ -26,6 +26,7 @@
     "iconv-lite": "^0.4.18",
     "moment": "^2.18.1",
     "normalize-street": "file:../normalize-street",
+    "normalize-city": "file:../normalize-city",
     "rxjs": "^5.4.2",
     "sqlite3": "^3.1.8",
     "stream-transform": "^0.1.2",

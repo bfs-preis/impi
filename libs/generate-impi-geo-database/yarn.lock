@@ -486,6 +486,9 @@ node-gyp@^3.6.2:
   dependencies:
     abbrev "1"
 
+"normalize-city@file:../normalize-city":
+  version "1.0.0"
+
 "normalize-street@file:../normalize-street":
   version "1.0.5"
 

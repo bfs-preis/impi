@@ -2,6 +2,7 @@ import { GeoDatabase } from "./GeoDatabase";
 import { IBankDataCsv } from '../types/IBankDataCsv';
 import { IBuildingRecord } from '../types/IBuildingRecord';
 import { normalizeStreet } from 'normalize-street';
+import { normalizeCity } from 'normalize-city';
 import { resolveSoa } from "dns";
 
 export enum MatchingTypeEnum {
@@ -35,7 +36,7 @@ export function match(
         return callback(null, null, MatchingTypeEnum.NoMatching);
     }
 
-    let nCommunity = hasCommunity ? normalizeStreet((record as IBankDataCsv).community) : null;
+    let nCommunity = hasCommunity ? normalizeCity((record as IBankDataCsv).community) : null;
 
     //only zipcode no street
     if (!hasStreet) {

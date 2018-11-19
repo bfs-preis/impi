@@ -4,6 +4,7 @@ const winston = require('winston');
 import fs = require('fs');
 import * as iconv from 'iconv-lite';
 import { normalizeStreet } from "normalize-street";
+import { normalizeCity } from "normalize-city";
 import * as definitions from "./table-definitions";
 
 function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition, csvFile: string | null,
@@ -93,7 +94,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             }
 
             if (record.community != undefined) {
-                let nCommunity = normalizeStreet(record.community);
+                let nCommunity = normalizeCity(record.community);
                 let i = def.Fields.map((t) => t.Name).indexOf("community");
                 array[i] = nCommunity;
             }
