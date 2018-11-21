@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 
 import * as log from 'electron-log';
 import * as settings from 'electron-settings';
@@ -84,7 +84,7 @@ export class Main {
       fullscreen: false,
       titleBarStyle: 'hidden-inset',
       /*    icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),*/
-      title: "ImPI"
+      title: "IMPI"
     });
 
     this.mainWindow.setMenu(null);
@@ -108,7 +108,7 @@ export class Main {
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
       if (this.backgroundWindow && !this.backgroundWindow.isDestroyed()) {
-        
+
         this.backgroundWindow.close();
         this.backgroundWindow = null;
       }
@@ -142,6 +142,13 @@ export class Main {
           this.mainWindow.show();
       }, WEBVIEW_LOAD_TIMEOUT_MS);
 
+    });
+
+    this.mainWindow.webContents.on('new-window', function (e, url) {
+      log.debug("new-window: " + url);
+      e.preventDefault();
+      let b = shell.openExternal(url);
+      log.debug("external open: " + b);
     });
   };
 

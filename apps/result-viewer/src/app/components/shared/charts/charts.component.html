@@ -9,13 +9,13 @@
         Legende
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-selection-list dense>
+    <mat-selection-list dense style="display:table">
       <mat-list-option *ngFor="let row of this.legendDataSource;" checkboxPosition="before" (selectionChange)="onLegendClick($event)"
         [value]="row.index" selected="true">
-        <div matLine>
-          <div [style.background-color]="row.color" style="float:left;width:20px;height:20px;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px"></div>
-          <span style="width:50px;padding-left:10px">{{row.data}}</span>
-          <span style="padding-left:10px">{{row.label}}</span>
+        <div matLine style="display:table-row">
+          <div [style.background-color]="row.color" style="display:table-cell;float:left;width:20px;height:20px;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px"></div>
+          <span style="display:table-cell;width:50px;min-width:50px;padding-left:10px">{{row.data}}</span>
+          <span style="display:table-cell;padding-left:10px">{{row.label}}</span>
         </div>
       </mat-list-option>
     </mat-selection-list>

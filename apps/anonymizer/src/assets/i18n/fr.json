@@ -44,8 +44,8 @@
     },
     "Help":{
         "Title":"Aide",
-        "Documentation":"Documentation (en cours ..)",
-        "SourceCode":"SourceCode (en cours ..)",
+        "Documentation":"Documentation",
+        "SourceCode":"SourceCode",
         "DevelopedBy":"Développé par",
         "ButtonClose":"Fermer"
     }

@@ -16,6 +16,10 @@ export class ElectronService {
     return electron.remote.require('electron-settings').get('AppSettings.Theme');
   }
 
+  getAppVersion(): string {
+    return electron.remote.app.getVersion();
+  }
+
   getLanguage(): string {
     return electron.remote.require('electron-settings').get('AppSettings.Language');
   }

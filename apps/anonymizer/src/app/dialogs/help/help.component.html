@@ -2,20 +2,25 @@
 <div mat-dialog-content>
   <div style="margin-top:10px;margin-right:10px;border:none">
     <h2>{{'Main.Title' | translate}}</h2>
-    <span>Version {{this.appVersion}}</span>
-    <mat-nav-list>
-      <a mat-list-item href="https://www.github.com" target="_blank">{{'Help.Documentation' | translate}}</a>
-      <a mat-list-item href="https://www.github.com" target="_blank">{{'Help.SourceCode' | translate}}</a>
-    </mat-nav-list>
-
+    <span style="padding-bottom:10px;display:block">Version {{this.appVersion}}</span>
+    <div>
+      <a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi/wiki" target="_blank">
+        {{'Help.Documentation' | translate}} (https://github.com/bfs-preis/impi/wiki)
+      </a>
+    </div>
+    <div>
+      <a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi" target="_blank">
+        {{'Help.SourceCode' | translate}} (https://github.com/bfs-preis/impi)
+      </a>
+    </div>
   </div>
-</div>
-<div mat-dialog-actions>
-  <button mat-raised-button [mat-dialog-close]="">{{'Help.ButtonClose' | translate}}</button>
-  <div style="position:relative;left:200px">
-    <span>{{'Help.DevelopedBy' | translate}}</span>
+  <div style="padding-top:10px;">
+    <span style="padding-right:10px">{{'Help.DevelopedBy' | translate}}</span>
     <a href="http://softrain.ch" target="_blank">
-      <img src="./assets/softrain_logo.gif" width="50px" style="vertical-align: middle" />
+      <img src="./assets/softrain_logo.gif" width="150px" style="vertical-align: middle;position:absolute" />
     </a>
   </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button [mat-dialog-close]="">{{'Help.ButtonClose' | translate}}</button>
 </div>

@@ -44,8 +44,8 @@
     },
     "Help":{
         "Title":"Help",
-        "Documentation":"Documentation (work in progress...)",
-        "SourceCode":"SourceCode (work in progress...)",
+        "Documentation":"Documentation",
+        "SourceCode":"SourceCode",
         "DevelopedBy":"Developed by",
         "ButtonClose":"Close"
     }

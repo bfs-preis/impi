@@ -3,11 +3,10 @@ import { ChartDataSet } from '../shared/charts/charts.component';
 
 enum MatchingTypeEnum {
   PointMatching = 0,
-  NearMatching = 1,
-  CenterStreetMatching = 2,
-  CenterCommunitiesMatching = 3,
-  NoMatching = 4,
-  NoMatchingWithError = 5
+  CenterStreetMatching = 1,
+  CenterCommunitiesMatching = 2,
+  NoMatching = 3,
+  NoMatchingWithError = 4,
 }
 
 @Component({
@@ -38,7 +37,6 @@ export class ChartMatchesComponent implements OnInit {
     let data=this.matches.map((v, i) => {
       return { Text: MatchingTypeEnum[i], Count: v };
     });
-
     this.data = { Data: data.map((r) => r.Count), Labels: data.map((r) => r.Text) } as ChartDataSet;
   }
 

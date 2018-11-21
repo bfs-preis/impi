@@ -11,7 +11,7 @@
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
-        "start": "yarn copyBackground && yarn tsc && electron ./app/index.js -l silly --debug --development",
+        "start": "yarn copyBackground && yarn tsc && electron ./app -l silly --debug --development",
         "release": "yarn build && electron-builder",
         "rebuildNative": "electron-builder install-app-deps",
         "build": "yarn clean && yarn tsc && yarn copyAnonHtml && yarn copyResultHtml && yarn copyBackground && yarn createBuildPackageJson"

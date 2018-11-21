@@ -6,6 +6,7 @@ const log = require('electron-log');
 
 window.onload = function () {
 	ipcRenderer.on('background-start', (event: any, payload: any) => {
+
 		console.log('background-start');
 		processFile(payload, (result: any) => {
 			// Error object isnt JSON serializable so..

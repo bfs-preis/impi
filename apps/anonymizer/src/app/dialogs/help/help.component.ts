@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-
+import { ElectronService } from '../../services/electron.service';
 
 
 @Component({
@@ -13,8 +13,8 @@ export class HelpComponent {
 
   public appVersion;
 
-  constructor(public dialogRef: MatDialogRef<HelpComponent>) {
-    this.appVersion = "1.0.0.0";
+  constructor(public dialogRef: MatDialogRef<HelpComponent>,private electronService: ElectronService) {
+    this.appVersion = electronService.getAppVersion();
   }
 
 }
