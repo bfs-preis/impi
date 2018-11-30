@@ -1,5 +1,5 @@
 language: node_js
-node_js: lts/8
+node_js: v8.12.0
 env: ELECTRON_CACHE=$HOME/.cache/electron ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder USE_HARD_LINKS=false
 cache:
   yarn: true
