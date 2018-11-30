@@ -32,7 +32,7 @@ export class ChartViolationsComponent implements OnInit {
   prepareData(): void {
 
     //filter correct rows
-    let data: IViolation[] = this.violations.filter((v) => v.Id != 1000);
+    let data: IViolation[] = this.violations;
     let selColors= data.map((v)=>{
         return this.colors[v.Id-1];
     });

@@ -9,13 +9,14 @@ import * as moment from 'moment';
 import * as archiver from 'archiver';
 
 import { LogAsXmlString, SmallLogAsXmlString } from './log-file-xml';
-import { createSedexEnvelope} from './sedex-envelope';
+import { createSedexEnvelope } from './sedex-envelope';
 import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv';
 import { ResultDataCsv } from '../types/ResultDataCsv';
 import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules';
 import { PeriodeDefinition, IValidationRule, ValidationRules } from '../validation/ValidationRules';
 import { match, MatchingTypeEnum } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
+import { isNumber } from 'util';
 
 export interface IProcessOption {
     InputCsvFile: string;
@@ -27,7 +28,7 @@ export interface IProcessOption {
     DbPeriodFrom: number;
     DbPeriodTo: number;
     CsvRowCount: number;
-    SedexSenderId:string;
+    SedexSenderId: string;
 }
 
 export interface IProcessResult {
@@ -78,7 +79,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
 
     let fileName = "data_" + moment().format("YYYYMMDDHHmmss");
 
-    let violations: IViolation[] = [{ Id: 1000, RedFlag: true, Rows: [], Text: "Correct Rows" }];
+    let violations: IViolation[] = [];
     let matchSummary: number[] = Array.apply(null, Array(Object.keys(MatchingTypeEnum).length / 2)).map(function () { return 0; });
 
     let result: IProcessResult = {
@@ -97,7 +98,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         result.EndTime = +new Date();
         result.Error = err;
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
-        writeEnvelope(options.SedexSenderId,options.OutputPath,fileName);
+        writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
         return callback(result);
     };
 
@@ -158,7 +159,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         geodb.close();
         result.EndTime = +new Date();
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
-        writeEnvelope(options.SedexSenderId,options.OutputPath,fileName);
+        writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
         callback(result);
     });
 
@@ -202,20 +203,41 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         violation.Rows.push(rowNumber);
     }
 
-    if (result.ViolatedRules.length == 0) {
-        let violation = processResult.Violations.find((v) => {
-            return v.Id === 1000;
-        });
-        if (violation) { violation.Rows.push(rowNumber); }
-    }
-
     //Copy Data to output object
     let outRecord: ResultDataCsv = new ResultDataCsv();
     for (let k in outRecord) {
         if (record.hasOwnProperty(k)) {
             outRecord[k] = record[k];
         }
+        //Translate yearofconstruction to nomenclatur
+        if (k === 'yearofconstruction') {
+            let year: number = isNumber(record[k]) ? +record[k] : 0;
+            if (year > 0) {
+                if (year < 1919) {
+                    year = 1;
+                }
+                else if (year >= 1919 && year <= 1945) {
+                    year = 2;
+                }
+                else if (year >= 1946 && year <= 1970) {
+                    year = 3;
+                }
+                else if (year >= 1971 && year <= 1990) {
+                    year = 4;
+                }
+                else if (year >= 1991 && year <= 2005) {
+                    year = 5;
+                }
+                else if (year >= 2006 && year <= 2015) {
+                    year = 6;
+                } else if (year > 2015) {
+                    year = 7;
+                }
+            }
+            outRecord[k] = year.toString();
+        }
     }
+
     //Store ValidationFlags
     outRecord.validationflags = result.Flags.toString();
 
@@ -242,7 +264,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
 }
 
 function writeZipFile(outputPath: string, fileName: String, log: string, smallLog: string): void {
-  
+
     let zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
 
     let archive = archiver('zip', {
@@ -274,7 +296,7 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
 
     archive.append(log, { name: (fileName + ".xml") });
     archive.append(smallLog, { name: (fileName + "_small.xml") });
- 
+
 
     archive.finalize();
 
@@ -282,9 +304,9 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
         fs.unlinkSync(path.join(outputPath, fileName + ".csv"));
 }
 
-function writeEnvelope(sedexSenderId:string,outputPath: string, fileName: String):void{
-    let xml=createSedexEnvelope(sedexSenderId);
-    let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_","envl_") + ".xml"), { encoding: "utf8" });
+function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
+    let xml = createSedexEnvelope(sedexSenderId);
+    let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), { encoding: "utf8" });
     outputStream.write(xml);
     outputStream.end();
     outputStream.close();

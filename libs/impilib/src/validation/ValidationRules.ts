@@ -192,9 +192,9 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: true
     },
     {
-        Id: 31, Message: "YearOfConstruction != 1,2,3,4,5,6,7", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.yearofconstruction.length === 0 || !isNumeric(row.yearofconstruction)) return true;
-            return !(Number(row.yearofconstruction) < 1 || Number(row.yearofconstruction) > 7);
+        Id: 31, Message: "YearOfConstruction Format ≠ Number(4)", ValCode: (row: IBankDataCsv): boolean => {
+            if (row.yearofconstruction.length === 0) return true;
+            return !(!isNumeric(row.yearofconstruction) || Number(row.yearofconstruction) > 9999 || row.yearofconstruction.length != 4);
         }, RedFlag: true
     },
     {

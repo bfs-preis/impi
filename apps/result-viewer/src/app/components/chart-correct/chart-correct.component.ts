@@ -35,10 +35,17 @@ export class ChartCorrectComponent implements OnInit {
 
   prepareData(): void {
     if (!this.violations || this.rowCount==0) return;
-    //get correct rows
-    let correctRows: IViolation = this.violations.find((v) => v.Id == 1000);
-    if (!correctRows) return;
-    this.data = { Data: [correctRows.Rows.length, (this.rowCount-correctRows.Rows.length) ], Labels: ["Correct Rows","Rows with Violations"],Colors:["green","red"] } as ChartDataSet;
+
+    let countValidationErrors=this.violations.map((v)=> v.Rows).reduce(
+      function(accumulator, currentValue) {
+        return accumulator.concat(currentValue);
+      },
+      []
+    ).filter((value, index, self)=>{
+      return self.indexOf(value) === index;
+    }).length;
+
+    this.data = { Data: [(this.rowCount-1-countValidationErrors), countValidationErrors ], Labels: ["Correct Rows","Rows with Violations"],Colors:["green","red"] } as ChartDataSet;
   }
 
 }
