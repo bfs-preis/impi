@@ -54,8 +54,8 @@ export function match(
 
     // we have zip_code && street
     let nStreet = normalizeStreet((record as IBankDataCsv).street);
-
-    _searchAddress(geoDatabase, nStreet, record.streetnumber, zipcode, nCommunity)
+    let nStreetnumber= hasStreetNumber? record.streetnumber.toLowerCase().replace(/ /g,""):"";
+    _searchAddress(geoDatabase, nStreet, nStreetnumber, zipcode, nCommunity)
         .then((row) => {
             if (row) {
                 return callback(row, null, MatchingTypeEnum.PointMatching);
@@ -96,7 +96,7 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
                 return;
             }
             if (rows) {
-
+               
                 let foundStreetNumber = rows.filter(r => r.street_number === streetnumber);
                 if (foundStreetNumber && foundStreetNumber.length === 1) {
                     resolve(foundStreetNumber[0]);
@@ -117,6 +117,7 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
                         return;
                     }
                     if (rows) {
+                       
                         let foundStreetNumber = rows.filter(r => r.street_number === streetnumber);
                         if (foundStreetNumber && foundStreetNumber.length === 1) {
                             resolve(foundStreetNumber[0]);

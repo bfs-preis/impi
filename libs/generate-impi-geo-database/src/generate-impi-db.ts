@@ -99,6 +99,12 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 array[i] = nCommunity;
             }
 
+            if (record.streetnumber!=undefined){
+                let nStreetNumner = record.streetnumber.toLowerCase().replace(/ /g,"");
+                let i = def.Fields.map((t) => t.Name).indexOf("street_number");
+                array[i] = nStreetNumner;
+            }
+
             try {
                 winston.log('silly', array);
                 stmt.run(array);

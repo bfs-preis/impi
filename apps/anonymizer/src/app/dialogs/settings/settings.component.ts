@@ -17,7 +17,7 @@ export class SettingsComponent {
   _selectedSeparater: string;
   _selectedTheme: string;
   _selectedLanguage:string;
-
+  _selectedSedexSenderId:string;
   encodings = [
     'utf8',
     'ansi',
@@ -31,6 +31,9 @@ export class SettingsComponent {
     this._selectedSeparater = this._settings.get('AppSettings.CSVSeparater');
     this._selectedTheme = this._settings.get('AppSettings.Theme');
     this._selectedLanguage=this._settings.get('AppSettings.Language');
+    this._selectedSedexSenderId=this._settings.get('AppSettings.SedexSenderId');
+
+    console.log(this._selectedSedexSenderId);
 
   }
 
@@ -39,7 +42,8 @@ export class SettingsComponent {
       CSVEncoding: this._selectedEncoding,
       CSVSeparater: this._selectedSeparater,
       Theme: this._selectedTheme,
-      Language:this._selectedLanguage
+      Language:this._selectedLanguage,
+      SedexSenderId:this._selectedSedexSenderId
     };
   }
 
@@ -48,6 +52,8 @@ export class SettingsComponent {
     this._settings.set('AppSettings.CSVSeparater', this._selectedSeparater);
     this._settings.set('AppSettings.Theme', this._selectedTheme);
     this._settings.set('AppSettings.Language',this._selectedLanguage);
+    this._settings.set('AppSettings.SedexSenderId',this._selectedSedexSenderId);
+    console.log(this._selectedSedexSenderId);
   }
 
 }

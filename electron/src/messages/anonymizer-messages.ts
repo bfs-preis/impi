@@ -5,12 +5,14 @@ import * as settings from 'electron-settings';
 import { Main } from '../index';
 import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase } from '../validation/input-validation';
 import { IProcessResult, IProcessOption } from 'impilib';
+import { CommandLineCommand } from '../cmd-line/command-line';
+import { registerResultViewerMessages } from './report-viewer-messages';
 
 let isProcessing: boolean = false;
 
 export function registerAnonMessages() {
     ipcMain.on('background-response', (event: any, result: IProcessResult) => {
-        log.debug('send background-response:' + JSON.stringify(result));
+        log.silly('send background-response:' + JSON.stringify(result));
         Main.GetMainWindow().webContents.send('background-response', result);
         isProcessing = false;
 
@@ -20,10 +22,7 @@ export function registerAnonMessages() {
                 Main.GetResultWindow().show();
             });
 
-            ipcMain.on('ask-for-process-result', (event: any) => {
-                log.debug('send process-result:' + JSON.stringify(result));
-                event.sender.send('process-result', result);
-            });
+            registerResultViewerMessages(result);
         }
     });
 
@@ -38,6 +37,7 @@ export function registerAnonMessages() {
         processOptions.InputCsvFile = appSettings.CSVFile;
         processOptions.DatabaseFile = appSettings.DBFile;
         processOptions.OutputPath = appSettings.OutDirectory;
+        processOptions.SedexSenderId=appSettings.SedexSenderId;
 
         log.debug('send background-start:' + JSON.stringify(processOptions));
         Main.GetBackgroundWindow().webContents.send('background-start', processOptions);

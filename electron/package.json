@@ -11,10 +11,10 @@
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
-        "start": "yarn copyBackground && yarn tsc && electron ./app -l silly --debug --development",
+        "start": "yarn copyBackground && yarn tsc && electron ./app -l debug --debug --development",
         "release": "yarn build && electron-builder",
         "rebuildNative": "electron-builder install-app-deps",
-        "build": "yarn clean && yarn tsc && yarn copyAnonHtml && yarn copyResultHtml && yarn copyBackground && yarn createBuildPackageJson"
+        "build": "yarn clean && yarn tsc && yarn copyBackground && yarn copyAnonHtml && yarn copyResultHtml && yarn createBuildPackageJson"
     },
     "keywords": [],
     "author": "adi",

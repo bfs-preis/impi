@@ -77,7 +77,8 @@ export class MainComponent {
             CsvSeparator: "",//get from appsettings
             DatabaseFile: "",//get from appsettings
             InputCsvFile: "",//get from appsettings
-            OutputPath: ""//get from appsettings
+            OutputPath: "",//get from appsettings
+            SedexSenderId:""//get from appsettings
         };
 
 
@@ -94,7 +95,7 @@ export class MainComponent {
 
         ipcRenderer.once('background-response', (event: any, result: IProcessResult) => {
             this.zone.run(() => {
-                console.log(JSON.stringify(result));
+                //console.log(JSON.stringify(result));
                 this._isProcessing = false;
                 if (result.Error) {
                     this._error = result.Error.message;

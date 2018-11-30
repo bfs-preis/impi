@@ -9,10 +9,10 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field style="width:100%">
-      <input matInput [placeholder]="'Settings.CSVSeparater' | translate" [value]="_selectedSeparater">
+      <input matInput [placeholder]="'Settings.CSVSeparater' | translate" [(ngModel)]="_selectedSeparater">
     </mat-form-field>
     <mat-form-field style="width:100%">
-      <input matInput [placeholder]="'Settings.SedexMessageId' | translate" value="">
+      <input matInput [placeholder]="'Settings.SedexSenderId' | translate" [(ngModel)]="_selectedSedexSenderId">
     </mat-form-field>
     <mat-form-field style="width:100%">
       <mat-select [placeholder]="'Settings.Theme' | translate" name="theme" [(ngModel)]="_selectedTheme">

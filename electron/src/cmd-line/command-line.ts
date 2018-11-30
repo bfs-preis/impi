@@ -20,6 +20,8 @@ export interface ICommandLine {
     LogLevel: string;
     Debug: boolean;
     Development: boolean;
+    SedexSenderId:string;
+    AllValidationErrors:boolean;
 }
 
 function parseCommandLine(): ICommandLine {
@@ -41,7 +43,8 @@ function parseCommandLine(): ICommandLine {
                 LogLevel: args.loglevel,
                 Debug: args.debug || false,
                 Development: args.dev || false,
-                ResultFile: args.file
+                ResultFile: args.file,
+                AllValidationErrors:args.showallValErrors || false
             } as ICommandLine;
         })
         .command(["main", "$0"], "Starts the Impi Gui", (yargs: Argv) => {
@@ -80,6 +83,11 @@ function parseCommandLine(): ICommandLine {
                 describe: "the separator char used in the input csv file",
                 type: "string",
                 default: ""
+            }).option("sedexsenderid", {
+                alias: "sed",
+                describe: "the sedex sender id used in the envelope",
+                type: "string",
+                default: ""
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -93,7 +101,9 @@ function parseCommandLine(): ICommandLine {
                 Theme: args.theme,
                 Language: args.language,
                 CSVEncoding: args.csvencoding,
-                CSVSeparator: args.csvseparator
+                CSVSeparator: args.csvseparator,
+                SedexSenderId:args.sedexsenderid,
+                AllValidationErrors:args.showallValErrors || false
             } as ICommandLine;
         })
         .command(["cli"], "Starts Impi in Commandline Mode", (yargs: Argv) => {
@@ -122,6 +132,11 @@ function parseCommandLine(): ICommandLine {
                 describe: "the separator char used in the input csv file",
                 type: "string",
                 default: ";"
+            }).option("sedexsenderid", {
+                alias: "sed",
+                describe: "the sedex sender id used in the envelope",
+                type: "string",
+                default: ""
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -133,7 +148,9 @@ function parseCommandLine(): ICommandLine {
                 CSVFile: args.csv,
                 OutputDir: args.out,
                 CSVEncoding: args.csvencoding,
-                CSVSeparator: args.csvseparator
+                CSVSeparator: args.csvseparator,
+                SedexSenderId:args.sedexsenderid,
+                AllValidationErrors:args.showallValErrors || false
             } as ICommandLine;
         })
         .option("loglevel", {
@@ -151,6 +168,13 @@ function parseCommandLine(): ICommandLine {
             hidden: true,
             type: "boolean",
             describe: "loads angular apps from local webserver && sets log file to currentPath"
+        })
+        .option("showallValErrors", {
+            alias: "allVErrors",
+            hidden: false,
+            type: "boolean",
+            describe: "show all validation errors in resultviewer",
+            default:false,
         })
         .help()
         .version();

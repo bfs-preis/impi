@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import * as archiver from 'archiver';
 
 import { LogAsXmlString, SmallLogAsXmlString } from './log-file-xml';
-
+import { createSedexEnvelope} from './sedex-envelope';
 import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv';
 import { ResultDataCsv } from '../types/ResultDataCsv';
 import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules';
@@ -27,7 +27,7 @@ export interface IProcessOption {
     DbPeriodFrom: number;
     DbPeriodTo: number;
     CsvRowCount: number;
-
+    SedexSenderId:string;
 }
 
 export interface IProcessResult {
@@ -97,6 +97,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         result.EndTime = +new Date();
         result.Error = err;
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
+        writeEnvelope(options.SedexSenderId,options.OutputPath,fileName);
         return callback(result);
     };
 
@@ -157,6 +158,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         geodb.close();
         result.EndTime = +new Date();
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
+        writeEnvelope(options.SedexSenderId,options.OutputPath,fileName);
         callback(result);
     });
 
@@ -272,6 +274,7 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
 
     archive.append(log, { name: (fileName + ".xml") });
     archive.append(smallLog, { name: (fileName + "_small.xml") });
+ 
 
     archive.finalize();
 
@@ -279,3 +282,10 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
         fs.unlinkSync(path.join(outputPath, fileName + ".csv"));
 }
 
+function writeEnvelope(sedexSenderId:string,outputPath: string, fileName: String):void{
+    let xml=createSedexEnvelope(sedexSenderId);
+    let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_","envl_") + ".xml"), { encoding: "utf8" });
+    outputStream.write(xml);
+    outputStream.end();
+    outputStream.close();
+}

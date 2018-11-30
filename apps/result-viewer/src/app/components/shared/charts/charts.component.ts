@@ -60,11 +60,7 @@ export class ChartsComponent implements OnInit {
     return "rgb(" + r + "," + g + "," + b + ")";
   }
 
-
   drawChart() {
-    console.log("draw chart:" + this.data.Data);
-    console.log("ShowLegend:" + this.ShowLegend);
-
     let data = {
       datasets: [{
         data: this.data.Data,
@@ -92,8 +88,6 @@ export class ChartsComponent implements OnInit {
       for (let i in this.data.Data) {
         legendDataSource.push({ data: this.data.Data[i], label: this.data.Labels[i], color: data.datasets[0].backgroundColor[i], index: i });
       }
-
-      //legendDataSource = legendDataSource.sort(function (a, b) { return Number(b.data) - Number(a.data); });
 
       this.legendDataSource = legendDataSource;
     }

@@ -30,7 +30,8 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
             CsvRowCount: rowcount,
             CsvSeparator: commandLine.CSVSeparator,
             InputCsvFile: commandLine.CSVFile,
-            OutputPath: commandLine.OutputDir
+            OutputPath: commandLine.OutputDir,
+            SedexSenderId:commandLine.SedexSenderId
         };
 
         let process: Promise<number> = new Promise((resolve, reject) => {

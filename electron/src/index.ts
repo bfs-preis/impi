@@ -16,11 +16,14 @@ export class Main {
   private static resultWindow: Electron.BrowserWindow | null;
 
   static Start() {
+
     if (CommandLineCommand.Development) {
       log.transports.file.file = __dirname + '/log.txt';
     }
     log.transports.file.level = CommandLineCommand.LogLevel as log.LevelOption;
     log.transports.console.level = CommandLineCommand.Command === CommandEnum.Cli ? false : CommandLineCommand.LogLevel as log.LevelOption;
+
+    log.debug(CommandLineCommand);
 
     if (CommandLineCommand.Command === CommandEnum.Cli) {
       CliProcess(CommandLineCommand).then((exitCode) => {
@@ -184,7 +187,7 @@ export class Main {
     if (CommandLineCommand.Command === CommandEnum.Result) {
       this.createResultWindow();
       log.debug("Register Result-Viewer Messages");
-      registerResultViewerMessages();
+      registerResultViewerMessages(null);
       this.GetResultWindow().show();
     }
     else {
@@ -219,7 +222,9 @@ export class Main {
         DBFile: path.join(__dirname, "default.db"),
         OutDirectory: __dirname,
         Theme: "Light",
-        Language: "en"
+        Language: "en",
+        SedexSenderId:"",
+        ShowRedFlags:false
       });
       log.debug("Default AppSettings set");
     }
@@ -245,6 +250,9 @@ export class Main {
       }
       if (CommandLineCommand.Language.length > 0) {
         settings.set("AppSettings.Language", CommandLineCommand.Language);
+      }
+      if (CommandLineCommand.SedexSenderId.length > 0) {
+        settings.set("AppSettings.SedexSenderId", CommandLineCommand.SedexSenderId);
       }
     }
   }

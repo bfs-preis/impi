@@ -36,7 +36,7 @@ export function readResultZipFile(file: string, callback: (result: IProcessResul
                                     Id: r.attributes().Id,
                                     Text: r.attributes().Text,
                                     Rows: rows,
-                                    RedFlag:r.attributes().RefFlag
+                                    RedFlag:(r.attributes().RedFlag==='true')
                                 } as IViolation);
                         })
 

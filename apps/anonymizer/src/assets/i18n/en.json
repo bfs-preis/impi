@@ -31,7 +31,7 @@
         "Title":"Settings",
         "CSVEncoding":"CSV Encoding",
         "CSVSeparater":"CSV Separater",
-        "SedexMessageId":"Sedex Message Id",
+        "SedexSenderId":"Sedex Sender Id",
         "Theme":"Theme",
         "ThemeDark":"Dark",
         "ThemeLight":"Light",
