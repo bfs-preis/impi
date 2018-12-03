@@ -7,7 +7,7 @@ import { readResultZipFile, IProcessResult } from 'impilib';
 import { CommandLineCommand, ICommandLine } from '../cmd-line/command-line';
 
 export function registerResultViewerMessages(results: IProcessResult | null) {
-    ipcMain.on('ask-for-process-result', (event: any, result: null) => {
+    ipcMain.once('ask-for-process-result', (event: any, result: null) => {
 
         if (!results) {
             let file = CommandLineCommand ? CommandLineCommand.ResultFile : null;
@@ -34,7 +34,7 @@ export function registerResultViewerMessages(results: IProcessResult | null) {
         }
     });
 
-    ipcMain.on('ask-for-show-redflags', (event: any, result: null) => {
+    ipcMain.once('ask-for-show-redflags', (event: any, result: null) => {
         log.debug('send redflags-result:' + JSON.stringify(CommandLineCommand.AllValidationErrors));
         event.sender.send('redflags-result', CommandLineCommand.AllValidationErrors);
     });

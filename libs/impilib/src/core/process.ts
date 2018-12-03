@@ -16,7 +16,6 @@ import { checkValidationRules, ICheckValidationRuleResult } from '../validation/
 import { PeriodeDefinition, IValidationRule, ValidationRules } from '../validation/ValidationRules';
 import { match, MatchingTypeEnum } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
-import { isNumber } from 'util';
 
 export interface IProcessOption {
     InputCsvFile: string;
@@ -184,7 +183,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         }
     }
 
-
+    
     //Validate
     let result: ICheckValidationRuleResult = checkValidationRules(record as IBankDataCsv);
 
@@ -210,8 +209,8 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
             outRecord[k] = record[k];
         }
         //Translate yearofconstruction to nomenclatur
-        if (k === 'yearofconstruction') {
-            let year: number = isNumber(record[k]) ? +record[k] : 0;
+        if (k === 'yearofconstruction') {   
+            let year: number = isNaN(+record[k]) ? 0 : +record[k];
             if (year > 0) {
                 if (year < 1919) {
                     year = 1;
