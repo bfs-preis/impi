@@ -49,10 +49,10 @@ export const CenterCommunitiesTable: ITableDefinition = {
 export const AdditionalCommunitiesTable: ITableDefinition = {
     TableName: "ADDITIONALCOMMUNITIES",
     Fields: [
-        { Name: "Original", Type: "INTEGER" },
-        { Name: "Alternativ", Type: "INTEGER" }
+        { Name: "original", Type: "INTEGER" },
+        { Name: "alternativ", Type: "INTEGER" }
     ],
-    Indexes: [{ Name: "I_ADDITIONALCOMMUNITIES", Fields: ["Original", "Alternativ"] }]
+    Indexes: [{ Name: "I_ADDITIONALCOMMUNITIES", Fields: ["original", "alternativ"] }]
 }
 
 export const BuildingsTable: ITableDefinition = {

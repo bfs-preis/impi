@@ -236,7 +236,7 @@ export function checkKFactor(database: string): boolean {
                     ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
                     ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
                     ||distance_to_highvoltage_powerlines) AS CAT_BAU
-                    FROM BUILDINGS WHERE year_of_construction!=10)
+                    FROM BUILDINGS WHERE year_of_construction IS NULL)
                     GROUP BY CAT_BAU
                     HAVING (COUNT(CAT_BAU) < 3))) a,
                     

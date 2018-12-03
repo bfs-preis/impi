@@ -250,6 +250,9 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         if (record) {
             //Copy Values
             for (let k in record) {
+
+                if (k.replace(/_/g, "")==='yearofconstruction') continue; // dont copy yearofconstruction from gwr, always take bank data
+
                 if (outRecord.hasOwnProperty(k.replace(/_/g, ""))) {
                     outRecord[k.replace(/_/g, "")] = record[k];
                 }
