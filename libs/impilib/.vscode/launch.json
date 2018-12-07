@@ -7,29 +7,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/libs/generate-impi-geo-database/src/generate-impi-db-cli.ts",
-            "args": [
-                "-C",
-                "/vagrant/Data/test.json"
-            ],
-            "cwd": "${workspaceFolder}/libs/generate-impi-geo-database/src",
-            "outFiles": [
-                "${workspaceFolder}/libs/generate-impi-geo-database/**/*.js"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
             "name": "Mocha impilib matching",
-            "program": "${workspaceFolder}/libs/impilib/node_modules/.bin/mocha",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
                 "-r",
                 "ts-node/register",
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/libs/impilib/tests/**/matching.spec.ts",
+                "${workspaceFolder}/tests/**/matching.spec.ts",
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

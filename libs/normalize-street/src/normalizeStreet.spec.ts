@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 
-// import 'mocha';
+import 'mocha';
 describe('manual tests', () => {
 
   it('should return hoehenw', () => {
@@ -37,9 +37,43 @@ describe('manual tests', () => {
     expect(result).to.equal('hoehe');
 
   });
+
+  it('should return grei', () => {
+
+    const result = normalizeStreet("A Gréi");
+    expect(result).to.equal('grei');
+
+  });
+
+  it('should return grei', () => {
+    const result = normalizeStreet("Gréi");
+    expect(result).to.equal('grei');
+
+  });
+
+  it('should return smartin', () => {
+
+    const result = normalizeStreet("A San Martin");
+    expect(result).to.equal('smartin');
+
+  });
+
+  it('should return neuvecas', () => {
+
+    const result = normalizeStreet("L'A Neuve CAS");
+    expect(result).to.equal('neuvecas');
+
+  });
+
+  it('should return ry', () => {
+
+    const result = normalizeStreet("A-Ry");
+    expect(result).to.equal('ry');
+
+  });
 });
 
-describe('gwr tests', () => {
+/*describe('gwr tests', () => {
   const gwrTest: string[][] = [
     ["Rue de l'Essert", "rl'essert"],
     ["Bahnhofstrasse", "bahnhofstr"],
@@ -135,4 +169,4 @@ describe('gwr tests', () => {
 
     });
   });
-});
+});*/

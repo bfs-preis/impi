@@ -45,6 +45,9 @@ export function normalizeCity(city: string): string {
     city_normalized = city_normalized.globalReplace('ö', 'oe');
     city_normalized = city_normalized.globalReplace('ü', 'ue');
 
+    //Supprimer les signes de ponctuation: .,;:-
+    city_normalized = translate(city_normalized, '.,;:-/+&', '        ');
+
     //Supprimer les séparateurs
     city_normalized = city_normalized.globalReplace(' de l\'', ' ');
     city_normalized = city_normalized.globalReplace(' de la ', ' ');
@@ -123,6 +126,9 @@ export function normalizeCity(city: string): string {
     if (city_normalized.indexOf(' s ') > 0) {
         city_normalized = city_normalized.substr(0, city_normalized.indexOf(' s '))
     }
+    if (city_normalized.indexOf(' san ') > 0) {
+        city_normalized = city_normalized.substr(0, city_normalized.indexOf(' san '))
+    }
     if (city_normalized.indexOf(' p ') > 0) {
         city_normalized = city_normalized.substr(0, city_normalized.indexOf(' p '))
     }
@@ -142,7 +148,6 @@ export function normalizeCity(city: string): string {
     city_normalized = city_normalized.globalReplace('petit ', 'pt ');
     city_normalized = city_normalized.globalReplace('grande ', 'gr ');
     city_normalized = city_normalized.globalReplace('grand ', 'gr ');
-    city_normalized = city_normalized.globalReplace('san ', 's ');
     city_normalized = city_normalized.globalReplace('santa ', 's ');
     city_normalized = city_normalized.globalReplace('sankt ', 'st ');
     city_normalized = city_normalized.globalReplace('saint ', 's ');
@@ -153,8 +158,6 @@ export function normalizeCity(city: string): string {
     city_normalized = city_normalized.globalReplace('alter ', 'alt ');             // NEU!
     city_normalized = city_normalized.globalReplace('altes ', 'alt ');             // NEU!
     city_normalized = city_normalized.globalReplace('alten ', 'alt ');             // NEU!
-
-    city_normalized = city_normalized.globalReplace('mont ', 'mt ');
 
     if (city_normalized.substr(0, 3) === 'le ') {
         city_normalized = city_normalized.substr(3);
@@ -197,7 +200,7 @@ export function normalizeCity(city: string): string {
     }
 
     if (city_normalized.substr(0, 2) === 'a ') {
-        city_normalized = city_normalized.substr(3);
+        city_normalized = city_normalized.substr(2);
     }
 
     if (city_normalized.substr(0, 4) === 'les ') {

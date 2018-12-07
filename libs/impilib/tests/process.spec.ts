@@ -19,7 +19,8 @@ describe('simple input file', () => {
             DbPeriodTo:+new Date("1.1.3000"),
             DbVersion:"1.0",
             InputCsvFile:"../../test-files/BankData_errors_small.csv",
-            OutputPath:"./"
+            OutputPath:"./",
+            SedexSenderId: ''
         }
 
         processFile(options,(result=>{

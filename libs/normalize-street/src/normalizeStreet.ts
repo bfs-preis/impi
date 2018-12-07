@@ -203,7 +203,7 @@ export function normalizeStreet(street: string): string {
     }
 
     if (street_normalized.substr(0, 2) === 'a ') {
-        street_normalized = street_normalized.substr(3);
+        street_normalized = street_normalized.substr(2);
     }
 
     if (street_normalized.substr(0, 4) === 'les ') {

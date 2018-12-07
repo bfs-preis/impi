@@ -32,6 +32,8 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     let stmt = db.prepare("INSERT INTO " + def.TableName + " VALUES (" + def.Fields.map(c => { return "?"; }).join(",") + ")");
 
     let input = fs.createReadStream(csvFile, { encoding: 'binary' });
+    //let inputEncoded = iconv.decodeStream('win1251');
+
     // Create the parser
     let parser = parse({
         delimiter: ';',
@@ -99,8 +101,8 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 array[i] = nCommunity;
             }
 
-            if (record.streetnumber!=undefined){
-                let nStreetNumner = record.streetnumber.toLowerCase().replace(/ /g,"");
+            if (record.streetnumber != undefined) {
+                let nStreetNumner = record.streetnumber.toLowerCase().replace(/ /g, "");
                 let i = def.Fields.map((t) => t.Name).indexOf("street_number");
                 array[i] = nStreetNumner;
             }
@@ -203,7 +205,7 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
     if (rows) {
         rows.forEach((element: any) => {
             winston.warn("Double Buildings:" + JSON.stringify(element));
-            buildingsCount+=element.count;
+            buildingsCount += element.count;
         });
     }
 
@@ -211,7 +213,7 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
     if (rows) {
         rows.forEach((element: any) => {
             winston.warn("Double CenterStreets:" + JSON.stringify(element));
-            centerStreetsCount+=element.count;
+            centerStreetsCount += element.count;
         });
     }
 
@@ -219,7 +221,7 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
     if (rows) {
         rows.forEach((element: any) => {
             winston.warn("Double CenterCommunities:" + JSON.stringify(element));
-            centerCommunitiesCount+=element.count;
+            centerCommunitiesCount += element.count;
         });
     }
 

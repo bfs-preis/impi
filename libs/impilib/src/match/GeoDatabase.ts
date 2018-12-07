@@ -55,7 +55,7 @@ export class GeoDatabase {
     }
 
     searchAddressWithMappings(street: string, zipCode: number, callback: (err: Error | null, rows: IBuildingRecord[] | null) => void) {
-        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORGINAL= @zipcode )", [street, zipCode], (err: Error, rows: any) => {
+        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: any) => {
             if (err) {
                 return callback(err, null);
             }
@@ -66,7 +66,7 @@ export class GeoDatabase {
     }
 
     searchCenterStreet(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode AND STREET=@street", [zipCode,street], (err: Error, rows: any[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -90,7 +90,7 @@ export class GeoDatabase {
     }
 
     searchCenterCommunities(zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID FROM CENTERCOMMUNITIES WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: any[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
