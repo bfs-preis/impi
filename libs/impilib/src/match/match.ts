@@ -54,7 +54,7 @@ export function match(
 
     // we have zip_code && street
     let nStreet = normalizeStreet((record as IBankDataCsv).street);
-    let nStreetnumber= hasStreetNumber? record.streetnumber.toLowerCase().replace(/ /g,""):"";
+    let nStreetnumber = hasStreetNumber ? record.streetnumber.toLowerCase().replace(/ /g, "") : "";
     _searchAddress(geoDatabase, nStreet, nStreetnumber, zipcode, nCommunity)
         .then((row) => {
             if (row) {
@@ -96,7 +96,7 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
                 return;
             }
             if (rows) {
-               
+
                 let foundStreetNumber = rows.filter(r => r.street_number === streetnumber);
                 if (foundStreetNumber && foundStreetNumber.length === 1) {
                     resolve(foundStreetNumber[0]);
@@ -117,9 +117,10 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
                         return;
                     }
                     if (rows) {
-                       
+
                         let foundStreetNumber = rows.filter(r => r.street_number === streetnumber);
                         if (foundStreetNumber && foundStreetNumber.length === 1) {
+
                             resolve(foundStreetNumber[0]);
                             return;
                         } else if (foundStreetNumber && foundStreetNumber.length > 1) { //Search with Community
@@ -137,9 +138,10 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
                     resolve(null);
                     return;
                 });
+            } else {
+                resolve(null);
+                return;
             }
-            resolve(null);
-            return;
         });
     });
 }
@@ -149,12 +151,14 @@ function _searchCenterCommunities(geoDatabase: GeoDatabase, zipcode: number, com
         geoDatabase.searchCenterCommunities(zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
             if (err) {
                 reject(err);
+                return;
             }
             if (row) {
                 resolve(row);
                 return;
+            }else{
+                resolve(null);
             }
-            resolve(null);
         });
     });
 }
@@ -164,6 +168,7 @@ function _searchCenterStreet(geoDatabase: GeoDatabase, street: string, zipcode: 
         geoDatabase.searchCenterStreet(street, zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
             if (err) {
                 reject(err);
+                return;
             }
             if (row) {
                 resolve(row);

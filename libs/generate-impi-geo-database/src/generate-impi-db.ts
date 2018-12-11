@@ -63,7 +63,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 winston.debug(def);
                 throw new Error("Not all Columns:" + JSON.stringify(noColumnsFound));
             }
-
+            
             return columnsLower;
         }
     });
