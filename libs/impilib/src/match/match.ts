@@ -156,8 +156,20 @@ function _searchCenterCommunities(geoDatabase: GeoDatabase, zipcode: number, com
             if (row) {
                 resolve(row);
                 return;
-            }else{
-                resolve(null);
+            } else {
+                geoDatabase.searchCenterCommunitiesWithMappings(zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    if (row) {
+                        resolve(row);
+                        return;
+                    }
+                    else{
+                        resolve(null);
+                    }
+                });
             }
         });
     });
@@ -173,8 +185,21 @@ function _searchCenterStreet(geoDatabase: GeoDatabase, street: string, zipcode: 
             if (row) {
                 resolve(row);
                 return;
+            }else{
+                geoDatabase.searchCenterStreetWithMappings(street,zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    if (row) {
+                        resolve(row);
+                        return;
+                    }
+                    else{
+                        resolve(null);
+                    }
+                });
             }
-            resolve(null);
         });
     });
 }

@@ -89,8 +89,56 @@ export class GeoDatabase {
         });
     }
 
+    searchCenterStreetWithMappings(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street,zipCode], (err: Error, rows: any[]) => {
+            if (err) {
+                return callback(err, null);
+            } else if (rows && rows.length > 0) {
+                if (rows.length > 1) {
+                    if (community) {
+                        for (let row of rows) {
+                            if (row.community === community) {
+                                this._searchEGID(row.egid, callback);
+                                return;
+                            }
+                        }
+                    }
+                    return callback(null, null);
+                } else {
+                    this._searchEGID(rows[0].egid, callback);
+                }
+            } else {
+                return callback(null, null);
+            }
+        });
+    }
+
     searchCenterCommunities(zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
         this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: any[]) => {
+            if (err) {
+                return callback(err, null);
+            } else if (rows && rows.length > 0) {
+                if (rows.length > 1) {
+                    if (community) {
+                        for (let row of rows) {
+                            if (row.community === community) {
+                                this._searchEGID(row.egid, callback);
+                                return;
+                            }
+                        }
+                    }
+                    return callback(null, null);
+                } else {
+                    this._searchEGID(rows[0].egid, callback);
+                }
+            } else {
+                return callback(null, null);
+            }
+        });
+    }
+
+    searchCenterCommunitiesWithMappings(zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [zipCode], (err: Error, rows: any[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
