@@ -14,7 +14,8 @@
         "File":"File:",
         "Period":"Period:",
         "Version":"Version:",
-        "SelectFile":"Select DB File"
+        "SelectFile":"Select DB File",
+        "KFactor":"Factor K testing"
     },
     "Csv":{
         "Title":"Bankdata File",
@@ -48,5 +49,13 @@
         "SourceCode":"SourceCode",
         "DevelopedBy":"Developed by",
         "ButtonClose":"Close"
+    },
+    "KFactor":{
+        "Description":"Start the test to verify that the database fulfills the k factor.",
+        "ButtonStart":"Start",
+        "ButtonCancel":"Cancel",
+        "ButtonClose":"Close",
+        "SuccessMessage":"K factor fulfilled.",
+        "FailMessage":"K factor not fulfilled!"
     }
 }

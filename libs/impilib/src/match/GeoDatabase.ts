@@ -40,14 +40,60 @@ export class GeoDatabase {
                 } as IDbInfo, null);
             }
         });
-
     }
+
+    kFactorCheck(callback: (check: boolean | null, err: Error | null) => void): void {
+        let sqlQuery = `SELECT 
+                    (SELECT COUNT(CAT_BAU) FROM (
+                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
+                    FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    FROM BUILDINGS WHERE year_of_construction !="")
+                    GROUP BY CAT_BAU
+                    HAVING (COUNT(CAT_BAU) < 3))) a,
+                    
+                    (SELECT COUNT(CAT_LAGE) FROM (
+                    SELECT  CAT_LAGE ,COUNT(CAT_LAGE)
+                    FROM ( SELECT  (canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines) AS CAT_LAGE
+                    FROM BUILDINGS WHERE year_of_construction ="" OR (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines IN (SELECT  CAT_BAU 
+                        FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                        second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                        ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                        ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                        ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                        FROM BUILDINGS WHERE year_of_construction !="")
+                        GROUP BY CAT_BAU
+                        HAVING (COUNT(CAT_BAU) > 2)))  )
+                    GROUP BY CAT_LAGE
+                    HAVING (COUNT(CAT_LAGE) < 3))) b;`;
+
+        this._db.get(sqlQuery, [], (err: Error, row: any) => {
+            if (err) {
+                return callback(null, err);
+            } else {
+                return callback(((row.a + row.b) === 0), null);
+            }
+        });
+    }
+
+
 
     searchAddress(street: string, zipCode: number, callback: (err: Error | null, rows: IBuildingRecord[] | null) => void) {
         this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: any) => {
             if (err) {
                 return callback(err, null);
-            } 
+            }
             else {
                 return callback(null, rows);
             }
@@ -66,7 +112,7 @@ export class GeoDatabase {
     }
 
     searchCenterStreet(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode AND STREET=@street", [zipCode,street], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode AND STREET=@street", [zipCode, street], (err: Error, rows: any[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -90,7 +136,7 @@ export class GeoDatabase {
     }
 
     searchCenterStreetWithMappings(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street,zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: any[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -171,7 +217,7 @@ export class GeoDatabase {
         });
     }
 
-    
 
-    
+
+
 }

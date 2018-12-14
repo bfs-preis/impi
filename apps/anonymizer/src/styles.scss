@@ -52,11 +52,17 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
     width: 48px !important;
 }
 
+.mat-tooltip.tooltip
+{
+    max-width: none !important;
+}
+
 //Custom Section
 
 .step-card{
-    width: 200px;
+    width: 210px;
     height: 150px;
+    
     mat-card-header {
         display:flex;
         justify-content:center
@@ -68,28 +74,9 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
     justify-content: flex-start !important;
 }
 
-.myGrid{
-    display:flex;
-    flex-direction:column;
-    div {
-        display:flex;
-        flex-direction:row;
-        div:first-of-type{
-            width:60px;
-        }
-        div:nth-child(2){
-            display:inline-block;
-            width: 140px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-    }
-}
-
 .check-icon{
     position:absolute;
-    top:10px;
+    top:5px;
+    left: 5px;
 }
 

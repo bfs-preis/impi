@@ -63,7 +63,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 winston.debug(def);
                 throw new Error("Not all Columns:" + JSON.stringify(noColumnsFound));
             }
-            
+
             return columnsLower;
         }
     });
@@ -238,7 +238,7 @@ export function checkKFactor(database: string): boolean {
                     ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
                     ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
                     ||distance_to_highvoltage_powerlines) AS CAT_BAU
-                    FROM BUILDINGS WHERE year_of_construction IS NULL)
+                    FROM BUILDINGS WHERE year_of_construction !="")
                     GROUP BY CAT_BAU
                     HAVING (COUNT(CAT_BAU) < 3))) a,
                     
@@ -249,9 +249,21 @@ export function checkKFactor(database: string): boolean {
                     ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
                     ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
                     ||distance_to_highvoltage_powerlines) AS CAT_LAGE
-                    FROM BUILDINGS )
+                    FROM BUILDINGS WHERE year_of_construction ="" OR (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                    ||distance_to_highvoltage_powerlines IN (SELECT  CAT_BAU 
+                        FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+                        second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
+                        ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
+                        ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
+                        ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                        FROM BUILDINGS WHERE year_of_construction !="")
+                        GROUP BY CAT_BAU
+                        HAVING (COUNT(CAT_BAU) > 2)))  )
                     GROUP BY CAT_LAGE
-                    HAVING (COUNT(CAT_LAGE) < 3))) b`;
+                    HAVING (COUNT(CAT_LAGE) < 3))) b;`;
 
     let db = new Database(database);
     let row = db.prepare(sqlQuery).get();

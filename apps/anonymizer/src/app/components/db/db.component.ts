@@ -2,8 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, NgZo
 import { IDbInfo } from 'impilib';
 
 import { ElectronService } from '../../services/electron.service';
+import { MatDialog } from '@angular/material';
 
-
+import { KfactorComponent } from '../../dialogs/kfactor/kfactor.component';
 
 @Component({
     selector: 'app-db',
@@ -32,7 +33,7 @@ export class DbComponent implements OnInit {
 
     public DbInfo: IDbInfo | null;
 
-    constructor(public zone: NgZone,private electronService: ElectronService) {
+    constructor(public dialog: MatDialog, public zone: NgZone, private electronService: ElectronService) {
         this._settings = this.electronService.getSettings();
         this._sqlliteFilter = [
             { name: 'db', extensions: ['db'] },
@@ -79,6 +80,18 @@ export class DbComponent implements OnInit {
 
     getFileName() {
         return this._file.replace(/^.*[\\\/]/, '');
+    }
+
+    checkKFactor() {
+        console.log("checkKFactor");
+
+        this.dialog.open(KfactorComponent, {
+            width: '600px',
+            disableClose: true,
+            data: {
+                file: this._file,
+            }
+        });
     }
 
 }

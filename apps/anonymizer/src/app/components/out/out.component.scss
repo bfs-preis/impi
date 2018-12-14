@@ -1,0 +1,16 @@
+.outGrid{
+    display:flex;
+    flex-direction:column;
+    div {
+        display:flex;
+        flex-direction:row;
+        div:nth-child(2){
+            display:inline-block;
+            width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    }
+}

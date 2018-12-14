@@ -14,7 +14,8 @@
         "File":"Datei:",
         "Period":"Periode:",
         "Version":"Version:",
-        "SelectFile":"Auswählen der DB Datei"
+        "SelectFile":"Auswählen der DB Datei",
+        "KFactor":"Faktor K testen"
     },
     "Csv":{
         "Title":"Bankdaten Datei",
@@ -48,5 +49,13 @@
         "SourceCode":"SourceCode",
         "DevelopedBy":"Entwickelt von",
         "ButtonClose":"Schliessen"
+    },
+    "KFactor":{
+        "Description":"Starten sie den Test um zu überprüfen ob die Datenbank den K Faktor erfüllt.",
+        "ButtonStart":"Start",
+        "ButtonCancel":"Abbrechen",
+        "ButtonClose":"Schliessen",
+        "SuccessMessage":"Der K Faktor ist erfüllt.",
+        "FailMessage":"Der K Faktor ist nicht erfüllt!"
     }
 }

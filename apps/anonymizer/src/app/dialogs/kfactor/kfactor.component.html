@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>{{'Db.KFactor' | translate}}</h1>
+<div mat-dialog-content>
+  <div>
+    <div style="padding-top:0px;padding-bottom:20px">
+      <div>{{'KFactor.Description' | translate}}</div>
+    </div>
+    <div style="padding-top:0px;padding-bottom:20px">
+      <div class="fileDescription" [matTooltip]="this.data.file">{{'Db.File' | translate}} {{this.data.file}}</div>
+    </div>
+    <div style="min-height:100px">
+      <mat-progress-spinner  [mode]="this._started ? 'indeterminate':'determinate'" color="accent" diameter="50" value="100" style="margin:auto;"></mat-progress-spinner>
+      <div *ngIf="this._check!=null && this._check">
+          <mat-icon color="accent">check</mat-icon>
+          <span>{{'KFactor.SuccessMessage' | translate}}</span>
+      </div>
+  
+      <div *ngIf="this._check!=null && !this._check">
+          <mat-icon color="warn"  [matTooltip]="this._error" matTooltipPosition="right">error</mat-icon>
+          {{'KFactor.FailMessage' | translate}}
+      </div>
+    </div>
+
+    
+   
+    
+  </div>
+
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button (click)="checkKFactor()" *ngIf="!this._started">{{'KFactor.ButtonStart' | translate}}</button>
+  <button mat-raised-button [mat-dialog-close]="" *ngIf="this._started">{{'KFactor.ButtonCancel' | translate}}</button>
+  <button mat-raised-button [mat-dialog-close]="" *ngIf="!this._started">{{'KFactor.ButtonClose' | translate}}</button>
+</div>

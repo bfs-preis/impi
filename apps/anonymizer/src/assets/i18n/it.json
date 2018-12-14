@@ -14,7 +14,8 @@
         "File":"File:",
         "Period":"Periodo:",
         "Version":"Versione:",
-        "SelectFile":"Scelta file banca dati"
+        "SelectFile":"Scelta file banca dati",
+        "KFactor":"Testare il fattore K"
     },
     "Csv":{
         "Title":"File banca dati",
@@ -48,5 +49,13 @@
         "SourceCode":"Codice sourceCode",
         "DevelopedBy":"Sviluppato da",
         "ButtonClose":"Chiudi"
+    },
+    "KFactor":{
+        "Description":"Avvia il test per verificare che la banca dati soddisfi il fattore k.",
+        "ButtonStart":"Avvio",
+        "ButtonCancel":"Annulla",
+        "ButtonClose":"Chiudi",
+        "SuccessMessage":"fattore k soddisfatto.",
+        "FailMessage":"fattore k non soddisfatto!"
     }
 }

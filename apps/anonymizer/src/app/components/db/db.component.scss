@@ -1,0 +1,29 @@
+.dbGrid{
+    display:flex;
+    flex-direction:column;
+    div {
+        display:flex;
+        flex-direction:row;
+        div:first-of-type{
+            width:80px;
+        }
+        div:nth-child(2){
+            display:inline-block;
+            width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    }
+}
+
+.miniButton {
+    max-height: 24px !important;
+    max-width: 24px !important;
+    line-height: 0px !important;
+}
+
+.miniButton span{
+    line-height: 0px !important;
+}

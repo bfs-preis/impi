@@ -1,0 +1,27 @@
+.title{
+    display:block;
+    margin-bottom:40px;
+    text-align:center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.contentSteps #app-components{
+    display:flex;
+    justify-content:space-around;
+}
+
+.contentBottom{
+    position:absolute;
+    bottom:0;
+    text-align:center;
+    width: 100%
+}
+
+.contentBottom #executeButton{
+    margin-bottom: 30px;
+}
+
+.contentBottom #progressText{
+    font-size:12px
+}

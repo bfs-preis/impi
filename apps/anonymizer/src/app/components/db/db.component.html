@@ -1,29 +1,38 @@
 <mat-card class="step-card">
-  <mat-card-header>
-      <mat-card-title>{{'Db.Title' | translate}}</mat-card-title>
-      <mat-card-subtitle >
-          <app-select-file [defaultPath]="_file" [disabled]="disabled"  [buttonText]="'Db.SelectFile' | translate" dialogType="0" [filters]="_sqlliteFilter" (selected)="selectedFile($event)">
-          </app-select-file>
-      </mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-      <div class="myGrid" >
-          <div>
-              <div>{{'Db.File' | translate}}</div>
-              <div [matTooltip]="this._file">{{getFileName()}}</div>
-          </div>
-          <div>
-              <div>{{'Db.Period' | translate}}</div>
-              <div [matTooltip]="_period">{{_period}}</div>
-          </div>
-          <div>
-              <div>{{'Db.Version' | translate}}</div>
-              <div [matTooltip]="_version">{{_version}}</div>
-          </div>
-      </div>
-      <div class="check-icon">
-          <mat-icon color="accent" *ngIf="this._isValid">check</mat-icon>
-          <mat-icon color="warn" *ngIf="!this._isValid" [matTooltip]="this._error" matTooltipPosition="right">error</mat-icon>
-      </div>
-  </mat-card-content>
+    <mat-card-header>
+        <mat-card-title>
+            {{'Db.Title' | translate}}
+        </mat-card-title>
+        <mat-card-subtitle>
+            <app-select-file [defaultPath]="_file" [disabled]="disabled" [buttonText]="'Db.SelectFile' | translate"
+                dialogType="0" [filters]="_sqlliteFilter" (selected)="selectedFile($event)">
+            </app-select-file>
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="dbGrid">
+            <div>
+                <div>{{'Db.File' | translate}}</div>
+                <div [matTooltip]="this._file">{{getFileName()}}</div>
+            </div>
+            <div>
+                <div>{{'Db.Period' | translate}}</div>
+                <div [matTooltip]="_period">{{_period}}</div>
+            </div>
+            <div>
+                <div>{{'Db.Version' | translate}}</div>
+                <div [matTooltip]="_version">{{_version}}</div>
+            </div>
+        </div>
+        <div class="check-icon">
+            <mat-icon color="accent" *ngIf="this._isValid">check</mat-icon>
+            <mat-icon color="warn" *ngIf="!this._isValid" [matTooltip]="this._error" matTooltipPosition="right">error</mat-icon>
+        </div>
+        <div style="position:absolute;right:5px;top:5px">
+            <button mat-mini-fab color="accent" class="miniButton" [matTooltip]="'Db.KFactor' | translate" [disabled]="!this._isValid" (click)="checkKFactor()">K</button>
+        </div>
+        <!--<div class="loading-indicator">
+            <mat-progress-spinner mode="indeterminate" color="accent" diameter="50"></mat-progress-spinner>
+        </div>-->
+    </mat-card-content>
 </mat-card>

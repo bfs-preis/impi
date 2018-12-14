@@ -6,10 +6,10 @@
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="myGrid">
+    <div class="outGrid">
       <div>
         <div>{{'Out.Directory' | translate}}</div>
-        <div [matTooltip]="this._path" style="vertical-align: right">{{shortPath()}}</div>
+        <div [matTooltip]="this._path" [matTooltipClass]="'tooltip'" >{{shortPath()}}</div>
       </div>
     </div>
     <div class="check-icon">

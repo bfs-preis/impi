@@ -14,7 +14,8 @@
         "File":"Fichier:",
         "Period":"Période:",
         "Version":"Version:",
-        "SelectFile":"Choisir le fichier de base de données"
+        "SelectFile":"Choisir le fichier de base de données",
+        "KFactor":"Tester le facteur K "
     },
     "Csv":{
         "Title":"Fichier données bancaires",
@@ -48,6 +49,13 @@
         "SourceCode":"SourceCode",
         "DevelopedBy":"Développé par",
         "ButtonClose":"Fermer"
+    },
+    "KFactor":{
+        "Description":"Démarrer le test pour verifier le factor k",
+        "ButtonStart":"Démarrage",
+        "ButtonCancel":"Annuler",
+        "ButtonClose":"Fermer",
+        "SuccessMessage":"factor k satisfait",
+        "FailMessage":"factor k pas satisfait!"
     }
-
 }

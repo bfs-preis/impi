@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "yarn run clean",
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/generate-impi-db-cli.js",
     "bump": "npm version patch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build_win32": "pkg . --targets win-x86"

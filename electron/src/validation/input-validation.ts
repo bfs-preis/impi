@@ -4,6 +4,26 @@ import * as readLine from 'readline';
 
 import { GeoDatabase, IDbInfo, CheckInputFileFormat } from 'impilib';
 
+export function CheckKFactor(dbFile:string):Promise<boolean | null> {
+    log.debug('CheckKFactor:' + dbFile);
+    return new Promise((resolve, reject) => {
+        let handleDbError = (err: Error) => {
+            log.error(err);
+            reject(err);
+            return;
+        };
+
+        let database = new GeoDatabase(dbFile, handleDbError);
+        database.kFactorCheck((check: boolean | null, err: Error | null) => {
+            if (err) {
+                handleDbError(err);
+                return;
+            }
+            resolve(check);
+        });
+    });
+}
+
 export function ValidateDatabase(dbFile: string): Promise<IDbInfo> {
     log.debug('ValidateDatabase:' + dbFile);
     return new Promise((resolve, reject) => {

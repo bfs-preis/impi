@@ -52,6 +52,14 @@ export class ElectronService {
     });
   }
 
+  CheckKFactor(file:string,callback:(check:boolean | null,err:Error)=>void){
+    ipcRenderer.send("checkkfactor", file);
+    ipcRenderer.once("checkkfactor response", (event: any, payload: any) => {
+      this.getLog().info(payload);
+      callback(payload.check, payload.err);
+    });
+  }
+
   VerifyCsv(option: { file: string, delimiter: string }, callback: (rows: number, err: Error) => void) {
     ipcRenderer.send("verify csv", option);
     ipcRenderer.once("verify csv response", (event: any, payload: any) => {

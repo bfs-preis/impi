@@ -22,6 +22,7 @@ import { SelectFileComponent } from './components/shared/select-file/select-file
 
 import { SettingsComponent } from './dialogs/settings/settings.component';
 import { HelpComponent } from './dialogs/help/help.component';
+import { KfactorComponent } from './dialogs/kfactor/kfactor.component';
 
 import { ElectronService } from './services/electron.service';
 
@@ -51,9 +52,10 @@ export function createTranslateLoader(http: HttpClient) {
     OutComponent,
     MainComponent,
     SettingsComponent,
-    HelpComponent],
+    HelpComponent,
+    KfactorComponent],
   bootstrap: [AppComponent],
   providers: [ElectronService],
-  entryComponents: [SettingsComponent, HelpComponent]
+  entryComponents: [SettingsComponent, HelpComponent,KfactorComponent]
 })
 export class AppModule { }

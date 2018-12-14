@@ -9,10 +9,10 @@
       </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-      <div class="myGrid" >
+      <div class="csvGrid" >
           <div >
               <div>{{'Csv.File' | translate}}</div>
-              <div [matTooltip]="this._file">{{getFileName()}}</div>
+              <div [matTooltip]="this._file"  [matTooltipClass]="'tooltip'">{{getFileName()}}</div>
           </div>
           <div >
               <div>{{'Csv.Rows' | translate}}</div>

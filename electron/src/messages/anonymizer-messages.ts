@@ -3,9 +3,8 @@ import * as log from 'electron-log';
 import * as settings from 'electron-settings';
 
 import { Main } from '../index';
-import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase } from '../validation/input-validation';
+import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase,CheckKFactor } from '../validation/input-validation';
 import { IProcessResult, IProcessOption } from 'impilib';
-import { CommandLineCommand } from '../cmd-line/command-line';
 import { registerResultViewerMessages } from './report-viewer-messages';
 
 let isProcessing: boolean = false;
@@ -71,5 +70,15 @@ export function registerAnonMessages() {
             log.debug('send verify path response:' + valid);
             Main.GetMainWindow().webContents.send('verify path response', valid);
         })
+    });
+
+    ipcMain.on('checkkfactor', (event: any, file: string) => {
+        CheckKFactor(file).then((check) => {
+            log.debug('send checkkfactor response:' + check);
+            Main.GetMainWindow().webContents.send('checkkfactor response', { check: check, err: null});
+        }).catch((error) => {
+            log.debug('send checkkfactor db response:' + error.message);
+            Main.GetMainWindow().webContents.send('checkkfactor db response', { check: null, err: { message: error.message } });
+        });
     });
 }

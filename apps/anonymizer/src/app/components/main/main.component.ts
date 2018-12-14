@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import { IDbInfo, IProcessOption, IProcessResult } from 'impilib';
+import { IProcessOption, IProcessResult } from 'impilib';
 
 
 @Component({
