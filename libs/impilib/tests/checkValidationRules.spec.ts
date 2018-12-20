@@ -43,8 +43,8 @@ describe('check single validation errors', () => {
   //Default Row
   const Row: IBankDataCsv = {
     community: "Test",
-    condominiumtype: "0",
-    constructionquality: "0",
+    condominiumtype: "1",
+    constructionquality: "1",
     landarea: "1",
     netlivingarea: "1",
     numberofbathrooms: "1",
@@ -66,7 +66,6 @@ describe('check single validation errors', () => {
 
   it('should have no validation error', () => {
     const result = checkValidationRules(Row);
-
     expect(result.ViolatedRules.length).to.equal(0);
     expect(result.Flags).to.be.equalBigInt(bigInt(0));
 
@@ -255,7 +254,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have City is missing', () => {
+  it('should have Community is missing', () => {
 
     const row = Object.assign({}, Row);
 
@@ -268,7 +267,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have City Format ≠ String(200)', () => {
+  it('should have Community Format ≠ String(200)', () => {
 
     const row = Object.assign({}, Row);
 
@@ -516,19 +515,6 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have YearOfConstruction > Year+5', () => {
-
-    const row = Object.assign({}, Row);
-
-    row.yearofconstruction = "3000";
-  
-    const result = checkValidationRules(row);
-
-    expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(32));
-
-  });
-
   it('should have YearOfConstruction Format ≠ Number(4)', () => {
 
     const row = Object.assign({}, Row);
@@ -538,7 +524,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(33));
+    expect(result.Flags).to.equalBigInt(getBigInt(31));
 
   });
 
@@ -551,7 +537,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(34));
+    expect(result.Flags).to.equalBigInt(getBigInt(32));
 
   });
 
@@ -562,13 +548,13 @@ describe('check single validation errors', () => {
     row.numberofrooms = "0";
   
     const result = checkValidationRules(row);
-
+    console.log(result);
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(35));
+    expect(result.Flags).to.equalBigInt(getBigInt(33));
 
   });
 
-  it('should have NumberOfRooms Format ≠ Number(2)', () => {
+  it('should have NumberOfRooms Format ≠ Number(2,1)', () => {
 
     const row = Object.assign({}, Row);
 
@@ -577,7 +563,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(36));
+    expect(result.Flags).to.equalBigInt(getBigInt(34));
 
   });
 
@@ -590,7 +576,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(37));
+    expect(result.Flags).to.equalBigInt(getBigInt(35));
 
   });
 
@@ -603,7 +589,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(38));
+    expect(result.Flags).to.equalBigInt(getBigInt(36));
 
   });
 
@@ -616,7 +602,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(39));
+    expect(result.Flags).to.equalBigInt(getBigInt(37));
 
   });
 
@@ -629,7 +615,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(40));
+    expect(result.Flags).to.equalBigInt(getBigInt(38));
 
   });
 
@@ -642,7 +628,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(41));
+    expect(result.Flags).to.equalBigInt(getBigInt(39));
 
   });
 
@@ -655,7 +641,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(42));
+    expect(result.Flags).to.equalBigInt(getBigInt(40));
 
   });
 
@@ -668,7 +654,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(43));
+    expect(result.Flags).to.equalBigInt(getBigInt(41));
 
   });
 
@@ -681,7 +667,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(44));
+    expect(result.Flags).to.equalBigInt(getBigInt(42));
 
   });
 
@@ -694,7 +680,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(45));
+    expect(result.Flags).to.equalBigInt(getBigInt(43));
 
   });
 
@@ -707,7 +693,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(46));
+    expect(result.Flags).to.equalBigInt(getBigInt(44));
 
   });
 
@@ -720,7 +706,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(47));
+    expect(result.Flags).to.equalBigInt(getBigInt(45));
 
   });
 
@@ -733,7 +719,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(48));
+    expect(result.Flags).to.equalBigInt(getBigInt(46));
 
   });
 
@@ -746,7 +732,7 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(49));
+    expect(result.Flags).to.equalBigInt(getBigInt(47));
 
   });
 
@@ -759,9 +745,38 @@ describe('check single validation errors', () => {
     const result = checkValidationRules(row);
 
     expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(50));
+    expect(result.Flags).to.equalBigInt(getBigInt(48));
 
   });
+
+  //Special
+
+  it('should have ObjectType = Einfamilienhaus and Format of VolumeOfBuilding ≠ Number(6)', () => {
+
+    const row = Object.assign({}, Row);
+    row.objecttype="1";
+    row.volumeofbuilding = "aaa";
+  
+    const result = checkValidationRules(row);
+    console.log(result);
+    expect(result.ViolatedRules.length).to.equal(1);
+    expect(result.Flags).to.equalBigInt(getBigInt(19));
+
+  });
+
+  it('should have ObjectType = Eigentumswohnung and Format of NetLivingArea ≠ Number(6)', () => {
+
+    const row = Object.assign({}, Row);
+    row.objecttype="2";
+    row.netlivingarea = "-98";
+  
+    const result = checkValidationRules(row);
+
+    expect(result.ViolatedRules.length).to.equal(1);
+    expect(result.Flags).to.equalBigInt(getBigInt(26));
+
+  });
+
 
 });
 

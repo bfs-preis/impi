@@ -169,9 +169,9 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: true
     },
     {
-        Id: 27, Message: "ObjectType = Eigentumswohnung and Format of NetLivingArea ≠ Number(4)", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 27, Message: "ObjectType = Eigentumswohnung and Format of NetLivingArea ≠ Number(6)", ValCode: (row: IBankDataCsv): boolean => {
             if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.netlivingarea.length == 0) return true;
-            return !(Number(row.objecttype) == 2 && (Number(row.netlivingarea) > 9999 || Number(row.netlivingarea) <= 0 || !isNumeric(row.netlivingarea)));
+            return !(Number(row.objecttype) == 2 && (Number(row.netlivingarea) > 999999 || !isNumeric(row.netlivingarea)));
         }, RedFlag: true
     },
     {
@@ -211,7 +211,7 @@ export const ValidationRules: IValidationRule[] = [
     {
         Id: 34, Message: "NumberOfRooms Format ≠ Number(2,1)", ValCode: (row: IBankDataCsv): boolean => {
             if (row.numberofrooms.length === 0) return true;
-            return !(!isNumeric(row.numberofrooms) || Number(row.numberofrooms) < 1 || Number(row.numberofrooms) > 99);
+            return !(!isNumeric(row.numberofrooms) || Number(row.numberofrooms) < 0 || Number(row.numberofrooms) > 99);
         }, RedFlag: false
     },
     {
