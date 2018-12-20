@@ -1,6 +1,6 @@
 {
   "name": "impi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "author": "Adrian Bähler <adrian.baehler@softrain.ch>",
   "license": "MIT",
