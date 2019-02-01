@@ -35,15 +35,16 @@ export class Main {
   }
 
   private static startElectron() {
-    this.setSettings();
-
-    log.debug(settings.get("AppSettings"));
-    log.debug("Log File:" + log.transports.file.file);
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
+      this.setSettings();
+
+      log.debug(settings.get("AppSettings"));
+      log.debug("Log File:" + log.transports.file.file);
+
       this.createWindows();
     });
 
@@ -223,8 +224,8 @@ export class Main {
         OutDirectory: __dirname,
         Theme: "Light",
         Language: "en",
-        SedexSenderId:"",
-        ShowRedFlags:false
+        SedexSenderId: "",
+        ShowRedFlags: false
       });
       log.debug("Default AppSettings set");
     }
