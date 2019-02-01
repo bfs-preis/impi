@@ -1,6 +1,6 @@
 {
   "name": "impi-types",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
     "prebuild": "npm run clean",
     "build": "yarn && tsc",
     "bump": "npm version patch",
-    "tsc":"tsc"
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "typescript": "^2.6.1"
   }
 }
