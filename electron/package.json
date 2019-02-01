@@ -1,7 +1,7 @@
 {
     "name": "impi",
     "productName": "IMPI",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "IMPI Data enrichment tool",
     "main": "app/index.js",
     "scripts": {
