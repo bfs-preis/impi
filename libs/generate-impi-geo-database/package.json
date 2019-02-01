@@ -1,6 +1,6 @@
 {
   "name": "generate-impi-geo-database",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "description": "generate the IMPI sqlite3 db from csv files",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,8 +29,8 @@
     "commander": "^2.11.0",
     "csv-parse": "^2.0.0",
     "iconv-lite": "^0.4.19",
-    "normalize-street": "file:../normalize-street",
     "normalize-city": "file:../normalize-city",
+    "normalize-street": "file:../normalize-street",
     "ora": "^2.1.0",
     "winston": "^2.4.0"
   },
