@@ -1,6 +1,6 @@
 {
   "name": "normalize-street",
-  "version": "1.0.6",
+  "version": "1.0.2",
   "description": "function for normalizing street name",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -10,7 +10,7 @@
     "build": "yarn run tsc",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "bump": "npm version patch",
-    "tsc":"tsc"
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,9 @@
     "@types/node": "^8.0.47",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
-    "typescript": "^2.5.3",
-	"rimraf": "^2.6.2"
+    "typescript": "^2.5.3"
   },
   "dependencies": {}
 }
