@@ -28,9 +28,10 @@
             "files": [
                 "!src/"
             ],
-            "appImage": {
-                "systemIntegration": "doNotAsk"
-            }
+            "target":"AppImage"  
+        },
+        "appImage": {
+            "systemIntegration": "doNotAsk"
         }
     },
     "dependencies": {
