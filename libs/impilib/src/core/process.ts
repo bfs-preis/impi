@@ -95,11 +95,16 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         geodb.close();
         result.EndTime = +new Date();
         result.Error = err;
-        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
-            .then(() => {
-                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
-                return callback(result);
-            });
+        try {
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
+                .then(() => {
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName).then(() => {
+                        return callback(result);
+                    });
+                });
+        } catch{
+
+        }
     };
 
     let inputStream = fs.createReadStream(options.InputCsvFile, { encoding: 'binary' });
@@ -160,8 +165,9 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         result.EndTime = +new Date();
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
             .then(() => {
-                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
-                callback(result);
+                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName).then(() => {
+                    callback(result);
+                });
             });
     });
 
@@ -315,10 +321,12 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
     });
 }
 
-function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
+async function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): Promise<void> {
     let xml = createSedexEnvelope(sedexSenderId);
     let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), { encoding: "utf8" });
     outputStream.write(xml);
-    outputStream.end();
-    outputStream.close();
+    outputStream.on("end", function () {
+        outputStream.end();
+        outputStream.close();
+    });
 }
