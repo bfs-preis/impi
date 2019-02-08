@@ -98,12 +98,12 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         try {
             writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
                 .then(() => {
-                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName).then(() => {
-                        return callback(result);
-                    });
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                    return callback(result);
                 });
-        } catch{
-
+        } catch (error) {
+            console.log(error);
+            return callback(result);
         }
     };
 
@@ -165,9 +165,8 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         result.EndTime = +new Date();
         writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
             .then(() => {
-                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName).then(() => {
-                    callback(result);
-                });
+                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                callback(result);
             });
     });
 
@@ -321,12 +320,8 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
     });
 }
 
-async function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): Promise<void> {
+function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
+
     let xml = createSedexEnvelope(sedexSenderId);
-    let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), { encoding: "utf8" });
-    outputStream.write(xml);
-    outputStream.on("end", function () {
-        outputStream.end();
-        outputStream.close();
-    });
+    fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });
 }

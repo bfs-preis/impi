@@ -3171,7 +3171,7 @@ img-stats@^0.5.2:
     xmldom "^0.1.19"
 
 "impilib@file:../../libs/impilib":
-  version "1.0.5"
+  version "1.0.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -3179,13 +3179,14 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v3/npm-impilib-1.0.5-f5f431e2-4d20-4bd4-80b5-c959adf8b845-1542813092903/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v3/npm-impilib-1.0.5-f5f431e2-4d20-4bd4-80b5-c959adf8b845-1542813092903/node_modules/normalize-street"
+    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.2-1cf9d01e-0fbb-453f-921e-4304672deeb3-1549623817070/node_modules/normalize-city"
+    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.2-1cf9d01e-0fbb-453f-921e-4304672deeb3-1549623817070/node_modules/normalize-street"
     rxjs "^5.4.2"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
-    xmlbuilder "^9.0.1"
+    uuid "^3.3.2"
+    xmlbuilder "10.1.1"
     xmlreader "^0.2.3"
 
 import-local@^0.1.1:
@@ -4575,7 +4576,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../../libs/normalize-city":
-  version "1.0.0"
+  version "1.0.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -4598,7 +4599,7 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
 "normalize-street@file:../../libs/normalize-street":
-  version "1.0.5"
+  version "1.0.2"
 
 normalize-url@^1.4.0:
   version "1.9.1"
@@ -7016,7 +7017,7 @@ uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0:
+uuid@^3.0.0, uuid@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
@@ -7318,7 +7319,12 @@ xml2js@^0.4.17:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
 
-xmlbuilder@>=1.0.0, xmlbuilder@^9.0.1, xmlbuilder@~9.0.1:
+xmlbuilder@10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.1.1.tgz#8cae6688cc9b38d850b7c8d3c0a4161dcaf475b0"
+  integrity sha512-OyzrcFLL/nb6fMGHbiRDuPup9ljBycsdCypwuyg5AAHvyWzGfChJpCXMG88AGTIMFhGZ9RccFN1e6lhg3hkwKg==
+
+xmlbuilder@>=1.0.0, xmlbuilder@~9.0.1:
   version "9.0.4"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.4.tgz#519cb4ca686d005a8420d3496f3f0caeecca580f"
 
