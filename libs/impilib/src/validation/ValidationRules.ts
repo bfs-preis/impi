@@ -292,6 +292,17 @@ export const ValidationRules: IValidationRule[] = [
             return !(!isNumeric(row.owneroccupiedorrented) || Number(row.owneroccupiedorrented) < 1 || Number(row.owneroccupiedorrented) > 2);
         }, RedFlag: false
     },
+    {
+        Id: 49, Message: "StandardOfVolume is missing", ValCode: (row: IBankDataCsv): boolean => {
+            return !(row.standardofvolume.length === 0);
+        }, RedFlag: false
+    },
+    {
+        Id: 50, Message: "StandardOfVolume ≠ GVA, SIA416 or SIA116", ValCode: (row: IBankDataCsv): boolean => {
+            if (row.standardofvolume.length === 0) return true;
+            return !(!isNumeric(row.standardofvolume) || Number(row.standardofvolume) > 3 || Number(row.standardofvolume) < 1);
+        }, RedFlag: false
+    },
 
 
 ];
