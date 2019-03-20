@@ -63,6 +63,7 @@ export const BuildingsTable: ITableDefinition = {
         { Name: "street_number", Type: "TEXT" },
         { Name: "zip_code", Type: "INTEGER" },
         { Name: "community", Type: "TEXT" },
+        { Name: "designation_of_building", Type: "TEXT" },
         { Name: "canton", Type: "INTEGER" },
         { Name: "major_statistical_region", Type: "INTEGER" },
         { Name: "community_type", Type: "INTEGER" },

@@ -6,7 +6,7 @@
     CenterCommunities:
         ZipCode;Community;EGID
     Buildings:
-        EGID;Street;StreetNumber;ZipCode;Community;Canton;MajorStatisticalRegion;CommunityType;SecondAppartementQuota;TaxBurden;TravelTimeToCenters;PublicTransportQuality;NoiseExposure;Slope;Exposure;LakeView;MountainView;DistanceToLakes;DistanceToRivers;DistanceToHighVoltagePowerLines;YearOfConstruction
+        EGID;Street;StreetNumber;ZipCode;Community;DesignationOfBuilding;Canton;MajorStatisticalRegion;CommunityType;SecondAppartementQuota;TaxBurden;TravelTimeToCenters;PublicTransportQuality;NoiseExposure;Slope;Exposure;LakeView;MountainView;DistanceToLakes;DistanceToRivers;DistanceToHighVoltagePowerLines;YearOfConstruction
     AdditionalPLZ:
         Orginal;Alternativ
  
