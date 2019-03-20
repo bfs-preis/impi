@@ -42,6 +42,18 @@ export class GeoDatabase {
         });
     }
 
+    kFactorCheckAsync():Promise<boolean>{
+        return new Promise((resolve,reject)=>{
+            this.kFactorCheck((check,error)=>{
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(<boolean>check);
+            });
+        });
+    }
+
     kFactorCheck(callback: (check: boolean | null, err: Error | null) => void): void {
         let sqlQuery = `SELECT 
                     (SELECT COUNT(CAT_BAU) FROM (

@@ -29,7 +29,7 @@
             <mat-icon color="warn" *ngIf="!this._isValid" [matTooltip]="this._error" matTooltipPosition="right">error</mat-icon>
         </div>
         <div style="position:absolute;right:5px;top:5px">
-            <button mat-mini-fab color="accent" class="miniButton" [matTooltip]="'Db.KFactor' | translate" [disabled]="!this._isValid" (click)="checkKFactor()">K</button>
+            <button mat-mini-fab color="accent" class="miniButton" [matTooltip]="'Db.KFactor' | translate" [disabled]="!this._isValid || disabled" (click)="checkKFactor()">K</button>
         </div>
         <!--<div class="loading-indicator">
             <mat-progress-spinner mode="indeterminate" color="accent" diameter="50"></mat-progress-spinner>

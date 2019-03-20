@@ -1,6 +1,6 @@
 {
   "name": "impi",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "index.js",
   "author": "Adrian Bähler <adrian.baehler@softrain.ch>",
   "license": "MIT",
@@ -17,6 +17,6 @@
     "release-linux": "node ./scripts/release_linux.js"
   },
   "devDependencies": {
-    "projecto": "^1.0.12"
+    "projecto": "^1.0.13"
   }
 }

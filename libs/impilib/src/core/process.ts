@@ -4,7 +4,6 @@ import * as iconv from 'iconv-lite';
 import * as transform from 'stream-transform';
 import * as parse from 'csv-parse';
 import * as stringify from 'csv-stringify';
-import * as bigInt from 'big-integer';
 import * as moment from 'moment';
 import * as archiver from 'archiver';
 
@@ -96,9 +95,16 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         geodb.close();
         result.EndTime = +new Date();
         result.Error = err;
-        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
-        writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
-        return callback(result);
+        try {
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
+                .then(() => {
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                    return callback(result);
+                });
+        } catch (error) {
+            console.log(error);
+            return callback(result);
+        }
     };
 
     let inputStream = fs.createReadStream(options.InputCsvFile, { encoding: 'binary' });
@@ -157,9 +163,11 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
     outputStream.on('finish', function () {
         geodb.close();
         result.EndTime = +new Date();
-        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result));
-        writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
-        callback(result);
+        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
+            .then(() => {
+                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                callback(result);
+            });
     });
 
     //Process
@@ -183,7 +191,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         }
     }
 
-    
+
     //Validate
     let result: ICheckValidationRuleResult = checkValidationRules(record as IBankDataCsv);
 
@@ -209,7 +217,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
             outRecord[k] = record[k];
         }
         //Translate yearofconstruction to nomenclatur
-        if (k === 'yearofconstruction') {   
+        if (k === 'yearofconstruction') {
             let year: number = isNaN(+record[k]) ? 0 : +record[k];
             if (year > 0) {
                 if (year < 1919) {
@@ -251,7 +259,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
             //Copy Values
             for (let k in record) {
 
-                if (k.replace(/_/g, "")==='yearofconstruction') continue; // dont copy yearofconstruction from gwr, always take bank data
+                if (k.replace(/_/g, "") === 'yearofconstruction') continue; // dont copy yearofconstruction from gwr, always take bank data
 
                 if (outRecord.hasOwnProperty(k.replace(/_/g, ""))) {
                     outRecord[k.replace(/_/g, "")] = record[k];
@@ -265,51 +273,55 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     });
 }
 
-function writeZipFile(outputPath: string, fileName: String, log: string, smallLog: string): void {
+function writeZipFile(outputPath: string, fileName: String, log: string, smallLog: string): Promise<any> {
 
-    let zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
+    return new Promise((resolve, reject) => {
+        let zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
 
-    let archive = archiver('zip', {
-        zlib: { level: 9 } // Sets the compression level.
-    });
+        let archive = archiver('zip', {
+            zlib: { level: 9 } // Sets the compression level.
+        });
 
-    archive.on('warning', function (err) {
-        if (err.code === 'ENOENT') {
-            // log warning
+
+        zipOutputStream.on('close', function () {
+
+            if (fs.existsSync(path.join(outputPath, fileName + ".csv")))
+                fs.unlinkSync(path.join(outputPath, fileName + ".csv"));
+            resolve();
+        });
+
+        archive.on('warning', function (err) {
+            if (err.code === 'ENOENT') {
+                // log warning
+                console.log(err);
+            } else {
+                // throw error
+                console.log(err);
+                reject(err);
+            }
+        });
+
+        // good practice to catch this error explicitly
+        archive.on('error', function (err) {
             console.log(err);
-        } else {
-            // throw error
-            console.log(err);
-            throw err;
+            reject(err);
+        });
+
+        archive.pipe(zipOutputStream);
+        if (fs.existsSync(path.join(outputPath, fileName + ".csv"))) {
+            archive.append(fs.createReadStream(path.join(outputPath, fileName + ".csv")), { name: (fileName + ".csv") });
         }
+
+        archive.append(log, { name: (fileName + ".xml") });
+        archive.append(smallLog, { name: (fileName + "_small.xml") });
+
+
+        archive.finalize();
     });
-
-    // good practice to catch this error explicitly
-    archive.on('error', function (err) {
-        console.log(err);
-        throw err;
-    });
-
-    archive.pipe(zipOutputStream);
-    if (fs.existsSync(path.join(outputPath, fileName + ".csv"))) {
-        archive.append(fs.createReadStream(path.join(outputPath, fileName + ".csv")), { name: (fileName + ".csv") });
-    }
-
-
-    archive.append(log, { name: (fileName + ".xml") });
-    archive.append(smallLog, { name: (fileName + "_small.xml") });
-
-
-    archive.finalize();
-
-    if (fs.existsSync(path.join(outputPath, fileName + ".csv")))
-        fs.unlinkSync(path.join(outputPath, fileName + ".csv"));
 }
 
 function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
+
     let xml = createSedexEnvelope(sedexSenderId);
-    let outputStream = fs.createWriteStream(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), { encoding: "utf8" });
-    outputStream.write(xml);
-    outputStream.end();
-    outputStream.close();
+    fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });
 }

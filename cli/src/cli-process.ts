@@ -1,19 +1,17 @@
-import { processFile, IProcessResult, IProcessOption, IDbInfo, GeoDatabase } from 'impilib';
-import * as log from 'electron-log';
-import { ICommandLine, CommandEnum } from './command-line';
-import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from '../validation/input-validation';
+import { processFile, IProcessResult, IProcessOption, GeoDatabase } from 'impilib';
+
+import { ICommandLine } from './command-line';
+import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from './input-validation';
 const ora = require('ora');
 const colors = require('colors/safe');
 
 export async function CliProcess(commandLine: ICommandLine): Promise<number> {
 
-    if (commandLine.Command != CommandEnum.Cli) throw new Error("Only Cli Command allowed in here");
-
     const top_start = Date.now();
 
     let handleError = (error: any) => {
         spinners[currentSpinnerIndex].spinner.fail(spinners[currentSpinnerIndex].spinner.text + " " + error);
-        log.error(error);
+        console.error(error);
     }
 
     var spinners = [

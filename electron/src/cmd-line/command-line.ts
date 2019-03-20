@@ -22,6 +22,7 @@ export interface ICommandLine {
     Development: boolean;
     SedexSenderId:string;
     AllValidationErrors:boolean;
+    KFactorTest:boolean;
 }
 
 function parseCommandLine(): ICommandLine {
@@ -137,6 +138,11 @@ function parseCommandLine(): ICommandLine {
                 describe: "the sedex sender id used in the envelope",
                 type: "string",
                 default: ""
+            }).option("kfactor", {
+                alias: "kf",
+                type: "boolean",
+                default:"false",
+                describe: "executes k factor test"
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -150,7 +156,8 @@ function parseCommandLine(): ICommandLine {
                 CSVEncoding: args.csvencoding,
                 CSVSeparator: args.csvseparator,
                 SedexSenderId:args.sedexsenderid,
-                AllValidationErrors:args.showallValErrors || false
+                AllValidationErrors:args.showallValErrors || false,
+                KFactorTest:args.kfactor || false
             } as ICommandLine;
         })
         .option("loglevel", {

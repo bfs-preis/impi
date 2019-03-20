@@ -13,6 +13,7 @@ export interface IBankDataCsv {
     yearofconstruction: string;
     landarea: string;
     volumeofbuilding: string;
+    standardofvolume: string;
     netlivingarea: string;
     numberofrooms: string;
     numberofbathrooms: string;
@@ -36,6 +37,7 @@ export class BankDataCsv implements IBankDataCsv{
     yearofconstruction: string="";
     landarea: string="";
     volumeofbuilding: string="";
+    standardofvolume: string="";
     netlivingarea: string="";
     numberofrooms: string="";
     numberofbathrooms: string="";
