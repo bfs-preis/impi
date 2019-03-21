@@ -144,6 +144,7 @@ describe('simple matching tests', () => {
             street: splited[0],
             streetnumber: splited[1],
             zipcode: splited[2],
+            standardofvolume:"",
             condominiumtype: "",
             constructionquality: "",
             landarea: "",

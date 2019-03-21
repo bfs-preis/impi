@@ -4,6 +4,7 @@ export interface IBuildingRecord {
     street_number: string,
     zip_code: number,
     community:string,
+    designation_of_building:string,
     canton: number,
     major_statistical_region: number,
     community_type: number,

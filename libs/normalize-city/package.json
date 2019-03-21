@@ -1,6 +1,6 @@
 {
   "name": "normalize-city",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "function for normalizing city name",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
