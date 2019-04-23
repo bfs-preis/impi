@@ -191,6 +191,8 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         }
     }
 
+    //ToDo Mappings
+
 
     //Validate
     let result: ICheckValidationRuleResult = checkValidationRules(record as IBankDataCsv);

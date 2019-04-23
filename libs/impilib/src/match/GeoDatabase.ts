@@ -42,9 +42,9 @@ export class GeoDatabase {
         });
     }
 
-    kFactorCheckAsync():Promise<boolean>{
-        return new Promise((resolve,reject)=>{
-            this.kFactorCheck((check,error)=>{
+    kFactorCheckAsync(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.kFactorCheck((check, error) => {
                 if (error) {
                     reject(error);
                     return;
@@ -119,6 +119,31 @@ export class GeoDatabase {
             }
             else {
                 return callback(null, rows);
+            }
+        });
+    }
+
+    searchDesignationOfBuilding(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
+        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE DESIGNATION_OF_BUILDING=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: any) => {
+            if (err) {
+                return callback(err, null);
+            }
+            else if (rows && rows.length > 0) {
+                if (rows.length > 1) {
+                    if (community) {
+                        for (let row of rows) {
+                            if (row.community === community) {
+                                return callback(null, row);
+                            }
+                        }
+                    }
+                    return callback(null, null);
+                } else {
+                    return callback(null, rows[0]);
+                }
+            }
+            else {
+                return callback(null, null);
             }
         });
     }

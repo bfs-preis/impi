@@ -6,10 +6,12 @@ import { normalizeCity } from 'normalize-city';
 
 export enum MatchingTypeEnum {
     PointMatching = 0,
-    CenterStreetMatching = 1,
-    CenterCommunitiesMatching = 2,
-    NoMatching = 3,
-    NoMatchingWithError = 4
+    DesignationMatching = 1,
+    CenterStreetMatching = 2,
+    CenterCommunitiesMatching = 3,
+    NoMatching = 4,
+    NoMatchingWithError = 5
+
 }
 
 export function match(
@@ -61,24 +63,34 @@ export function match(
                 return callback(row, null, MatchingTypeEnum.PointMatching);
             }
             else {
-                _searchCenterStreet(geoDatabase, nStreet, zipcode, nCommunity)
-                    .then((center_row) => {
-                        if (center_row) {
-                            return callback(center_row, null, MatchingTypeEnum.CenterStreetMatching);
-                        } else {
-                            _searchCenterCommunities(geoDatabase, zipcode, nCommunity)
-                                .then((row) => {
-                                    if (row)
-                                        return callback(row, null, MatchingTypeEnum.CenterCommunitiesMatching);
-                                    else
-                                        return callback(null, null, MatchingTypeEnum.NoMatching);
+                _searchDesignationOfBuilding(geoDatabase, nStreet, zipcode, nCommunity)
+                    .then((row) => {
+                        if (row) {
+                            return callback(row, null, MatchingTypeEnum.DesignationMatching);
+                        }
+                        else {
+                            _searchCenterStreet(geoDatabase, nStreet, zipcode, nCommunity)
+                                .then((center_row) => {
+                                    if (center_row) {
+                                        return callback(center_row, null, MatchingTypeEnum.CenterStreetMatching);
+                                    } else {
+                                        _searchCenterCommunities(geoDatabase, zipcode, nCommunity)
+                                            .then((row) => {
+                                                if (row)
+                                                    return callback(row, null, MatchingTypeEnum.CenterCommunitiesMatching);
+                                                else
+                                                    return callback(null, null, MatchingTypeEnum.NoMatching);
+                                            })
+                                            .catch((error) => {
+                                                return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
+                                            });
+                                    }
                                 })
                                 .catch((error) => {
                                     return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
                                 });
                         }
-                    })
-                    .catch((error) => {
+                    }).catch((error) => {
                         return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
                     });
             }
@@ -146,6 +158,23 @@ function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: 
     });
 }
 
+function _searchDesignationOfBuilding(geoDatabase: GeoDatabase, street: string, zipcode: number, communitiy: string | null): Promise<IBuildingRecord | null> {
+    return new Promise((resolve, reject) => {
+        geoDatabase.searchDesignationOfBuilding(street, zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            if (row) {
+                resolve(row);
+                return;
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
 function _searchCenterCommunities(geoDatabase: GeoDatabase, zipcode: number, communitiy: string | null): Promise<IBuildingRecord | null> {
     return new Promise((resolve, reject) => {
         geoDatabase.searchCenterCommunities(zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
@@ -166,7 +195,7 @@ function _searchCenterCommunities(geoDatabase: GeoDatabase, zipcode: number, com
                         resolve(row);
                         return;
                     }
-                    else{
+                    else {
                         resolve(null);
                     }
                 });
@@ -185,8 +214,8 @@ function _searchCenterStreet(geoDatabase: GeoDatabase, street: string, zipcode: 
             if (row) {
                 resolve(row);
                 return;
-            }else{
-                geoDatabase.searchCenterStreetWithMappings(street,zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
+            } else {
+                geoDatabase.searchCenterStreetWithMappings(street, zipcode, communitiy, (err: Error | null, row: IBuildingRecord | null) => {
                     if (err) {
                         reject(err);
                         return;
@@ -195,7 +224,7 @@ function _searchCenterStreet(geoDatabase: GeoDatabase, street: string, zipcode: 
                         resolve(row);
                         return;
                     }
-                    else{
+                    else {
                         resolve(null);
                     }
                 });
