@@ -95,6 +95,12 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 array[i] = nStreet;
             }
 
+            if (record.designationofbuilding != undefined) {
+                let ndesignationofbuilding = normalizeStreet(record.designationofbuilding);
+                let i = def.Fields.map((t) => t.Name).indexOf("designationofbuilding");
+                array[i] = ndesignationofbuilding;
+            }
+
             if (record.community != undefined) {
                 let nCommunity = normalizeCity(record.community);
                 let i = def.Fields.map((t) => t.Name).indexOf("community");
