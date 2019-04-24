@@ -81,7 +81,8 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
             CsvSeparator: commandLine.CSVSeparator,
             InputCsvFile: commandLine.CSVFile,
             OutputPath: commandLine.OutputDir,
-            SedexSenderId:commandLine.SedexSenderId
+            SedexSenderId:commandLine.SedexSenderId,
+            MappingFile:commandLine.MappingFile
         };
 
         var start = Date.now();

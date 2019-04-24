@@ -37,6 +37,7 @@ export function registerAnonMessages() {
         processOptions.DatabaseFile = appSettings.DBFile;
         processOptions.OutputPath = appSettings.OutDirectory;
         processOptions.SedexSenderId=appSettings.SedexSenderId;
+        processOptions.MappingFile=appSettings.MappingFile
 
         log.debug('send background-start:' + JSON.stringify(processOptions));
         Main.GetBackgroundWindow().webContents.send('background-start', processOptions);

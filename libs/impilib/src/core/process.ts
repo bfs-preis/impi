@@ -27,6 +27,7 @@ export interface IProcessOption {
     DbPeriodTo: number;
     CsvRowCount: number;
     SedexSenderId: string;
+    MappingFile: string;
 }
 
 export interface IProcessResult {
@@ -107,6 +108,18 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
         }
     };
 
+    //Load Mapping File
+    let mappingObj = {};
+    if (options.MappingFile && fs.existsSync(options.MappingFile)) {
+        fs.readFile(options.MappingFile, 'utf8', function (err, data) {
+            if (err) {
+                console.log(err);
+                handlingError(err);
+            }
+            mappingObj = JSON.parse(data);
+        });
+    }
+
     let inputStream = fs.createReadStream(options.InputCsvFile, { encoding: 'binary' });
     inputStream.on('error', function (err: Error) {
         handlingError(err);
@@ -132,7 +145,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
     //Transformer
     let rowNumber = 1;
     let transformer = transform((record: any, callback: (err: Error | null, data: any) => void) => {
-        myTransform(record, callback, result, rowNumber, geodb);
+        myTransform(record, callback, result, rowNumber, geodb, mappingObj);
         rowNumber++;
     }, { parallel: 1 });
 
@@ -181,7 +194,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
 }
 
 // tslint:disable-next-line:max-line-length
-function myTransform(record: any, callback: (err: Error | null, data: any) => void, processResult: IProcessResult, rowNumber: number, geodb: GeoDatabase) {
+function myTransform(record: any, callback: (err: Error | null, data: any) => void, processResult: IProcessResult, rowNumber: number, geodb: GeoDatabase, mappingObject: any) {
 
     //Check headers
     if (rowNumber === 1) {
@@ -191,8 +204,19 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         }
     }
 
-    //ToDo Mappings
-
+    //Mappings
+    if (mappingObject.Mappings) {
+        for (let p of Object.getOwnPropertyNames(mappingObject.Mappings)) {
+            if (record[p]) {
+                for (let pr of Object.getOwnPropertyNames(mappingObject.Mappings[p])) {
+                    if (pr === record[p]) {
+                        record[p] = mappingObject.Mappings[p][pr];
+                        console.log("mapped");
+                    }
+                }
+            }
+        }
+    }
 
     //Validate
     let result: ICheckValidationRuleResult = checkValidationRules(record as IBankDataCsv);

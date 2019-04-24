@@ -225,7 +225,8 @@ export class Main {
         Theme: "Light",
         Language: "en",
         SedexSenderId: "",
-        ShowRedFlags: false
+        ShowRedFlags: false,
+        MappingFile:"mapping.json"
       });
       log.debug("Default AppSettings set");
     }
@@ -254,6 +255,9 @@ export class Main {
       }
       if (CommandLineCommand.SedexSenderId.length > 0) {
         settings.set("AppSettings.SedexSenderId", CommandLineCommand.SedexSenderId);
+      }
+      if (CommandLineCommand.MappingFile.length > 0) {
+        settings.set("AppSettings.MappingFile", CommandLineCommand.MappingFile);
       }
     }
   }

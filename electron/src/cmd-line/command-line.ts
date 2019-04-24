@@ -23,6 +23,7 @@ export interface ICommandLine {
     SedexSenderId:string;
     AllValidationErrors:boolean;
     KFactorTest:boolean;
+    MappingFile:string;
 }
 
 function parseCommandLine(): ICommandLine {
@@ -89,6 +90,11 @@ function parseCommandLine(): ICommandLine {
                 describe: "the sedex sender id used in the envelope",
                 type: "string",
                 default: ""
+            }).option("mappingfile", {
+                alias: "mf",
+                describe: "the mapping File",
+                type: "string",
+                default:"mapping.json"
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -104,7 +110,8 @@ function parseCommandLine(): ICommandLine {
                 CSVEncoding: args.csvencoding,
                 CSVSeparator: args.csvseparator,
                 SedexSenderId:args.sedexsenderid,
-                AllValidationErrors:args.showallValErrors || false
+                AllValidationErrors:args.showallValErrors || false,
+                MappingFile:args.mappingfile
             } as ICommandLine;
         })
         .command(["cli"], "Starts Impi in Commandline Mode", (yargs: Argv) => {
@@ -143,6 +150,11 @@ function parseCommandLine(): ICommandLine {
                 type: "boolean",
                 default:"false",
                 describe: "executes k factor test"
+            }).option("mappingfile", {
+                alias: "mf",
+                describe: "the mapping File",
+                type: "string",
+                default:"mapping.json"
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -157,7 +169,8 @@ function parseCommandLine(): ICommandLine {
                 CSVSeparator: args.csvseparator,
                 SedexSenderId:args.sedexsenderid,
                 AllValidationErrors:args.showallValErrors || false,
-                KFactorTest:args.kfactor || false
+                KFactorTest:args.kfactor || false,
+                MappingFile:args.mappingfile
             } as ICommandLine;
         })
         .option("loglevel", {

@@ -22,27 +22,27 @@ export function readResultZipFile(file: string, callback: (result: IProcessResul
                 streamToString(entry, (data: string) => {
                     xmlreader.read(data, function (err, res) {
                         let matchsummary: number[] = [];
-                        res.Log.Matches.at(0).Match.each((c,m) => {
+                        res.Log.Matches.at(0).Match.each((c, m) => {
                             matchsummary.push(m.attributes().Count);
-                        })
-               
+                        });
+
                         let validations: IViolation[] = [];
-                        res.Log.Violations.at(0).Rule.each((c,r) => {
-                            let rows:number[]=[];
+                        res.Log.Violations.at(0).Rule.each((c, r) => {
+                            let rows: number[] = [];
                             if (r.Row)
-                                r.Row.each((c,row) => rows.push(row.text()));
+                                r.Row.each((c, row) => rows.push(row.text()));
                             validations.push(
                                 {
                                     Id: r.attributes().Id,
                                     Text: r.attributes().Text,
                                     Rows: rows,
-                                    RedFlag:(r.attributes().RedFlag==='true')
+                                    RedFlag: (r.attributes().RedFlag === 'true')
                                 } as IViolation);
                         })
 
-                        callback( {
-                            StartTime: moment(res.Log.Meta.at(0).attributes().StartTime,"DD.MM.YYYY HH:mm:ss").valueOf(),
-                            EndTime: moment(res.Log.Meta.at(0).attributes().EndTime,"DD.MM.YYYY HH:mm:ss").valueOf(),
+                        callback({
+                            StartTime: moment(res.Log.Meta.at(0).attributes().StartTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
+                            EndTime: moment(res.Log.Meta.at(0).attributes().EndTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
                             Error: res.Log.Exception ? res.Log.Exception.at(0).text() : null,
                             MatchSummary: matchsummary,
                             Options: {
@@ -50,11 +50,12 @@ export function readResultZipFile(file: string, callback: (result: IProcessResul
                                 CsvRowCount: res.Log.Meta.at(0).attributes().CsvRowCount,
                                 CsvSeparator: res.Log.Meta.at(0).attributes().CsvDelimiter,
                                 DatabaseFile: res.Log.Meta.at(0).attributes().DatabaseFile,
-                                DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom,"DD.MM.YYYY").valueOf(),
-                                DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo,"DD.MM.YYYY").valueOf(),
+                                DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom, "DD.MM.YYYY").valueOf(),
+                                DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo, "DD.MM.YYYY").valueOf(),
                                 DbVersion: res.Log.Meta.at(0).attributes().DbVersion,
                                 InputCsvFile: res.Log.Meta.at(0).attributes().InputCsvFile,
-                                OutputPath: res.Log.Meta.at(0).attributes().OutputPath
+                                OutputPath: res.Log.Meta.at(0).attributes().OutputPath,
+                                MappingFile: res.Log.Meta.at(0).attributes().MappingFile
                             } as IProcessOption,
                             OutZipFile: res.Log.Meta.at(0).attributes().OutZipFile,
 
@@ -111,6 +112,15 @@ function _generateXml(result: IProcessResult, writeRows: boolean = true): any {
 
     let root = xmlbuilder.create('Log', { encoding: 'utf-8' });
 
+    let mappingObj = {};
+    try {
+        if (result.Options.MappingFile && fs.existsSync(result.Options.MappingFile)) {
+            mappingObj = JSON.parse(fs.readFileSync(result.Options.MappingFile, 'utf8'));
+        }
+    } catch{
+        //Do nothing
+    }
+
     root.ele("Meta", {
         "StartTime": moment(result.StartTime).format("DD.MM.YYYY HH:mm:ss"),
         "EndTime": moment(result.EndTime).format("DD.MM.YYYY HH:mm:ss"),
@@ -121,7 +131,9 @@ function _generateXml(result: IProcessResult, writeRows: boolean = true): any {
         "CsvEncoding": result.Options.CsvEncoding,
         "CsvDelimiter": result.Options.CsvSeparator,
         "CsvRowCount": result.Options.CsvRowCount,
-        "OutZipFile": result.OutZipFile
+        "OutZipFile": result.OutZipFile,
+        "MappingFile": result.Options.MappingFile,
+        "MappingFileContent": JSON.stringify(mappingObj)
     });
 
     let violationsElement = root.ele("Violations");
@@ -131,7 +143,7 @@ function _generateXml(result: IProcessResult, writeRows: boolean = true): any {
             "Id": v.Id,
             "Text": v.Text,
             "Count": v.Rows.length,
-            "RedFlag":v.RedFlag
+            "RedFlag": v.RedFlag
         });
         if (writeRows) {
             for (let rows of v.Rows) {

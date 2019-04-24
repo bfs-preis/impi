@@ -12,6 +12,7 @@ export interface ICommandLine {
     LogLevel: string;
     SedexSenderId:string;
     KFactorTest:boolean;
+    MappingFile:string;
 }
 
 function parseCommandLine(): ICommandLine {
@@ -55,6 +56,11 @@ function parseCommandLine(): ICommandLine {
                 type: "boolean",
                 default:"false",
                 describe: "executes k factor test"
+            }).option("mappingfile", {
+                alias: "mf",
+                describe: "the mapping file",
+                type: "string",
+                default: "mapping.json",
             });
         }, (args: yargs.Arguments): void => {
             commandOptions = {
@@ -65,7 +71,8 @@ function parseCommandLine(): ICommandLine {
                 CSVEncoding: args.csvencoding,
                 CSVSeparator: args.csvseparator,
                 SedexSenderId:args.sedexsenderid,       
-                KFactorTest:args.kfactor || false
+                KFactorTest:args.kfactor || false,
+                MappingFile:args.mappingfile
             } as ICommandLine;
         })
         .option("loglevel", {
