@@ -89,25 +89,25 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 return record[dbFieldName];
             });
 
-            if (record.street != undefined) {
+            if (record.street != undefined && record.street.length>0) {
                 let nStreet = normalizeStreet(record.street);
                 let i = def.Fields.map((t) => t.Name).indexOf("street");
                 array[i] = nStreet;
             }
 
-            if (record.designationofbuilding != undefined) {
+            if (record.designationofbuilding != undefined && record.designationofbuilding.length>0) {
                 let ndesignationofbuilding = normalizeStreet(record.designationofbuilding);
-                let i = def.Fields.map((t) => t.Name).indexOf("designationofbuilding");
+                let i = def.Fields.map((t) => t.Name).indexOf("designation_of_building");
                 array[i] = ndesignationofbuilding;
             }
 
-            if (record.community != undefined) {
+            if (record.community != undefined && record.community.length>0) {
                 let nCommunity = normalizeCity(record.community);
                 let i = def.Fields.map((t) => t.Name).indexOf("community");
                 array[i] = nCommunity;
             }
 
-            if (record.streetnumber != undefined) {
+            if (record.streetnumber != undefined && record.streetnumber.length>0) {
                 let nStreetNumner = record.streetnumber.toLowerCase().replace(/ /g, "");
                 let i = def.Fields.map((t) => t.Name).indexOf("street_number");
                 array[i] = nStreetNumner;

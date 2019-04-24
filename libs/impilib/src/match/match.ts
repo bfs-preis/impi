@@ -6,11 +6,10 @@ import { normalizeCity } from 'normalize-city';
 
 export enum MatchingTypeEnum {
     PointMatching = 0,
-    DesignationMatching = 1,
-    CenterStreetMatching = 2,
-    CenterCommunitiesMatching = 3,
-    NoMatching = 4,
-    NoMatchingWithError = 5
+    CenterStreetMatching = 1,
+    CenterCommunitiesMatching = 2,
+    NoMatching = 3,
+    NoMatchingWithError = 4
 
 }
 
@@ -66,7 +65,7 @@ export function match(
                 _searchDesignationOfBuilding(geoDatabase, nStreet, zipcode, nCommunity)
                     .then((row) => {
                         if (row) {
-                            return callback(row, null, MatchingTypeEnum.DesignationMatching);
+                            return callback(row, null, MatchingTypeEnum.PointMatching);
                         }
                         else {
                             _searchCenterStreet(geoDatabase, nStreet, zipcode, nCommunity)
