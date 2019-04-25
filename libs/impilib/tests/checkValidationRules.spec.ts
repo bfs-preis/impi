@@ -61,7 +61,8 @@ describe('check single validation errors', () => {
     transactiondate: "02.02.2017",
     volumeofbuilding: "1",
     yearofconstruction: "1999",
-    zipcode: "3000"
+    zipcode: "3000",
+    standardofvolume:""
   };
 
   it('should have no validation error', () => {

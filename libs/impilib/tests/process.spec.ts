@@ -20,7 +20,8 @@ describe('simple input file', () => {
             DbVersion:"1.0",
             InputCsvFile:"../../test-files/BankData_errors_small.csv",
             OutputPath:"./",
-            SedexSenderId: ''
+            SedexSenderId: '',
+            MappingFile:""
         }
 
         processFile(options,(result=>{

@@ -293,13 +293,13 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: false
     },
     {
-        Id: 49, Message: "StandardOfVolume is missing", ValCode: (row: IBankDataCsv): boolean => {
-            return !(row.standardofvolume.length === 0);
+        Id: 49, Message: "ObjectType = Einfamilienhaus and StandardOfVolume is missing", ValCode: (row: IBankDataCsv): boolean => {
+            return !(row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.standardofvolume.length === 0);
         }, RedFlag: false
     },
     {
-        Id: 50, Message: "StandardOfVolume ≠ GVA, SIA416 or SIA116", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.standardofvolume.length === 0) return true;
+        Id: 50, Message: "ObjectType = Einfamilienhaus and StandardOfVolume ≠ GVA, SIA416 or SIA116", ValCode: (row: IBankDataCsv): boolean => {
+            if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.standardofvolume.length === 0) return true;
             return !(!isNumeric(row.standardofvolume) || Number(row.standardofvolume) > 3 || Number(row.standardofvolume) < 1);
         }, RedFlag: false
     },

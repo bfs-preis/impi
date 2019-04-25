@@ -9,7 +9,7 @@ import { IBuildingRecord } from '../src/types/IBuildingRecord';
 
 describe('simple matching tests', () => {
 
-    let geoDatabase = new GeoDatabase('/vagrant/Data/geodbv8.db', (error) => {
+    let geoDatabase = new GeoDatabase('/vagrant/Data/geodb.db', (error) => {
         console.log(error);
     });
 
