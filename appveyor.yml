@@ -24,7 +24,7 @@ artifacts:
 deploy:
   provider: GitHub
   auth_token:
-    secure: tGHs5BA07AQsDHT0zHThU4UaxEcsi468agSk4IeWrvd5qAhtrFkBx1hvm6xLt9Fu
+    secure: VESVuAVyiNwOfXXB1Oj3/tEsB03dlTwL9Fq6+H1cp6i3QggoQDBul2N83/jUpKyw
   artifact: win32-installer,win32-package
   draft: true
   prerelease: false
