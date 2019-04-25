@@ -152,8 +152,9 @@ export const ValidationRules: IValidationRule[] = [
     },
     {
         Id: 24, Message: "ObjectType = Einfamilienhaus and SingleFamilyHouseType ≠ Freistehend, Doppelhaushälfte, Reiheneckhaus, Reihenmittelhaus, Terrassenhaus, Andere", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.singlefamilyhousetype.length == 0) return true;
-            return !(Number(row.objecttype) == 1 && (!isNumeric(row.singlefamilyhousetype) || Number(row.singlefamilyhousetype) > 6 || Number(row.singlefamilyhousetype) < 1));
+            //if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.singlefamilyhousetype.length == 0) return true;
+            //return !(Number(row.objecttype) == 1 && (!isNumeric(row.singlefamilyhousetype) || Number(row.singlefamilyhousetype) > 6 || Number(row.singlefamilyhousetype) < 1));
+            return true;
         }, RedFlag: false
     },
     {
@@ -182,8 +183,9 @@ export const ValidationRules: IValidationRule[] = [
     },
     {
         Id: 29, Message: "ObjectType = Eigentumswohnung and CondominiumType ≠ Geschosswohnung, Attikawohnung, Gartenwohnung, Loft or Andere", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.condominiumtype.length == 0) return true;
-            return !(Number(row.objecttype) == 2 && (Number(row.condominiumtype) > 5 || Number(row.condominiumtype) < 1 || !isNumeric(row.condominiumtype)));
+            //if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.condominiumtype.length == 0) return true;
+            //return !(Number(row.objecttype) == 2 && (Number(row.condominiumtype) > 5 || Number(row.condominiumtype) < 1 || !isNumeric(row.condominiumtype)));
+            return true;
         }, RedFlag: false
     },
     {
@@ -255,8 +257,9 @@ export const ValidationRules: IValidationRule[] = [
     },
     {
         Id: 42, Message: "ConstructionQuality ≠ schlecht, durchschnittlich, gut or sehr gut", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.constructionquality.length === 0) return true;
-            return !(!isNumeric(row.constructionquality) || Number(row.constructionquality) > 4 || Number(row.constructionquality) < 1);
+            //if (row.constructionquality.length === 0) return true;
+            //return !(!isNumeric(row.constructionquality) || Number(row.constructionquality) > 4 || Number(row.constructionquality) < 1);
+            return true;
         }, RedFlag: false
     },
     {
@@ -266,8 +269,9 @@ export const ValidationRules: IValidationRule[] = [
     },
     {
         Id: 44, Message: "PropertyCondition ≠ schlecht, intakt, saniert or neuwertig", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.propertycondition.length === 0) return true;
-            return !(!isNumeric(row.propertycondition) || Number(row.propertycondition) > 4 || Number(row.propertycondition) < 1);
+            //if (row.propertycondition.length === 0) return true;
+            //return !(!isNumeric(row.propertycondition) || Number(row.propertycondition) > 4 || Number(row.propertycondition) < 1);
+            return true;
         }, RedFlag: false
     },
     {
