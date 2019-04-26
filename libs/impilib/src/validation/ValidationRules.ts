@@ -122,8 +122,8 @@ export const ValidationRules: IValidationRule[] = [
     },
     {
         Id: 19, Message: "ObjectType = Einfamilienhaus and Format of VolumeOfBuilding ≠ Number(6)", ValCode: (row: IBankDataCsv): boolean => {
-            if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.volumeofbuilding.length == 0 || !isNumeric(row.volumeofbuilding)) return true;
-            return !(Number(row.objecttype) == 1 && (Number(row.volumeofbuilding) > 999999));
+            if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.volumeofbuilding.length == 0 ) return true;
+            return !(Number(row.objecttype) == 1 && ((Number(row.volumeofbuilding) > 999999) || !isNumeric(row.volumeofbuilding)));
         }, RedFlag: true
     },
     {
@@ -170,9 +170,9 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: true
     },
     {
-        Id: 27, Message: "ObjectType = Eigentumswohnung and Format of NetLivingArea ≠ Number(6)", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 27, Message: "ObjectType = Eigentumswohnung and Format of NetLivingArea ≠ Number(4)", ValCode: (row: IBankDataCsv): boolean => {
             if (row.objecttype.length === 0 || !isNumeric(row.objecttype) || row.netlivingarea.length == 0) return true;
-            return !(Number(row.objecttype) == 2 && (Number(row.netlivingarea) > 999999 || !isNumeric(row.netlivingarea)));
+            return !(Number(row.objecttype) == 2 && (Number(row.netlivingarea) > 9999 || !isNumeric(row.netlivingarea)));
         }, RedFlag: true
     },
     {
