@@ -62,6 +62,15 @@ describe('default validation tests (' + csvTestfileValidation + ')', () => {
                 console.log(input);
                 console.log(result);
             }
+
+            if (+(row.ValidationNr) > 3) {
+
+                expect(result.ViolatedRules.length == 2);
+                expect(result.ViolatedRules.find((v) => v.Id === 3)).to.not.be.undefined;
+            }else{
+                expect(result.ViolatedRules.length == 1);
+            }
+            
             expect(vr).to.not.be.null;
             expect(vr).to.not.be.undefined;
             done();
