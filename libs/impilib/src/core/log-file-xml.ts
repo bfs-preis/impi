@@ -138,7 +138,7 @@ function _generateXml(result: IProcessResult, writeRows: boolean = true): any {
 
     let violationsElement = root.ele("Violations");
 
-    for (let v of result.Violations) {
+    for (let v of result.Violations.sort((v1,v2)=> v1.Id-v2.Id)) {
         let ruleElement = violationsElement.ele("Rule", {
             "Id": v.Id,
             "Text": v.Text,
