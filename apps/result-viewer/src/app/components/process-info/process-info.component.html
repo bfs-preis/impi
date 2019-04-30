@@ -35,22 +35,22 @@
         </tr>
         <tr>
             <td i18n="label|ProcessInfo DbVersion@@processInfoDbVersion">DbVersion:</td>
-            <td colspan="3">{{result?.Options.DbVersion}}</td>
+            <td colspan="3">{{result?.Meta.DbVersion}}</td>
         </tr>
     </table>
     <table>
         <tr>
             <td i18n="label|ProcessInfo CsvSeparator@@processInfoCsvSeparator">CsvSeparator:</td>
-            <td>{{result?.Options.CsvSeparator}}</td>
+            <td>{{result?.Meta.CsvSeparator}}</td>
 
         </tr>
         <tr>
             <td i18n="label|ProcessInfo CsvEncoding@@processInfoCsvEncoding">CsvEncoding:</td>
-            <td>{{result?.Options.CsvEncoding}}</td>
+            <td>{{result?.Meta.CsvEncoding}}</td>
         </tr>
         <tr>
             <td i18n="label|ProcessInfo CsvRowCount@@processInfoCsvRowCount">CsvRowCount:</td>
-            <td colspan="3">{{result?.Options.CsvRowCount}}</td>
+            <td colspan="3">{{result?.Meta.CsvRowCount}}</td>
         </tr>
     </table>
     <div *ngIf="result?.Error!=null">

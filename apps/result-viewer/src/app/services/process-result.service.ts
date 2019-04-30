@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { IProcessResult, IProcessOption, IViolation } from 'impilib';
+import { ILogResult } from 'impilib';
 
 declare var electron: any;
 const ipcRenderer = electron.ipcRenderer;
@@ -12,10 +12,10 @@ export class ProcessResultService {
 
   }
 
-  GetProcessResult(): Promise<IProcessResult | null> {
+  GetProcessResult(): Promise<ILogResult | null> {
     return new Promise(resolve => {
       ipcRenderer.send("ask-for-process-result", null);
-      ipcRenderer.once("process-result", (event: any, payload: IProcessResult | null) => {
+      ipcRenderer.once("process-result", (event: any, payload: ILogResult | null) => {
         resolve(payload);
       });
     });

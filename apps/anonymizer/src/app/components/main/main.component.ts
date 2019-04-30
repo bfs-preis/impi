@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import * as moment from 'moment';
 
-import { IProcessOption, IProcessResult } from 'impilib';
+import { IProcessOption, ILogResult } from 'impilib';
 
 
 @Component({
@@ -94,7 +94,7 @@ export class MainComponent {
             this._time = +new Date() - backgroundStartTime;
         }, 1000);
 
-        ipcRenderer.once('background-response', (event: any, result: IProcessResult) => {
+        ipcRenderer.once('background-response', (event: any, result: ILogResult) => {
             this.zone.run(() => {
                 //console.log(JSON.stringify(result));
                 this._isProcessing = false;

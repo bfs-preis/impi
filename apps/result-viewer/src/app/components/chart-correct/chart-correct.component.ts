@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { ChartDataSet } from '../shared/charts/charts.component';
-import { IViolation } from 'impilib';
+import { ILogViolation } from 'impilib';
 
 @Component({
   selector: 'app-chart-correct',
@@ -11,11 +11,11 @@ import { IViolation } from 'impilib';
 export class ChartCorrectComponent implements OnInit {
 
   data: ChartDataSet
-  violations: IViolation[];
+  violations: ILogViolation[];
   rowCount: number = 0;
 
   @Input()
-  set Violations(v: IViolation[]) {
+  set Violations(v: ILogViolation[]) {
     this.violations = v;
     this.prepareData();
   }
@@ -36,14 +36,7 @@ export class ChartCorrectComponent implements OnInit {
   prepareData(): void {
     if (!this.violations || this.rowCount==0) return;
 
-    let countValidationErrors=this.violations.map((v)=> v.Rows).reduce(
-      function(accumulator, currentValue) {
-        return accumulator.concat(currentValue);
-      },
-      []
-    ).filter((value, index, self)=>{
-      return self.indexOf(value) === index;
-    }).length;
+    let countValidationErrors=this.violations.reduce((sum, current) => sum + current.Count, 0);
 
     this.data = { Data: [(this.rowCount-1-countValidationErrors), countValidationErrors ], Labels: ["Correct Rows","Rows with Violations"],Colors:["green","red"] } as ChartDataSet;
   }

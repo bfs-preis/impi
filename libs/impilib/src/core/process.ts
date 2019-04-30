@@ -7,7 +7,6 @@ import * as stringify from 'csv-stringify';
 import * as moment from 'moment';
 import * as archiver from 'archiver';
 
-import { LogAsXmlString, SmallLogAsXmlString } from './log-file-xml';
 import { createSedexEnvelope } from './sedex-envelope';
 import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv';
 import { ResultDataCsv } from '../types/ResultDataCsv';
@@ -15,6 +14,8 @@ import { checkValidationRules, ICheckValidationRuleResult } from '../validation/
 import { PeriodeDefinition, IValidationRule, ValidationRules } from '../validation/ValidationRules';
 import { match, MatchingTypeEnum } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
+import { ILogResult, ILogViolation, ILogMeta, ToJson } from './log-file-json';
+import { ILogRow } from '..';
 
 export interface IProcessOption {
     InputCsvFile: string;
@@ -28,23 +29,6 @@ export interface IProcessOption {
     CsvRowCount: number;
     SedexSenderId: string;
     MappingFile: string;
-}
-
-export interface IProcessResult {
-    Violations: IViolation[];
-    MatchSummary: number[];
-    Options: IProcessOption;
-    StartTime: number;
-    EndTime: number;
-    OutZipFile: string,
-    Error: Error | null
-}
-
-export interface IViolation {
-    Id: number;
-    Text: string;
-    RedFlag: boolean;
-    Rows: Array<number>;
 }
 
 function IsBankDataCsvRow(row: any): string[] {
@@ -70,7 +54,7 @@ export function CheckInputFileFormat(headerLine: string, delimiter: string) {
 }
 
 // tslint:disable-next-line:max-line-length
-export function processFile(options: IProcessOption, callback: (result: IProcessResult) => void, rowCallback: (processedRow: number, maxRows: number) => void) {
+export function processFile(options: IProcessOption, callback: (result: ILogResult) => void, rowCallback: (processedRow: number, maxRows: number) => void) {
 
     //Static Data Init
     PeriodeDefinition.PeriodFrom = new Date(options.DbPeriodFrom);
@@ -78,26 +62,37 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
 
     let fileName = "data_" + moment().format("YYYYMMDDHHmmss");
 
-    let violations: IViolation[] = [];
+    let violations: ILogViolation[] = [];
     let matchSummary: number[] = Array.apply(null, Array(Object.keys(MatchingTypeEnum).length / 2)).map(function () { return 0; });
 
-    let result: IProcessResult = {
+    let result: ILogResult = {
         Violations: violations,
         MatchSummary: matchSummary,
-        Options: options,
-        StartTime: +new Date(),
-        EndTime: 0,
-        OutZipFile: path.join(options.OutputPath, fileName + ".zip"),
-        Error: null
+        Meta: {
+            StartTime: +new Date(),
+            EndTime: 0,
+            OutZipFile: path.join(options.OutputPath, fileName + ".zip"),
+            CsvEncoding: options.CsvEncoding,
+            CsvSeparator: options.CsvSeparator,
+            DbPeriodFrom: options.DbPeriodFrom,
+            DbPeriodTo: options.DbPeriodTo,
+            DbVersion: options.DbVersion,
+            SedexSenderId: options.SedexSenderId,
+            MappingFile: options.MappingFile,
+            CsvRowCount: options.CsvRowCount
+        } as ILogMeta,
+        Rows: [] as ILogRow[],
+        Mapping: undefined,
+        Error: undefined
     };
 
     //Error Handline
     let handlingError = (err: Error) => {
         geodb.close();
-        result.EndTime = +new Date();
+        result.Meta.EndTime = +new Date();
         result.Error = err;
         try {
-            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
+            writeZipFile(options.OutputPath, fileName, ToJson(result), ToJson(result, true))
                 .then(() => {
                     writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
                     return callback(result);
@@ -117,6 +112,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
                 handlingError(err);
             }
             mappingObj = JSON.parse(data);
+            result.Mapping = mappingObj;
         });
     }
 
@@ -175,8 +171,8 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
 
     outputStream.on('finish', function () {
         geodb.close();
-        result.EndTime = +new Date();
-        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result), SmallLogAsXmlString(result))
+        result.Meta.EndTime = +new Date();
+        writeZipFile(options.OutputPath, fileName, ToJson(result), ToJson(result, true))
             .then(() => {
                 writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
                 callback(result);
@@ -194,7 +190,7 @@ export function processFile(options: IProcessOption, callback: (result: IProcess
 }
 
 // tslint:disable-next-line:max-line-length
-function myTransform(record: any, callback: (err: Error | null, data: any) => void, processResult: IProcessResult, rowNumber: number, geodb: GeoDatabase, mappingObject: any) {
+function myTransform(record: any, callback: (err: Error | null, data: any) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: any) {
 
     //Check headers
     if (rowNumber === 1) {
@@ -211,7 +207,6 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
                 for (let pr of Object.getOwnPropertyNames(mappingObject.Mappings[p])) {
                     if (pr === record[p]) {
                         record[p] = mappingObject.Mappings[p][pr];
-                        console.log("mapped");
                     }
                 }
             }
@@ -229,11 +224,10 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         });
 
         if (violation === undefined) {
-            violation = { Id: rule.Id, Text: rule.Message, RedFlag: rule.RedFlag, Rows: [] } as IViolation;
+            violation = { Id: rule.Id, Text: rule.Message, RedFlag: rule.RedFlag, Count: 0 } as ILogViolation;
             processResult.Violations.push(violation);
         }
-
-        violation.Rows.push(rowNumber);
+        violation.Count++;
     }
 
     //Copy Data to output object
@@ -278,6 +272,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     return match((record as IBankDataCsv), geodb, (record, err, matchingType) => {
         outRecord.matchingtype = (+matchingType).toString();
         processResult.MatchSummary[+matchingType]++;
+        processResult.Rows.push({ Index: rowNumber, MatchingType: matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
         if (err) {
             return callback(err, outRecord);
         }
@@ -338,8 +333,9 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
             archive.append(fs.createReadStream(path.join(outputPath, fileName + ".csv")), { name: (fileName + ".csv") });
         }
 
-        archive.append(log, { name: (fileName + ".xml") });
-        archive.append(smallLog, { name: (fileName + "_small.xml") });
+        let logFileName=fileName.replace("data_","log_");
+        archive.append(log, { name: (logFileName + ".json") });
+        archive.append(smallLog, { name: (logFileName + "_small.json") });
 
 
         archive.finalize();

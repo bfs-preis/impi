@@ -3,7 +3,7 @@
         <div >
             <div >
                 <app-process-info [ProcessResult]="this.processResult"></app-process-info>
-                <app-chart-correct [Violations]="this.processResult?.Violations" [RowCount]="this.processResult?.Options.CsvRowCount"></app-chart-correct>
+                <app-chart-correct [Violations]="this.processResult?.Violations" [RowCount]="this.processResult?.Meta.CsvRowCount"></app-chart-correct>
             </div>
         </div>
     </mat-tab>

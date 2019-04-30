@@ -649,7 +649,7 @@ ieee754@^1.1.4:
   integrity sha512-GguP+DRY+pJ3soyIiGPTvdiVXjZ+DbXOxGpXn3eMvNW4x4irjqXm4wHKscC+TfxSJ0yw/S1F24tqdMNsMZTiLA==
 
 "impilib@file:../libs/impilib":
-  version "1.0.2"
+  version "1.0.4"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -657,15 +657,14 @@ ieee754@^1.1.4:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.2-cdc74467-8ea9-44d7-b921-4c1fc275aeaa-1549620574295/node_modules/normalize-city"
-    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.2-cdc74467-8ea9-44d7-b921-4c1fc275aeaa-1549620574295/node_modules/normalize-street"
+    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.4-fd7dcd76-bac4-4da1-b1b6-3ea5e0a8c490-1556631189083/node_modules/normalize-city"
+    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.4-fd7dcd76-bac4-4da1-b1b6-3ea5e0a8c490-1556631189083/node_modules/normalize-street"
     rxjs "^5.4.2"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
     uuid "^3.3.2"
     xmlbuilder "10.1.1"
-    xmlreader "^0.2.3"
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -918,7 +917,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../libs/normalize-city":
-  version "1.0.2"
+  version "1.0.4"
 
 normalize-path@^2.0.0:
   version "2.1.1"
@@ -928,7 +927,7 @@ normalize-path@^2.0.0:
     remove-trailing-separator "^1.0.1"
 
 "normalize-street@file:../libs/normalize-street":
-  version "1.0.2"
+  version "1.0.4"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
@@ -1201,11 +1200,6 @@ safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
-
-sax@~0.5.2:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-0.5.8.tgz#d472db228eb331c2506b0e8c15524adb939d12c1"
-  integrity sha1-1HLbIo6zMcJQaw6MFVJK25OdEsE=
 
 semver@^5.3.0:
   version "5.6.0"
@@ -1500,13 +1494,6 @@ xmlbuilder@10.1.1:
   version "10.1.1"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.1.1.tgz#8cae6688cc9b38d850b7c8d3c0a4161dcaf475b0"
   integrity sha512-OyzrcFLL/nb6fMGHbiRDuPup9ljBycsdCypwuyg5AAHvyWzGfChJpCXMG88AGTIMFhGZ9RccFN1e6lhg3hkwKg==
-
-xmlreader@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/xmlreader/-/xmlreader-0.2.3.tgz#86576eb5d57959a6dee7ed28b3cbd1c3559dcb90"
-  integrity sha1-hldutdV5Wabe5+0os8vRw1Wdy5A=
-  dependencies:
-    sax "~0.5.2"
 
 xtend@^4.0.0:
   version "4.0.1"

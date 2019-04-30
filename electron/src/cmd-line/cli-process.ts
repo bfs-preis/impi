@@ -1,4 +1,4 @@
-import { processFile, IProcessResult, IProcessOption, IDbInfo, GeoDatabase } from 'impilib';
+import { processFile, ILogResult, IProcessOption, IDbInfo, GeoDatabase } from 'impilib';
 import * as log from 'electron-log';
 import { ICommandLine, CommandEnum } from './command-line';
 import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from '../validation/input-validation';
@@ -91,7 +91,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
         spinners[currentSpinnerIndex].spinner.start();
         let process: Promise<number> = new Promise((resolve, reject) => {
             processFile(options,
-                (result: IProcessResult) => {
+                (result: ILogResult) => {
                     if (result.Error) {
                         handleError(result.Error);
                         return resolve(1);

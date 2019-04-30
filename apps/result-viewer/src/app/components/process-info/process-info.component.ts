@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 
-import {IProcessResult,IProcessOption} from 'impilib';
+import {ILogResult,IProcessOption} from 'impilib';
 
 import * as moment from 'moment';
 
@@ -12,7 +12,7 @@ import * as moment from 'moment';
 })
 export class ProcessInfoComponent implements OnInit {
 
-  result:IProcessResult;
+  result:ILogResult;
 
   endTime:string;
   startTime:string;
@@ -21,14 +21,14 @@ export class ProcessInfoComponent implements OnInit {
   duration:string
 
   @Input()
-  set ProcessResult(result:IProcessResult){
+  set ProcessResult(result:ILogResult){
     this.result=result;
     if (!result) return;
-    this.endTime=this.formatDateTime(result.StartTime,"HH:mm:ss");
-    this.startTime=this.formatDateTime(result.EndTime,"HH:mm:ss");
-    this.dbPeriodFrom=this.formatDateTime(result.Options.DbPeriodFrom,"DD.MM.YYYY");
-    this.dbPeriodTo=this.formatDateTime(result.Options.DbPeriodTo,"DD.MM.YYYY");
-    this.duration=moment.utc(moment.duration(result.EndTime-result.StartTime).asMilliseconds()).format("H[h] m[m] ss[s]");
+    this.endTime=this.formatDateTime(result.Meta.StartTime,"HH:mm:ss");
+    this.startTime=this.formatDateTime(result.Meta.EndTime,"HH:mm:ss");
+    this.dbPeriodFrom=this.formatDateTime(result.Meta.DbPeriodFrom,"DD.MM.YYYY");
+    this.dbPeriodTo=this.formatDateTime(result.Meta.DbPeriodTo,"DD.MM.YYYY");
+    this.duration=moment.utc(moment.duration(result.Meta.EndTime-result.Meta.StartTime).asMilliseconds()).format("H[h] m[m] ss[s]");
   }
 
   constructor() { }

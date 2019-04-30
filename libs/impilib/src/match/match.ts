@@ -10,7 +10,6 @@ export enum MatchingTypeEnum {
     CenterCommunitiesMatching = 2,
     NoMatching = 3,
     NoMatchingWithError = 4
-
 }
 
 export function match(

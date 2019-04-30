@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProcessResultService } from './services/process-result.service';
-import { IProcessResult } from 'impilib';
+import { ILogResult } from 'impilib';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +9,13 @@ import { IProcessResult } from 'impilib';
 })
 export class AppComponent implements OnInit {
 
-  processResult: IProcessResult | null;
+  processResult: ILogResult | null;
 
   constructor(private processResultService: ProcessResultService) {
 
     Promise.all([this.processResultService.GetProcessResult(), this.processResultService.GetShowAllValidationErrors()])
       .then((values) => {
-        let r: IProcessResult = values[0];
+        let r: ILogResult = values[0];
         let flag: boolean = values[1];
 
         if (flag === false) {

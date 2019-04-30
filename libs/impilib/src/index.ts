@@ -1,13 +1,15 @@
-import { processFile, IProcessOption, IProcessResult, IViolation, CheckInputFileFormat } from './core/process';
+import { processFile, IProcessOption,CheckInputFileFormat } from './core/process';
 import { ValidationRules, IValidationRule } from './validation/ValidationRules';
 import { GeoDatabase, IDbInfo } from './match/GeoDatabase';
 import { MatchingTypeEnum } from './match/match';
-import { readResultZipFile } from './core/log-file-xml';
+import { readResultZipFile,ILogResult,ILogMeta,ILogViolation,ILogRow } from './core/log-file-json';
 export {
     processFile,
     IProcessOption,
-    IProcessResult,
-    IViolation,
+    ILogResult,
+    ILogMeta,
+    ILogViolation,
+    ILogRow,
     ValidationRules,
     IValidationRule,
     IDbInfo,

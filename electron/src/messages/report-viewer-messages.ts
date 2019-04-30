@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import * as log from 'electron-log';
 import { Main } from '../index';
 
-import { readResultZipFile, IProcessResult } from 'impilib';
+import { readResultZipFile, ILogResult } from 'impilib';
 import { CommandLineCommand, ICommandLine } from '../cmd-line/command-line';
 
-export function registerResultViewerMessages(results: IProcessResult | null) {
+export function registerResultViewerMessages(results: ILogResult | null) {
     ipcMain.once('ask-for-process-result', (event: any, result: null) => {
 
         if (!results) {
@@ -24,7 +24,7 @@ export function registerResultViewerMessages(results: IProcessResult | null) {
                 file = selectedObjects[0];
             }
             log.debug('Result File:' + file);
-            readResultZipFile(file, (result: IProcessResult) => {
+            readResultZipFile(file, (result: ILogResult) => {
                 log.silly('send process-result:' + JSON.stringify(result));
                 event.sender.send('process-result', result);
             });

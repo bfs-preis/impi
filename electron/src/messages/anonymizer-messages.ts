@@ -4,13 +4,13 @@ import * as settings from 'electron-settings';
 
 import { Main } from '../index';
 import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase,CheckKFactor } from '../validation/input-validation';
-import { IProcessResult, IProcessOption } from 'impilib';
+import { ILogResult, IProcessOption } from 'impilib';
 import { registerResultViewerMessages } from './report-viewer-messages';
 
 let isProcessing: boolean = false;
 
 export function registerAnonMessages() {
-    ipcMain.on('background-response', (event: any, result: IProcessResult) => {
+    ipcMain.on('background-response', (event: any, result: ILogResult) => {
         log.silly('send background-response:' + JSON.stringify(result));
         Main.GetMainWindow().webContents.send('background-response', result);
         isProcessing = false;
