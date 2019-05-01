@@ -14,7 +14,7 @@ import { checkValidationRules, ICheckValidationRuleResult } from '../validation/
 import { PeriodeDefinition, IValidationRule, ValidationRules } from '../validation/ValidationRules';
 import { match, MatchingTypeEnum } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
-import { ILogResult, ILogViolation, ILogMeta, ToJson } from './log-file-json';
+import { ILogResult, ILogViolation, ILogMeta, ToJson,createEmptyLogMatchingTypeArray } from './log-file-json';
 import { ILogRow } from '..';
 
 export interface IProcessOption {
@@ -63,11 +63,8 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
     let fileName = "data_" + moment().format("YYYYMMDDHHmmss");
 
     let violations: ILogViolation[] = [];
-    let matchSummary: number[] = Array.apply(null, Array(Object.keys(MatchingTypeEnum).length / 2)).map(function () { return 0; });
-
+    
     let result: ILogResult = {
-        Violations: violations,
-        MatchSummary: matchSummary,
         Meta: {
             StartTime: +new Date(),
             EndTime: 0,
@@ -81,8 +78,10 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
             MappingFile: options.MappingFile,
             CsvRowCount: options.CsvRowCount
         } as ILogMeta,
-        Rows: [] as ILogRow[],
         Mapping: undefined,
+        MatchSummary: createEmptyLogMatchingTypeArray(),
+        Violations: violations,
+        Rows: [] as ILogRow[],
         Error: undefined
     };
 
@@ -271,7 +270,15 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     //GWR & Geodata
     return match((record as IBankDataCsv), geodb, (record, err, matchingType) => {
         outRecord.matchingtype = (+matchingType).toString();
-        processResult.MatchSummary[+matchingType]++;
+
+        //MatchingType Summary
+        let logMatchigType=processResult.MatchSummary.find((m)=>m.Id==+(matchingType));
+        if (logMatchigType){
+            logMatchigType.Count++;
+        }else {
+            throw new Error("MatchingType not found in Summary!");
+        }
+        
         processResult.Rows.push({ Index: rowNumber, MatchingType: matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
         if (err) {
             return callback(err, outRecord);
@@ -334,8 +341,8 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
         }
 
         let logFileName=fileName.replace("data_","log_");
-        archive.append(log, { name: (logFileName + ".json") });
-        archive.append(smallLog, { name: (logFileName + "_small.json") });
+        archive.append(log.replace(/\n/g,"\r\n"), { name: (logFileName + ".json") });
+        archive.append(smallLog.replace(/\n/g,"\r\n"), { name: (logFileName + "_small.json") });
 
 
         archive.finalize();
