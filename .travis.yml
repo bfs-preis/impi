@@ -1,17 +1,31 @@
 language: node_js
 node_js: v8.12.0
 env: ELECTRON_CACHE=$HOME/.cache/electron ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder USE_HARD_LINKS=false
+
 #cache:
   #yarn: true
   #directories:
   #- node_modules
   #- $HOME/.cache/electron
   #- $HOME/.cache/electron-builder
+  
 git:
   depth: 1
 install:
-  - npm -g install projecto
-before_script:
-
+- npm -g install projecto
+before_script: 
 script:
-  - yarn release-linux
+- yarn release-linux
+- cd cli
+- npx pkg . --targets node8-linux-x64
+before_deploy:
+- tar -zf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ./cli/impi-cli
+- tar -rf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ./cli/node_modules/sqlite3/lib/binding/node-v57-linux-x64/node_sqlite3.node
+deploy:
+  provider: releases
+  api_key:
+    secure: Axllk68ahXRnaRivYv+T3NSRr9+0enA+xbZqgow+tYFObYw7KMYFJxYfVRniF8khnu5IDMk1eSs344uedyQQSX2VIYRy0/YdoCMSaaH8C7pKA5Bl65IGkdMOcYXxPjCtVOqBADlkvgH8K04KDtsjvKtqia268NjzIvnawZqbV5YGnUQcQ6pZ6DlODmtjCkx9iQqffn3vOQKctwUsjpBfLo0HcjbOM9GaV9wqT1WTGsKdHlwlwK7e2Zpwk9weu/hX3iFHSZtzAa1W0gTGAcRFr9V7YokQ6U3QnDsPx+8GDuuJjQRFYV9XP9C71ohwoDx2VmxEbVzLSccoUGtPVRjgi7JpthNLvrjodQNRrpQmO/Yend2MRHo5tTnabhceSLUV9x169CEPM9tY3kT9qLupqdTbbZjHcfjAIL6miiDuqZ3XUuH2gfD8xclJqY9JXusjOjAtoRoA7+yC85aaEJEWJmo2x8NGCaaZfHm8oi6tJjTN0N9NGB2RSrXz48+PV2OvHgndg4LMHdmUCx1F4zg04iVU8HMLDRYZX1koMK6C+X8GwEPM1Uhtiu6xqaxnPG7j5kTKUQ1CurNp5dB0mG/0A9QCabBZGhRmF8nMSFVZ+a2jc/aahRX6mIuOnc1wiJDvqQjugdW/MdFLhDptUe4FRNGeIFViMBYfNwxSUSgYyt4=
+  file: "${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz"
+  draft: true
+  on:
+    repo: bfs-preis/impi
