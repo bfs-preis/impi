@@ -2,12 +2,12 @@ language: node_js
 node_js: v8.12.0
 env: ELECTRON_CACHE=$HOME/.cache/electron ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder USE_HARD_LINKS=false
 
-#cache:
-  #yarn: true
-  #directories:
-  #- node_modules
-  #- $HOME/.cache/electron
-  #- $HOME/.cache/electron-builder
+cache:
+  yarn: true
+  directories:
+  - node_modules
+  - $HOME/.cache/electron
+  - $HOME/.cache/electron-builder
 
 git:
   depth: 1
@@ -19,8 +19,9 @@ script:
 - cd cli
 - npx pkg . --targets node8-linux-x64
 before_deploy:
-- tar -zcf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ./cli/impi-cli
-- tar -rf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ./cli/node_modules/sqlite3/lib/binding/node-v57-linux-x64/node_sqlite3.node
+- ls
+- tar -zcf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ${REPO}/cli/impi-cli
+- tar -rf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz ${REPO}/cli/node_modules/sqlite3/lib/binding/node-v57-linux-x64/node_sqlite3.node
 deploy:
   provider: releases
   api_key:
