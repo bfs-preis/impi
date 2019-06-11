@@ -11,10 +11,10 @@ import { createSedexEnvelope } from './sedex-envelope';
 import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv';
 import { ResultDataCsv } from '../types/ResultDataCsv';
 import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules';
-import { PeriodeDefinition, IValidationRule, ValidationRules } from '../validation/ValidationRules';
-import { match, MatchingTypeEnum } from '../match/match';
+import { PeriodeDefinition } from '../validation/ValidationRules';
+import { match } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
-import { ILogResult, ILogViolation, ILogMeta, ToJson,createEmptyLogMatchingTypeArray } from './log-file-json';
+import { ILogResult, ILogViolation, ILogMeta, ToJson, createEmptyLogMatchingTypeArray } from './log-file-json';
 import { ILogRow } from '..';
 
 export interface IProcessOption {
@@ -29,6 +29,7 @@ export interface IProcessOption {
     CsvRowCount: number;
     SedexSenderId: string;
     MappingFile: string;
+    ClientVersion: string;
 }
 
 function IsBankDataCsvRow(row: any): string[] {
@@ -63,7 +64,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
     let fileName = "data_" + moment().format("YYYYMMDDHHmmss");
 
     let violations: ILogViolation[] = [];
-    
+
     let result: ILogResult = {
         Meta: {
             StartTime: +new Date(),
@@ -76,7 +77,9 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
             DbVersion: options.DbVersion,
             SedexSenderId: options.SedexSenderId,
             MappingFile: options.MappingFile,
-            CsvRowCount: options.CsvRowCount
+            CsvRowCount: options.CsvRowCount,
+            ClientVersion: options.ClientVersion,
+
         } as ILogMeta,
         Mapping: undefined,
         MatchSummary: createEmptyLogMatchingTypeArray(),
@@ -272,13 +275,13 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         outRecord.matchingtype = (+matchingType).toString();
 
         //MatchingType Summary
-        let logMatchigType=processResult.MatchSummary.find((m)=>m.Id==+(matchingType));
-        if (logMatchigType){
+        let logMatchigType = processResult.MatchSummary.find((m) => m.Id == +(matchingType));
+        if (logMatchigType) {
             logMatchigType.Count++;
-        }else {
+        } else {
             throw new Error("MatchingType not found in Summary!");
         }
-        
+
         processResult.Rows.push({ Index: rowNumber, MatchingType: matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
         if (err) {
             return callback(err, outRecord);
@@ -340,9 +343,9 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
             archive.append(fs.createReadStream(path.join(outputPath, fileName + ".csv")), { name: (fileName + ".csv") });
         }
 
-        let logFileName=fileName.replace("data_","log_");
-        archive.append(log.replace(/\n/g,"\r\n"), { name: (logFileName + ".json") });
-        archive.append(smallLog.replace(/\n/g,"\r\n"), { name: (logFileName + "_small.json") });
+        let logFileName = fileName.replace("data_", "log_");
+        archive.append(log.replace(/\n/g, "\r\n"), { name: (logFileName + ".json") });
+        archive.append(smallLog.replace(/\n/g, "\r\n"), { name: (logFileName + "_small.json") });
 
 
         archive.finalize();
@@ -351,6 +354,6 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
 
 function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
 
-    let xml = createSedexEnvelope(sedexSenderId);
+    let xml = createSedexEnvelope(sedexSenderId, fileName.replace("data_", ""));
     fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });
 }

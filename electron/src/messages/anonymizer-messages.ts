@@ -1,9 +1,9 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, BrowserWindow, app } from 'electron';
 import * as log from 'electron-log';
 import * as settings from 'electron-settings';
 
 import { Main } from '../index';
-import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase,CheckKFactor } from '../validation/input-validation';
+import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase, CheckKFactor } from '../validation/input-validation';
 import { ILogResult, IProcessOption } from 'impilib';
 import { registerResultViewerMessages } from './report-viewer-messages';
 
@@ -36,8 +36,9 @@ export function registerAnonMessages() {
         processOptions.InputCsvFile = appSettings.CSVFile;
         processOptions.DatabaseFile = appSettings.DBFile;
         processOptions.OutputPath = appSettings.OutDirectory;
-        processOptions.SedexSenderId=appSettings.SedexSenderId;
-        processOptions.MappingFile=appSettings.MappingFile
+        processOptions.SedexSenderId = appSettings.SedexSenderId;
+        processOptions.MappingFile = appSettings.MappingFile;
+        processOptions.ClientVersion = app.getVersion();
 
         log.debug('send background-start:' + JSON.stringify(processOptions));
         Main.GetBackgroundWindow().webContents.send('background-start', processOptions);
@@ -76,7 +77,7 @@ export function registerAnonMessages() {
     ipcMain.on('checkkfactor', (event: any, file: string) => {
         CheckKFactor(file).then((check) => {
             log.debug('send checkkfactor response:' + check);
-            Main.GetMainWindow().webContents.send('checkkfactor response', { check: check, err: null});
+            Main.GetMainWindow().webContents.send('checkkfactor response', { check: check, err: null });
         }).catch((error) => {
             log.debug('send checkkfactor db response:' + error.message);
             Main.GetMainWindow().webContents.send('checkkfactor db response', { check: null, err: { message: error.message } });

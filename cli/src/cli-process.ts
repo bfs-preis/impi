@@ -4,6 +4,7 @@ import { ICommandLine } from './command-line';
 import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from './input-validation';
 const ora = require('ora');
 const colors = require('colors/safe');
+var pjson = require('./package.json');
 
 export async function CliProcess(commandLine: ICommandLine): Promise<number> {
 
@@ -21,8 +22,8 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
         { name: 'Processing', spinner: ora('Processing') },
     ]
 
-    if (commandLine.KFactorTest){
-        spinners.splice(3, 0,{ name: 'Check K-Factor', spinner: ora('Check K-Factor') });
+    if (commandLine.KFactorTest) {
+        spinners.splice(3, 0, { name: 'Check K-Factor', spinner: ora('Check K-Factor') });
     }
 
     const nicetime = (ms: number, use_seconds: boolean = false) => {
@@ -32,40 +33,40 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
         return time + (+minutes < 1 ? 's' : 'm');
     };
 
-    let spinningText = (rows: number,maxRows:number, start: number) => {
-        spinners[currentSpinnerIndex].spinner.text = colors.magenta(spinners[currentSpinnerIndex].name) + " | Processed Rows --> " + colors.yellow(rows.toString())+"/"+ colors.yellow(maxRows.toString())  + " | " + "Time --> " + colors.yellow(nicetime((Date.now() - start))) + " | " + colors.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
+    let spinningText = (rows: number, maxRows: number, start: number) => {
+        spinners[currentSpinnerIndex].spinner.text = colors.magenta(spinners[currentSpinnerIndex].name) + " | Processed Rows --> " + colors.yellow(rows.toString()) + "/" + colors.yellow(maxRows.toString()) + " | " + "Time --> " + colors.yellow(nicetime((Date.now() - start))) + " | " + colors.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
     };
 
-    var currentSpinnerIndex=0;
+    var currentSpinnerIndex = 0;
 
     try {
-        
+
         spinners[currentSpinnerIndex].spinner.start();
         let dbInfo = await ValidateDatabase(commandLine.DBFile);
         spinners[currentSpinnerIndex].spinner.succeed();
         currentSpinnerIndex++;
         spinners[currentSpinnerIndex].spinner.start();
-        let rowcount = await ValidateInputCsv(commandLine.CSVFile,commandLine.CSVSeparator);
+        let rowcount = await ValidateInputCsv(commandLine.CSVFile, commandLine.CSVSeparator);
         spinners[currentSpinnerIndex].spinner.succeed();
         currentSpinnerIndex++;
         spinners[currentSpinnerIndex].spinner.start();
         let outputDirValid = await ValidateOutputDir(commandLine.OutputDir);
 
-        
+
         if (!outputDirValid) {
             handleError(new Error("Output Directory not found!"));
             return 1;
         }
         spinners[currentSpinnerIndex].spinner.succeed();
         currentSpinnerIndex++;
-        if (commandLine.KFactorTest){
+        if (commandLine.KFactorTest) {
             spinners[currentSpinnerIndex].spinner.start();
-            var geoDatabase=new GeoDatabase(commandLine.DBFile,handleError);
-            var result=await geoDatabase.kFactorCheckAsync();
-            if (result){
+            var geoDatabase = new GeoDatabase(commandLine.DBFile, handleError);
+            var result = await geoDatabase.kFactorCheckAsync();
+            if (result) {
                 spinners[currentSpinnerIndex].spinner.succeed();
             }
-            else{
+            else {
                 spinners[currentSpinnerIndex].spinner.fail();
             }
             currentSpinnerIndex++;
@@ -81,8 +82,9 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
             CsvSeparator: commandLine.CSVSeparator,
             InputCsvFile: commandLine.CSVFile,
             OutputPath: commandLine.OutputDir,
-            SedexSenderId:commandLine.SedexSenderId,
-            MappingFile:commandLine.MappingFile
+            SedexSenderId: commandLine.SedexSenderId,
+            MappingFile: commandLine.MappingFile,
+            ClientVersion: pjson.Version,
         };
 
         var start = Date.now();
@@ -99,7 +101,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
                     return resolve(0);
                 }, (processedRow: number, maxRows: number) => {
                     //do nothing in cli
-                    spinningText(processedRow,maxRows,start);
+                    spinningText(processedRow, maxRows, start);
                 });
         });
 

@@ -78,8 +78,9 @@ export class MainComponent {
             DatabaseFile: "",//get from appsettings
             InputCsvFile: "",//get from appsettings
             OutputPath: "",//get from appsettings
-            SedexSenderId:"",//get from appsettings
-            MappingFile:""//get from appsettings
+            SedexSenderId: "",//get from appsettings
+            MappingFile: "",//get from appsettings
+            ClientVersion:"" //get from electron app
         };
 
 

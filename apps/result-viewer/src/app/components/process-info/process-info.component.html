@@ -52,6 +52,10 @@
             <td i18n="label|ProcessInfo CsvRowCount@@processInfoCsvRowCount">CsvRowCount:</td>
             <td colspan="3">{{result?.Meta.CsvRowCount}}</td>
         </tr>
+        <tr>
+            <td i18n="label|ProcessInfo ClientVersion@@processInfoClientVersion">Client Version:</td>
+            <td colspan="3">{{result?.Meta.ClientVersion}}</td>
+        </tr>
     </table>
     <div *ngIf="result?.Error!=null">
         {{result?.Error.message}}

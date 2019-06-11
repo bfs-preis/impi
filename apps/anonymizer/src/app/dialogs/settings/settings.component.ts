@@ -20,7 +20,8 @@ export class SettingsComponent {
   _selectedSedexSenderId:string;
   encodings = [
     'utf8',
-    'ansi',
+    'windows1252',
+    'iso88591',
     'macintosh'
   ];
 

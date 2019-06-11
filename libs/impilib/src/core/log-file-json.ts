@@ -25,6 +25,7 @@ export interface ILogMeta {
     StartTime: number;
     EndTime: number;
     OutZipFile: string,
+    ClientVersion:string,
 }
 
 export interface ILogViolation {

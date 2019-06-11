@@ -38,7 +38,7 @@ function parseCommandLine(): ICommandLine {
                 default: "."
             }).options("csvencoding", {
                 alias: "enc",
-                describe: "the encoding used in the input csv file ('utf8','ansi','macintosh')",
+                describe: "the encoding used in the input csv file ('utf8','windows1252','iso88591','macintosh')",
                 type: "string",
                 default: "utf8"
             }).option("csvseparator", {

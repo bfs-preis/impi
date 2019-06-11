@@ -3225,13 +3225,14 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-562cfe94-2949-4ab8-a643-9a2ba5dd32ef-1556631036912/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-562cfe94-2949-4ab8-a643-9a2ba5dd32ef-1556631036912/node_modules/normalize-street"
+    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-city"
+    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-street"
     rxjs "^5.4.2"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
     uuid "^3.3.2"
+    xmlbuilder "10.1.1"
 
 import-local@^0.1.1:
   version "0.1.1"
@@ -7454,6 +7455,11 @@ xml2js@^0.4.17:
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
+
+xmlbuilder@10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.1.1.tgz#8cae6688cc9b38d850b7c8d3c0a4161dcaf475b0"
+  integrity sha512-OyzrcFLL/nb6fMGHbiRDuPup9ljBycsdCypwuyg5AAHvyWzGfChJpCXMG88AGTIMFhGZ9RccFN1e6lhg3hkwKg==
 
 xmlbuilder@>=1.0.0, xmlbuilder@~9.0.1:
   version "9.0.4"
