@@ -22,7 +22,7 @@ program
     .option('-a, --additionalCommunitiesCsv <file>', 'CSV Filename to the additional Communities InputFile')
     .option('-C, --config [file]', 'JSON Config File')
     .option('-l, --LogLevel <level>', 'LogLevel', /^(error|warn|info|verbose|debug|silly)$/i, 'info')
-    .option('-e, --encoding <enc>','the encoding used in the input csv file /^("utf8","windows1252","iso88591","macintosh")$/i',"utf8" );
+    .option('-e, --encoding <enc>','the encoding used in the input csv file /^("utf8","windows1252","iso88591","macintosh")$/i',"windows1252" );
        
 
 program.on('--help', function () {
@@ -41,7 +41,7 @@ let streetCsv = (program.streetCsv === undefined || program.streetCsv.toString()
 let communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().lenght) ? null : program.communitiesCsv.toString().trim();
 let buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().lenght) ? null : program.buildingsCsv.toString().trim();
 let additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().lenght) ? null : program.additionalCommunitiesCsv.toString().trim();
-let encoding=(program.encoding === undefined || program.encoding.toString().trim().lenght) ? "utf8" : program.encoding.toString().trim();
+let encoding=(program.encoding === undefined || program.encoding.toString().trim().lenght) ? "windows1252" : program.encoding.toString().trim();
 
 let config = {
     csv: {

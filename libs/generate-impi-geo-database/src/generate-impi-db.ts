@@ -125,8 +125,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             }
         }
     });
-
-    console.log(encoding);
+    
     input.pipe(iconv.decodeStream(encoding)).pipe(parser);
 }
 
