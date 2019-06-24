@@ -118,7 +118,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
         });
     }
 
-    let inputStream = fs.createReadStream(options.InputCsvFile, { encoding: 'binary' });
+    let inputStream = fs.createReadStream(options.InputCsvFile);
     inputStream.on('error', function (err: Error) {
         handlingError(err);
     });

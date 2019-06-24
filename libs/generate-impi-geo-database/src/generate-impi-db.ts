@@ -7,7 +7,7 @@ import { normalizeStreet } from "normalize-street";
 import { normalizeCity } from "normalize-city";
 import * as definitions from "./table-definitions";
 
-function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition, csvFile: string | null,
+function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition, csvFile: string | null, encoding:string,
     rowCallback: (rowCount: number) => void | null, finishCallback: (rowCount: number) => void | null, errorCallback: (err: Error) => void | null) {
 
     let rowCount = 0;
@@ -31,7 +31,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     db.prepare("BEGIN").run();
     let stmt = db.prepare("INSERT INTO " + def.TableName + " VALUES (" + def.Fields.map(c => { return "?"; }).join(",") + ")");
 
-    let input = fs.createReadStream(csvFile, { encoding: 'binary' });
+    let input = fs.createReadStream(csvFile);
     //let inputEncoded = iconv.decodeStream('win1251');
 
     // Create the parser
@@ -90,9 +90,9 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             });
 
             if (record.street != undefined && record.street.length>0) {
-                let nStreet = normalizeStreet(record.street);
+                //let nStreet = normalizeStreet(record.street);
                 let i = def.Fields.map((t) => t.Name).indexOf("street");
-                array[i] = nStreet;
+                array[i] = record.street;
             }
 
             if (record.designationofbuilding != undefined && record.designationofbuilding.length>0) {
@@ -102,9 +102,9 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             }
 
             if (record.community != undefined && record.community.length>0) {
-                let nCommunity = normalizeCity(record.community);
+                //let nCommunity = normalizeCity(record.community);
                 let i = def.Fields.map((t) => t.Name).indexOf("community");
-                array[i] = nCommunity;
+                array[i] = record.community;
             }
 
             if (record.streetnumber != undefined && record.streetnumber.length>0) {
@@ -126,34 +126,35 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
         }
     });
 
-    input.pipe(parser);
+    console.log(encoding);
+    input.pipe(iconv.decodeStream(encoding)).pipe(parser);
 }
 
-function createVersionTable(db: any, version: string, periodFrom: string, periodTo: string, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
-    genericCreateTableAndInserts(db, definitions.VersionTable, null, () => { }, () => {
+function createVersionTable(db: any, version: string, periodFrom: string, periodTo: string,encoding:string, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.VersionTable, null,encoding, () => { }, () => {
         db.prepare("INSERT INTO VERSION VALUES (?,?,?)").run([version, periodFrom, periodTo]);
         finishCallback(1);
     }, errorCallback);
 }
 
-function createCenterStreetsTable(db: any, csvFile: string | null, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
-    genericCreateTableAndInserts(db, definitions.CenterStreetsTable, csvFile, rowCallback, finishCallback, errorCallback);
+function createCenterStreetsTable(db: any, csvFile: string | null,encoding:string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.CenterStreetsTable, csvFile, encoding,rowCallback, finishCallback, errorCallback);
 }
 
-function createCenterCommunitiesTable(db: any, csvFile: string | null, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
-    genericCreateTableAndInserts(db, definitions.CenterCommunitiesTable, csvFile, rowCallback, finishCallback, errorCallback);
+function createCenterCommunitiesTable(db: any, csvFile: string | null,encoding:string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.CenterCommunitiesTable, csvFile,encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createBuildingsTable(db: any, csvFile: string | null, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
-    genericCreateTableAndInserts(db, definitions.BuildingsTable, csvFile, rowCallback, finishCallback, errorCallback);
+function createBuildingsTable(db: any, csvFile: string | null,encoding:string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.BuildingsTable, csvFile,encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createAdditionalCommunities(db: any, csvFile: string | null, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
-    genericCreateTableAndInserts(db, definitions.AdditionalCommunitiesTable, csvFile, rowCallback, finishCallback, errorCallback);
+function createAdditionalCommunities(db: any, csvFile: string | null,encoding:string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.AdditionalCommunitiesTable, csvFile,encoding, rowCallback, finishCallback, errorCallback);
 }
 
 export function generate(database: string, version: string, periodFrom: string, periodTo: string,
-    csvStreet: string | null, csvCommunities: string | null, csvBuildings: string | null, additionalCommunitiesCsv: string | null, rowCallback: (task: string, rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    csvStreet: string | null, csvCommunities: string | null, csvBuildings: string | null, additionalCommunitiesCsv: string | null,encoding:string, rowCallback: (task: string, rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
 
     let errorHandling = function (err: Error) {
         db.close();
@@ -162,17 +163,17 @@ export function generate(database: string, version: string, periodFrom: string, 
 
     let db = new Database(database);
     db.prepare("PRAGMA synchronous=OFF;").run();
-    createVersionTable(db, version, periodFrom, periodTo, () => {
-        createCenterStreetsTable(db, csvStreet, (count) => {
+    createVersionTable(db, version, periodFrom, periodTo,encoding, () => {
+        createCenterStreetsTable(db, csvStreet,encoding, (count) => {
             rowCallback("CenterStreets", count);
         }, (count) => {
-            createCenterCommunitiesTable(db, csvCommunities, (count) => {
+            createCenterCommunitiesTable(db, csvCommunities,encoding, (count) => {
                 rowCallback("CenterCommunities", count);
             }, (count) => {
-                createBuildingsTable(db, csvBuildings, (count) => {
+                createBuildingsTable(db, csvBuildings,encoding, (count) => {
                     rowCallback("Buildings", count);
                 }, (count) => {
-                    createAdditionalCommunities(db, additionalCommunitiesCsv, (count) => {
+                    createAdditionalCommunities(db, additionalCommunitiesCsv,encoding, (count) => {
                         rowCallback("AdditionalCommunities", count);
                     }, (count) => {
                         finishCallback(count);

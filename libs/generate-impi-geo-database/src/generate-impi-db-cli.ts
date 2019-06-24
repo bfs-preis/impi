@@ -21,7 +21,9 @@ program
     .option('-b, --buildingsCsv <file>', 'CSV Filename to Buildings InputFile')
     .option('-a, --additionalCommunitiesCsv <file>', 'CSV Filename to the additional Communities InputFile')
     .option('-C, --config [file]', 'JSON Config File')
-    .option('-l, --LogLevel <level>', 'LogLevel', /^(error|warn|info|verbose|debug|silly)$/i, 'info');
+    .option('-l, --LogLevel <level>', 'LogLevel', /^(error|warn|info|verbose|debug|silly)$/i, 'info')
+    .option('-e, --encoding <enc>','the encoding used in the input csv file /^("utf8","windows1252","iso88591","macintosh")$/i',"utf8" );
+       
 
 program.on('--help', function () {
     console.log('');
@@ -39,14 +41,15 @@ let streetCsv = (program.streetCsv === undefined || program.streetCsv.toString()
 let communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().lenght) ? null : program.communitiesCsv.toString().trim();
 let buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().lenght) ? null : program.buildingsCsv.toString().trim();
 let additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().lenght) ? null : program.additionalCommunitiesCsv.toString().trim();
-let configFile = (program.config === undefined || program.config.toString().trim().lenght) ? null : program.config.toString().trim();
+let encoding=(program.encoding === undefined || program.encoding.toString().trim().lenght) ? "utf8" : program.encoding.toString().trim();
 
 let config = {
     csv: {
         street: streetCsv,
         communities: communitiesCsv,
         buildings: buildingsCsv,
-        additional: additionalCsv
+        additional: additionalCsv,
+        encoding: encoding
     },
     db: {
         version: program.dbversion,
@@ -64,6 +67,7 @@ if (program.config != null) {
         config.csv.communities = configFile.csv.communities || config.csv.communities;
         config.csv.buildings = configFile.csv.buildings || config.csv.buildings;
         config.csv.additional = configFile.csv.additional || config.csv.additional;
+        config.csv.encoding = configFile.csv.encoding || config.csv.encoding;
     }
 
     if (configFile.db) {
@@ -137,7 +141,7 @@ let succeedText = (index: number, rows: number, start: number) => {
     spinners[index].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + colors.yellow(rows.toString()) + " | Time --> " + colors.yellow(nicetime((Date.now() - start))));
 };
 
-generate(config.output, config.db.version, config.db.from, config.db.to, config.csv.street, config.csv.communities, config.csv.buildings, config.csv.additional, (txt, count) => {
+generate(config.output, config.db.version, config.db.from, config.db.to, config.csv.street, config.csv.communities, config.csv.buildings, config.csv.additional,config.csv.encoding, (txt, count) => {
     rows = count;
 
     spinningText(currentSpinnerIndex, rows, start);
