@@ -90,9 +90,9 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             });
 
             if (record.street != undefined && record.street.length>0) {
-                //let nStreet = normalizeStreet(record.street);
+                let nStreet = normalizeStreet(record.street);
                 let i = def.Fields.map((t) => t.Name).indexOf("street");
-                array[i] = record.street;
+                array[i] = nStreet;
             }
 
             if (record.designationofbuilding != undefined && record.designationofbuilding.length>0) {
@@ -102,9 +102,9 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             }
 
             if (record.community != undefined && record.community.length>0) {
-                //let nCommunity = normalizeCity(record.community);
+                let nCommunity = normalizeCity(record.community);
                 let i = def.Fields.map((t) => t.Name).indexOf("community");
-                array[i] = record.community;
+                array[i] = nCommunity;
             }
 
             if (record.streetnumber != undefined && record.streetnumber.length>0) {
@@ -125,7 +125,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
             }
         }
     });
-    
+
     input.pipe(iconv.decodeStream(encoding)).pipe(parser);
 }
 
