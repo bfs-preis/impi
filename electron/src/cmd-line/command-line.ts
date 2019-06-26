@@ -79,7 +79,7 @@ function parseCommandLine(): ICommandLine {
                 alias: "enc",
                 describe: "the encoding used in the input csv file ('utf8','windows1252','iso88591','macintosh')",
                 type: "string",
-                default: ""
+                default: "windows1252"
             }).option("csvseparator", {
                 alias: "sep",
                 describe: "the separator char used in the input csv file",

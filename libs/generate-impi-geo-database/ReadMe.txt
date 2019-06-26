@@ -10,7 +10,7 @@
     AdditionalPLZ:
         Orginal;Alternativ
  
-    Encoding der Csv Files : Utf8
+    Encoding der Csv Files : windows1252
 
     Commandzeilen Argumente:
 
@@ -28,7 +28,8 @@
     -b, --buildingsCsv <file>              CSV Filename to Buildings InputFile                     
     -a, --additionalCommunitiesCsv <file>  CSV Filename to the additional Communities InputFile    
     -C, --config [file]                    JSON Config File                                        
-    -l, --LogLevel <level>                 LogLevel (default: info)                                
+    -l, --LogLevel <level>                 LogLevel (default: info)   
+    -e, --encoding                         the encoding used in the input csv file ('utf8','windows1252','iso88591','macintosh')                             
     -h, --help                             output usage information                                
                                                                                                  
     Anstelle der Argumente kann auch eine JSON Datei angegeben werden (option -C) in welcher alle Optionen definiert werden.

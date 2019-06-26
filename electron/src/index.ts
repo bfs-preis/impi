@@ -217,7 +217,7 @@ export class Main {
   private static setSettings() {
     if (!settings.has("AppSettings")) {
       settings.set("AppSettings", {
-        CSVEncoding: "utf8",
+        CSVEncoding: "windows1252",
         CSVFile: path.join(__dirname, "default.csv"),
         CSVSeparater: ";",
         DBFile: path.join(__dirname, "default.db"),
