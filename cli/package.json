@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "tsc": "tsc",
-    "build": "yarn clean && yarn tsc"
+    "build": "yarn clean && yarn tsc && cp ./package.json ./dist/"
   },
   "bin": {
     "impi": "dist/index.js"
