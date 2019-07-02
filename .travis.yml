@@ -17,11 +17,12 @@ before_script:
 script:
 - yarn release-linux
 - cd cli
+- cp ./package.json ./dist/
 - npx pkg . --targets node8-linux-x64
 - export TRAVIS_TAG=v$(node -pe "require('./package.json').version") 
 before_deploy:
 - cd ..
-- tar -zcf impi-cli-$TRAVIS_TAG.tar.gz -C ./cli impi-cli -C ../cli package.json -C ../cli/node_modules/sqlite3/lib/binding/node-v57-linux-x64 node_sqlite3.node
+- tar -zcf impi-cli-$TRAVIS_TAG.tar.gz -C ./cli impi-cli -C ../cli/node_modules/sqlite3/lib/binding/node-v57-linux-x64 node_sqlite3.node
 deploy:
   provider: releases
   api_key:
