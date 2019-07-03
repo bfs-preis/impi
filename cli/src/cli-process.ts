@@ -84,7 +84,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
             OutputPath: commandLine.OutputDir,
             SedexSenderId: commandLine.SedexSenderId,
             MappingFile: commandLine.MappingFile,
-            ClientVersion: pjson.Version,
+            ClientVersion: pjson.version,
         };
 
         var start = Date.now();

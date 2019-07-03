@@ -78,7 +78,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
             SedexSenderId: options.SedexSenderId,
             MappingFile: options.MappingFile,
             CsvRowCount: options.CsvRowCount,
-            ClientVersion: options.ClientVersion,
+            ClientVersion: options.ClientVersion || "unknown",
 
         } as ILogMeta,
         Mapping: undefined,
