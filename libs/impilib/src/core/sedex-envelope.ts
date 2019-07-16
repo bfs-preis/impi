@@ -24,7 +24,7 @@ export function createSedexEnvelope(senderId: string, messageId: string) {
             'xmlns:eCH-0090': 'http://www.ech.ch/xmlns/eCH-0090/1',
             'version': '1.0',
             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-            'xsi:schemaLocation': 'http://www.ech.ch/xmlns/eCH-0090/1 http://www.ech.ch/xmlns/eCH-0090/2/eCH-0090-1-0.xsd'
+            'xsi:schemaLocation': 'http://www.ech.ch/xmlns/eCH-0090/1 http://www.ech.ch/xmlns/eCH-0090/1/eCH-0090-1-0.xsd'
         })
         .ele('eCH-0090:messageId', messageId).up()
         .ele('eCH-0090:messageType', '1086').up()
