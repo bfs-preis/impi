@@ -24,8 +24,8 @@ export class ProcessInfoComponent implements OnInit {
   set ProcessResult(result:ILogResult){
     this.result=result;
     if (!result) return;
-    this.endTime=this.formatDateTime(result.Meta.StartTime,"HH:mm:ss");
-    this.startTime=this.formatDateTime(result.Meta.EndTime,"HH:mm:ss");
+    this.endTime=this.formatDateTime(result.Meta.EndTime,"HH:mm:ss");
+    this.startTime=this.formatDateTime(result.Meta.StartTime,"HH:mm:ss");
     this.dbPeriodFrom=this.formatDateTime(result.Meta.DbPeriodFrom,"DD.MM.YYYY");
     this.dbPeriodTo=this.formatDateTime(result.Meta.DbPeriodTo,"DD.MM.YYYY");
     this.duration=moment.utc(moment.duration(result.Meta.EndTime-result.Meta.StartTime).asMilliseconds()).format("H[h] m[m] ss[s]");
