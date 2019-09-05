@@ -1,3 +1,3 @@
-import { normalizeStreet } from './normalizeStreet';
+import { normalizeStreet, normalizeStreetNumber } from './normalizeStreet';
 
-export { normalizeStreet } 
+export { normalizeStreet, normalizeStreetNumber } 

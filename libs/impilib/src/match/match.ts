@@ -1,7 +1,7 @@
 import { GeoDatabase } from "./GeoDatabase";
 import { IBankDataCsv } from '../types/IBankDataCsv';
 import { IBuildingRecord } from '../types/IBuildingRecord';
-import { normalizeStreet } from 'normalize-street';
+import { normalizeStreet, normalizeStreetNumber } from 'normalize-street';
 import { normalizeCity } from 'normalize-city';
 
 export enum MatchingTypeEnum {
@@ -54,7 +54,7 @@ export function match(
 
     // we have zip_code && street
     let nStreet = normalizeStreet((record as IBankDataCsv).street);
-    let nStreetnumber = hasStreetNumber ? record.streetnumber.toLowerCase().replace(/ /g, "") : "";
+    let nStreetnumber = hasStreetNumber ? normalizeStreetNumber(record.streetnumber) : "";
     _searchAddress(geoDatabase, nStreet, nStreetnumber, zipcode, nCommunity)
         .then((row) => {
             if (row) {

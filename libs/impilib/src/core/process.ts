@@ -14,8 +14,9 @@ import { checkValidationRules, ICheckValidationRuleResult } from '../validation/
 import { PeriodeDefinition } from '../validation/ValidationRules';
 import { match } from '../match/match';
 import { GeoDatabase } from '../match/GeoDatabase';
-import { ILogResult, ILogViolation, ILogMeta, ToJson, createEmptyLogMatchingTypeArray } from './log-file-json';
-import { ILogRow } from '..';
+
+import { ILogRow, ILogResult, ILogViolation, ILogMeta } from '..';
+import { LogAsXmlString, createEmptyLogMatchingTypeArray } from './log-file-xml';
 
 export interface IProcessOption {
     InputCsvFile: string;
@@ -94,7 +95,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
         result.Meta.EndTime = +new Date();
         result.Error = err;
         try {
-            writeZipFile(options.OutputPath, fileName, ToJson(result), ToJson(result, true))
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
                 .then(() => {
                     writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
                     return callback(result);
@@ -174,7 +175,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
     outputStream.on('finish', function () {
         geodb.close();
         result.Meta.EndTime = +new Date();
-        writeZipFile(options.OutputPath, fileName, ToJson(result), ToJson(result, true))
+        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
             .then(() => {
                 writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
                 callback(result);
@@ -226,9 +227,10 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         });
 
         if (violation === undefined) {
-            violation = { Id: rule.Id, Text: rule.Message, RedFlag: rule.RedFlag, Count: 0 } as ILogViolation;
+            violation = { Id: rule.Id, Text: rule.Message, RedFlag: rule.RedFlag, Count: 0 ,Rows:[] } as ILogViolation;
             processResult.Violations.push(violation);
         }
+        violation.Rows.push(rowNumber);
         violation.Count++;
     }
 
@@ -304,7 +306,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     });
 }
 
-function writeZipFile(outputPath: string, fileName: String, log: string, smallLog: string): Promise<any> {
+function writeZipFile(outputPath: string, fileName: String, log: string): Promise<any> {
 
     return new Promise((resolve, reject) => {
         let zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
@@ -344,10 +346,8 @@ function writeZipFile(outputPath: string, fileName: String, log: string, smallLo
         }
 
         let logFileName = fileName.replace("data_", "log_");
-        archive.append(log.replace(/\n/g, "\r\n"), { name: (logFileName + ".json") });
-        archive.append(smallLog.replace(/\n/g, "\r\n"), { name: (logFileName + "_small.json") });
-
-
+        archive.append(log.replace(/\n/g, "\r\n"), { name: (logFileName + ".xml") });
+     
         archive.finalize();
     });
 }

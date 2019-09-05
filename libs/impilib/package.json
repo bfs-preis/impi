@@ -9,7 +9,7 @@
     "prebuild": "yarn run clean",
     "build": "yarn run tsc",
     "bump": "npm version patch",
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts --timeout 99999",
     "tsc": "tsc"
   },
   "repository": {
@@ -32,7 +32,8 @@
     "stream-transform": "^0.1.2",
     "unzip": "^0.1.11",
     "uuid": "^3.3.2",
-    "xmlbuilder": "10.1.1"
+    "xmlbuilder": "10.1.1",
+    "sax": "^1.2.4"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",

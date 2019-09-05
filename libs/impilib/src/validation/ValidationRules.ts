@@ -65,7 +65,7 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: true
     },
     {
-        Id: 9, Message: "Streetnumber is missing", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 9, Message: "StreetNumber is missing", ValCode: (row: IBankDataCsv): boolean => {
             return !(row.streetnumber.length === 0);
         }, RedFlag: true
     },
@@ -98,12 +98,12 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: true
     },
     {
-        Id: 15, Message: "Objecttype is missing", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 15, Message: "ObjectType is missing", ValCode: (row: IBankDataCsv): boolean => {
             return !(row.objecttype.length === 0);
         }, RedFlag: true
     },
     {
-        Id: 16, Message: "Objecttype ≠ Einfamilienhaus or Eigentumswohnung", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 16, Message: "ObjectType ≠ Einfamilienhaus or Eigentumswohnung", ValCode: (row: IBankDataCsv): boolean => {
             if (row.objecttype.length === 0) return true;
             return !(!isNumeric(row.objecttype) || Number(row.objecttype) > 2 || Number(row.objecttype) < 1);
         }, RedFlag: true
@@ -291,7 +291,7 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: false
     },
     {
-        Id: 48, Message: "OwnerOccupiedOrRented ≠ sebstgenutzt or vermietet", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 48, Message: "OwnerOccupiedOrRented ≠ selbstgenutzt or vermietet", ValCode: (row: IBankDataCsv): boolean => {
             if (row.owneroccupiedorrented.length === 0) return true;
             return !(!isNumeric(row.owneroccupiedorrented) || Number(row.owneroccupiedorrented) < 1 || Number(row.owneroccupiedorrented) > 2);
         }, RedFlag: false

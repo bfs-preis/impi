@@ -1,4 +1,4 @@
-import * as unzip from 'unzip';
+/* import * as unzip from 'unzip';
 import * as fs from "fs";
 import * as moment from 'moment';
 
@@ -114,3 +114,4 @@ export function ToJson(log: ILogResult, small: boolean = false): string {
     }, 2);
 }
 
+ */

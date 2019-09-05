@@ -265,6 +265,66 @@ export function normalizeStreet(street: string): string {
     return street_normalized;
 }
 
+export function normalizeStreetNumber(streetNumber: string): string {
+
+    String.prototype.globalReplace = function (this: string, search: string, replace: string) {
+        let s = this;
+        return s.split(search).join(replace);
+    };
+
+    let streetNumber_normalized: string = "";
+
+    if (typeof streetNumber !== 'string') {
+        throw new Error("street not a string!");
+    }
+
+    //Mettre le nom de la rue en minuscule
+    streetNumber_normalized = streetNumber.toLowerCase();
+
+    //Supprimer les accents: èéêëàáâôòóûùúïíîç
+    streetNumber_normalized = translate(streetNumber_normalized, 'èéêëàáâôòóûùúïíîç', 'eeeeaaaooouuuiiic');
+
+    //remplacer les 'Umlaut'
+    streetNumber_normalized = streetNumber_normalized.globalReplace('ä', 'ae');
+    streetNumber_normalized = streetNumber_normalized.globalReplace('ö', 'oe');
+    streetNumber_normalized = streetNumber_normalized.globalReplace('ü', 'ue');
+
+
+    //Supprimer les guillemets
+    streetNumber_normalized = streetNumber_normalized.globalReplace('\'', ' ');   //Anführungszeichen: "
+    streetNumber_normalized = streetNumber_normalized.globalReplace('"', ' ');    //Einfaches Anführungszeichen: '
+
+    //Tout supprimer après une parenthèse (
+    if (streetNumber_normalized.indexOf('(') > 0) {
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('(') - 1);
+    }
+
+    //Tout supprimer après un & (
+    if (streetNumber_normalized.indexOf('&') > 0) {
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('&') - 1);
+    }
+    //Tout supprimer après un + (
+    if (streetNumber_normalized.indexOf('+') > 0) {
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('+') - 1);
+    }
+
+    //Tout supprimer après un slash
+    if (streetNumber_normalized.indexOf('/') > 0) {
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('/') - 1);
+    }
+
+    //Tout supprimer après un backslash
+    if (streetNumber_normalized.indexOf('\\') > 0) {
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('\\') - 1);
+    }
+
+
+    //Supprimer tous les espaces
+    streetNumber_normalized = streetNumber_normalized.globalReplace(' ', '');
+
+    return streetNumber_normalized;
+}
+
 function translate(s: string, sFrom: string, sTo: string) {
     let out: string = s;
     for (let i = 0; i < sFrom.length; i++) {

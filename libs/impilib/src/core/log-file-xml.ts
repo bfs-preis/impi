@@ -1,13 +1,24 @@
 import * as xmlbuilder from 'xmlbuilder';
-import * as xmlreader from 'xmlreader';
+import * as xmlreader from './xmlreader';
 import * as unzip from 'unzip';
 import * as fs from "fs";
-import * as path from "path";
 import * as moment from 'moment';
+import { ILogResult } from './log-result';
+import { ILogMeta, ILogViolation, ILogMatchingType, ILogRow, MatchingTypeEnum } from '..';
 
-import { IProcessResult, IProcessOption, IViolation } from "./process";
 
-export function readResultZipFile(file: string, callback: (result: IProcessResult) => void) {
+export function createEmptyLogMatchingTypeArray(): ILogMatchingType[] {
+    let map: ILogMatchingType[] = [];
+
+    for (var n in MatchingTypeEnum) {
+        if (typeof MatchingTypeEnum[n] === 'number') {
+            map.push({ Id: <any>MatchingTypeEnum[n], Name: n, Count: 0 });
+        }
+    }
+    return map
+}
+
+export function readResultZipFile(file: string, callback: (result: ILogResult) => void) {
     if (!fs.existsSync(file)) {
         throw new Error("File doesnt exists!");
     }
@@ -18,49 +29,94 @@ export function readResultZipFile(file: string, callback: (result: IProcessResul
             let fileName: string = entry.path;
             var type = entry.type; // 'Directory' or 'File'
             var size = entry.size;
-            if (fileName.endsWith(".xml") && !fileName.endsWith("small.xml")) {
+            if (fileName.endsWith(".xml")) {
                 streamToString(entry, (data: string) => {
                     xmlreader.read(data, function (err, res) {
-                        let matchsummary: number[] = [];
-                        res.Log.Matches.at(0).Match.each((c, m) => {
-                            matchsummary.push(m.attributes().Count);
+
+                        let mapping:any={
+                            Mappings:{},
+                            Scales:{}
+                        };
+                        res.Log.Mapping.at(0).Mappings.at(0).each((c, m) => {
+                            mapping.Mappings[m.name]=m.text();
                         });
 
-                        let validations: IViolation[] = [];
+                        res.Log.Mapping.at(0).Scales.at(0).each((c, m) => {
+                            mapping.Scales[m.name]=m.text();
+                        });
+
+                        let matchsummary: ILogMatchingType[] = [];
+                        res.Log.MatchSummery.at(0).Match.each((c, m) => {
+                            matchsummary.push({
+                                Id: m.attributes().Id,
+                                Count: m.attributes().Count,
+                                Name: m.attributes().Name
+                            } as ILogMatchingType
+
+                            );
+                        });
+
+                        let violations: ILogViolation[] = [];
                         res.Log.Violations.at(0).Rule.each((c, r) => {
                             let rows: number[] = [];
                             if (r.Row)
                                 r.Row.each((c, row) => rows.push(row.text()));
-                            validations.push(
+                            violations.push(
                                 {
                                     Id: r.attributes().Id,
                                     Text: r.attributes().Text,
+                                    Count: r.attributes().Count,
                                     Rows: rows,
                                     RedFlag: (r.attributes().RedFlag === 'true')
-                                } as IViolation);
+                                } as ILogViolation);
                         })
 
+                        let rows: ILogRow[] = []
+                        res.Log.Rows.at(0).Row.each((c, m) => {
+                            let logRow = {
+
+                                Index: m.attributes().Index,
+                                MatchingType: m.attributes().MatchingType,
+                                Violations: []
+
+                            } as ILogRow;
+
+                            m.Violation.each((i, n) => {
+                                logRow.Violations.push(n.text());
+                            });
+                            rows.push(logRow);
+                        });
+
                         callback({
-                            StartTime: moment(res.Log.Meta.at(0).attributes().StartTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
-                            EndTime: moment(res.Log.Meta.at(0).attributes().EndTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
-                            Error: res.Log.Exception ? res.Log.Exception.at(0).text() : null,
-                            MatchSummary: matchsummary,
-                            Options: {
+                            Meta: {
+                                ClientVersion: res.Log.Meta.at(0).attributes().ClientVersion,
                                 CsvEncoding: res.Log.Meta.at(0).attributes().CsvEncoding,
+                                CsvDelimiter: res.Log.Meta.at(0).attributes().CsvDelimiter,
                                 CsvRowCount: res.Log.Meta.at(0).attributes().CsvRowCount,
-                                CsvSeparator: res.Log.Meta.at(0).attributes().CsvDelimiter,
-                                DatabaseFile: res.Log.Meta.at(0).attributes().DatabaseFile,
+                                CsvSeparator: res.Log.Meta.at(0).attributes().CsvSeparator,
                                 DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom, "DD.MM.YYYY").valueOf(),
                                 DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo, "DD.MM.YYYY").valueOf(),
                                 DbVersion: res.Log.Meta.at(0).attributes().DbVersion,
-                                InputCsvFile: res.Log.Meta.at(0).attributes().InputCsvFile,
-                                OutputPath: res.Log.Meta.at(0).attributes().OutputPath,
-                                MappingFile: res.Log.Meta.at(0).attributes().MappingFile
-                            } as IProcessOption,
-                            OutZipFile: res.Log.Meta.at(0).attributes().OutZipFile,
+                                EndTime: moment(res.Log.Meta.at(0).attributes().EndTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
+                                StartTime: moment(res.Log.Meta.at(0).attributes().StartTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
+                                MappingFile: res.Log.Meta.at(0).attributes().MappingFile,
+                                OutZipFile: res.Log.Meta.at(0).attributes().OutZipFile,
+                                SedexSenderId: res.Log.Meta.at(0).attributes().SedexSenderId,
+                            } as ILogMeta,
+                            Error: res.Log.Exception ? res.Log.Exception.at(0).text() : null,
+                            Mapping: mapping,
+                            MatchSummary: matchsummary,
+                            Rows: rows,
+                            Violations: violations
 
-                            Violations: validations
-                        } as IProcessResult);
+
+
+
+
+
+
+
+                        } as ILogResult);
                     });
                 });
             } else {
@@ -79,20 +135,7 @@ function streamToString(stream, cb) {
     });
 }
 
-export function writeXmlLogFile(result: IProcessResult, name: string) {
-
-    let root = _generateXml(result);
-
-    let writeStream = fs.createWriteStream(path.join(result.Options.OutputPath, name + ".xml"), { encoding: "utf8" });
-    let writer = xmlbuilder.streamWriter(writeStream, {
-        pretty: true,
-        allowEmpty: false
-    });
-    root.end(writer);
-    writeStream.end();
-}
-
-export function LogAsXmlString(result: IProcessResult): string {
+export function LogAsXmlString(result: ILogResult): string {
     let root = _generateXml(result);
     return root.end({
         pretty: true,
@@ -100,67 +143,82 @@ export function LogAsXmlString(result: IProcessResult): string {
     });
 }
 
-export function SmallLogAsXmlString(result: IProcessResult): string {
-    let root = _generateXml(result, false);
-    return root.end({
-        pretty: true,
-        allowEmpty: false
-    });
-}
 
-function _generateXml(result: IProcessResult, writeRows: boolean = true): any {
+
+function _generateXml(result: ILogResult, writeRows: boolean = true): any {
 
     let root = xmlbuilder.create('Log', { encoding: 'utf-8' });
 
-    let mappingObj = {};
-    try {
-        if (result.Options.MappingFile && fs.existsSync(result.Options.MappingFile)) {
-            mappingObj = JSON.parse(fs.readFileSync(result.Options.MappingFile, 'utf8'));
+    root.ele("Meta", {
+        "StartTime": moment(result.Meta.StartTime).format("DD.MM.YYYY HH:mm:ss"),
+        "EndTime": moment(result.Meta.EndTime).format("DD.MM.YYYY HH:mm:ss"),
+        "Duration": moment(moment(result.Meta.EndTime).diff(moment(result.Meta.StartTime))).format("mm[m]:ss[s]"),
+        "DbVersion": result.Meta.DbVersion,
+        "DbPeriodFrom": moment(result.Meta.DbPeriodFrom).format("DD.MM.YYYY"),
+        "DbPeriodTo": moment(result.Meta.DbPeriodTo).format("DD.MM.YYYY"),
+        "CsvEncoding": result.Meta.CsvEncoding,
+        "CsvDelimiter": result.Meta.CsvSeparator,
+        "CsvRowCount": result.Meta.CsvRowCount,
+        "OutZipFile": result.Meta.OutZipFile,
+        "MappingFile": result.Meta.MappingFile,
+        "ClientVersion": result.Meta.ClientVersion
+    });
+
+    //Mapping
+    if (result.Mapping) {
+        let mappingElement = root.ele("Mapping");
+        let mappingsElement = mappingElement.ele("Mappings");
+
+        for (let p of Object.getOwnPropertyNames(result.Mapping.Mappings)) {
+            let nameElement = mappingsElement.ele(p);
+            for (let pr of Object.getOwnPropertyNames(result.Mapping.Mappings.Mappings[p])) {
+                nameElement.ele(pr).txt(result.Mapping.Mappings.Mappings[p][pr]);
+            }
+
         }
-    } catch{
-        //Do nothing
+
+        let scalesElement = mappingElement.ele("Scales");
+        for (let p of Object.getOwnPropertyNames(result.Mapping.Scales)) {
+            let nameElement = mappingsElement.ele(p).txt(result.Mapping.Scales[p]);
+        }
     }
 
-    root.ele("Meta", {
-        "StartTime": moment(result.StartTime).format("DD.MM.YYYY HH:mm:ss"),
-        "EndTime": moment(result.EndTime).format("DD.MM.YYYY HH:mm:ss"),
-        "Duration": moment(moment(result.EndTime).diff(moment(result.StartTime))).format("mm[m]:ss[s]"),
-        "DbVersion": result.Options.DbVersion,
-        "DbPeriodFrom": moment(result.Options.DbPeriodFrom).format("DD.MM.YYYY"),
-        "DbPeriodTo": moment(result.Options.DbPeriodTo).format("DD.MM.YYYY"),
-        "CsvEncoding": result.Options.CsvEncoding,
-        "CsvDelimiter": result.Options.CsvSeparator,
-        "CsvRowCount": result.Options.CsvRowCount,
-        "OutZipFile": result.OutZipFile,
-        "MappingFile": result.Options.MappingFile,
-        "MappingFileContent": JSON.stringify(mappingObj)
-    });
+    //MatchSummery
+    let matchSummeryElement = root.ele("MatchSummery");
+    for (let m of result.MatchSummary.sort((m1, m2) => m1.Id - m2.Id)) {
+        matchSummeryElement.ele("Match", {
+            "Id": m.Id,
+            "Text": m.Name,
+            "Count": m.Count
+        });
+    }
 
     let violationsElement = root.ele("Violations");
 
-    for (let v of result.Violations.sort((v1,v2)=> v1.Id-v2.Id)) {
+    for (let v of result.Violations.sort((v1, v2) => v1.Id - v2.Id)) {
         let ruleElement = violationsElement.ele("Rule", {
             "Id": v.Id,
-            "Text": v.Text,
+            "Name": v.Text,
             "Count": v.Rows.length,
             "RedFlag": v.RedFlag
         });
-        if (writeRows) {
-            for (let rows of v.Rows) {
-                ruleElement.ele("Row").txt(rows);
-            }
+
+        for (let rows of v.Rows) {
+            ruleElement.ele("Row").txt(rows);
         }
+
     }
 
-    let matchElement = root.ele("Matches");
+    let rowsElement = root.ele("Rows");
 
-    for (let i = 0; i < result.MatchSummary.length; i++) {
-        matchElement.ele("Match",
-            {
-                "Id": i,
-                "Count": result.MatchSummary[i]
-            }
-        );
+    for (let row of result.Rows) {
+        let indexElement = rowsElement.ele("Row", {
+            "Index": row.Index,
+            "MatchingType": row.MatchingType,
+        });
+        for (let v of row.Violations) {
+            indexElement.ele("Violation").txt(v);
+        }
     }
 
     if (result.Error) {
