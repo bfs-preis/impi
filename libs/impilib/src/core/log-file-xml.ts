@@ -171,8 +171,8 @@ function _generateXml(result: ILogResult, writeRows: boolean = true): any {
 
         for (let p of Object.getOwnPropertyNames(result.Mapping.Mappings)) {
             let nameElement = mappingsElement.ele(p);
-            for (let pr of Object.getOwnPropertyNames(result.Mapping.Mappings.Mappings[p])) {
-                nameElement.ele(pr).txt(result.Mapping.Mappings.Mappings[p][pr]);
+            for (let pr of Object.getOwnPropertyNames(result.Mapping.Mappings[p])) {
+                nameElement.ele(pr).txt(result.Mapping.Mappings[p][pr]);
             }
 
         }
