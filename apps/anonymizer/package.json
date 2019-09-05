@@ -1,6 +1,6 @@
 {
   "name": "anonymizer",
-  "version": "1.0.4",
+  "version": "1.5.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
