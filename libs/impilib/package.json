@@ -1,6 +1,6 @@
 {
   "name": "impilib",
-  "version": "1.0.4",
+  "version": "1.5.1",
   "description": "transforms bank data to impi output",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
