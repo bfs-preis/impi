@@ -1,6 +1,6 @@
 {
   "name": "impilib",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "transforms bank data to impi output",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -28,12 +28,12 @@
     "normalize-city": "file:../normalize-city",
     "normalize-street": "file:../normalize-street",
     "rxjs": "^5.4.2",
+    "sax": "^1.2.4",
     "sqlite3": "^3.1.8",
     "stream-transform": "^0.1.2",
     "unzip": "^0.1.11",
     "uuid": "^3.3.2",
-    "xmlbuilder": "10.1.1",
-    "sax": "^1.2.4"
+    "xmlbuilder": "10.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
