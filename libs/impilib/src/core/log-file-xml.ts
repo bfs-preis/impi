@@ -38,11 +38,14 @@ export function readResultZipFile(file: string, callback: (result: ILogResult) =
                             Scales:{}
                         };
                         res.Log.Mapping.at(0).Mappings.at(0).each((c, m) => {
-                            mapping.Mappings[m.name]=m.text();
+                            mapping.Mappings[m.attributes().Name]={};
+                            m.each((c2,m2)=>{
+                                mapping.Mappings[m.attributes().Name][m2.attributes().Name]=m2.attributes().Value;
+                            });
                         });
 
                         res.Log.Mapping.at(0).Scales.at(0).each((c, m) => {
-                            mapping.Scales[m.name]=m.text();
+                            mapping.Scales[m.attributes().Name]=m.attributes().Value;
                         });
 
                         let matchsummary: ILogMatchingType[] = [];
@@ -161,7 +164,8 @@ function _generateXml(result: ILogResult, writeRows: boolean = true): any {
         "CsvRowCount": result.Meta.CsvRowCount,
         "OutZipFile": result.Meta.OutZipFile,
         "MappingFile": result.Meta.MappingFile,
-        "ClientVersion": result.Meta.ClientVersion
+        "ClientVersion": result.Meta.ClientVersion,
+        "SedexSenderId":result.Meta.SedexSenderId
     });
 
     //Mapping
@@ -170,16 +174,24 @@ function _generateXml(result: ILogResult, writeRows: boolean = true): any {
         let mappingsElement = mappingElement.ele("Mappings");
 
         for (let p of Object.getOwnPropertyNames(result.Mapping.Mappings)) {
-            let nameElement = mappingsElement.ele(p);
+            let nameElement = mappingsElement.ele("Property",{
+                "Name":p
+            });
             for (let pr of Object.getOwnPropertyNames(result.Mapping.Mappings[p])) {
-                nameElement.ele(pr).txt(result.Mapping.Mappings[p][pr]);
+                nameElement.ele("PropertyValue",{
+                    "Name":pr ,
+                    "Value":  result.Mapping.Mappings[p][pr]
+                });
             }
 
         }
 
         let scalesElement = mappingElement.ele("Scales");
         for (let p of Object.getOwnPropertyNames(result.Mapping.Scales)) {
-            let nameElement = mappingsElement.ele(p).txt(result.Mapping.Scales[p]);
+            let nameElement = scalesElement.ele("ScaleProperty",{
+                "Name":p,
+                "Value":result.Mapping.Scales[p]
+            });
         }
     }
 
@@ -188,7 +200,7 @@ function _generateXml(result: ILogResult, writeRows: boolean = true): any {
     for (let m of result.MatchSummary.sort((m1, m2) => m1.Id - m2.Id)) {
         matchSummeryElement.ele("Match", {
             "Id": m.Id,
-            "Text": m.Name,
+            "Name": m.Name,
             "Count": m.Count
         });
     }

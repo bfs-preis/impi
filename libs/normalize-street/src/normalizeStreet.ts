@@ -248,12 +248,12 @@ export function normalizeStreet(street: string): string {
 
     //Tout supprimer après une parenthèse (
     if (street_normalized.indexOf('(') > 0) {
-        street_normalized = street_normalized.substr(0, street_normalized.indexOf('(') - 1);
+        street_normalized = street_normalized.substr(0, street_normalized.indexOf('('));
     }
 
     //Tout supprimer après un slash
     if (street_normalized.indexOf('/') > 0) {
-        street_normalized = street_normalized.substr(0, street_normalized.indexOf('/') - 1);
+        street_normalized = street_normalized.substr(0, street_normalized.indexOf('/'));
     }
 
     //Mettre en majuscule
@@ -296,26 +296,26 @@ export function normalizeStreetNumber(streetNumber: string): string {
 
     //Tout supprimer après une parenthèse (
     if (streetNumber_normalized.indexOf('(') > 0) {
-        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('(') - 1);
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('(') );
     }
 
     //Tout supprimer après un & (
     if (streetNumber_normalized.indexOf('&') > 0) {
-        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('&') - 1);
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('&'));
     }
     //Tout supprimer après un + (
     if (streetNumber_normalized.indexOf('+') > 0) {
-        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('+') - 1);
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('+'));
     }
 
     //Tout supprimer après un slash
     if (streetNumber_normalized.indexOf('/') > 0) {
-        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('/') - 1);
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('/'));
     }
 
     //Tout supprimer après un backslash
     if (streetNumber_normalized.indexOf('\\') > 0) {
-        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('\\') - 1);
+        streetNumber_normalized = streetNumber_normalized.substr(0, streetNumber_normalized.indexOf('\\'));
     }
 
 
