@@ -27,7 +27,7 @@
   "dependencies": {
     "better-sqlite3": "^4.0.3",
     "commander": "^2.11.0",
-    "csv-parse": "^2.0.0",
+    "csv-parse": "^4.4.6",
     "iconv-lite": "^0.4.19",
     "normalize-city": "file:../normalize-city",
     "normalize-street": "file:../normalize-street",
