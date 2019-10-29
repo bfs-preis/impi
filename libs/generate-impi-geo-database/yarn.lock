@@ -191,9 +191,9 @@ cryptiles@3.x.x:
   dependencies:
     boom "5.x.x"
 
-csv-parse@^2.0.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-2.4.0.tgz#d4c72a1533734b2c2a65f486d13091264cacc115"
+csv-parse@^4.4.6:
+  version "4.4.6"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-4.4.6.tgz#08804dbe86037c46810d49ced77fa0e121f83b4f"
 
 cycle@1.0.x:
   version "1.0.3"
@@ -487,10 +487,10 @@ node-gyp@^3.6.2:
     abbrev "1"
 
 "normalize-city@file:../normalize-city":
-  version "1.0.0"
+  version "1.5.2"
 
 "normalize-street@file:../normalize-street":
-  version "1.0.5"
+  version "1.5.2"
 
 "npmlog@0 || 1 || 2 || 3 || 4":
   version "4.1.2"
