@@ -3171,7 +3171,7 @@ img-stats@^0.5.2:
     xmldom "^0.1.19"
 
 "impilib@file:../../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -3179,9 +3179,10 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-fe387881-eb38-4bdb-8b7d-e46611851ee8-1556631114406/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-fe387881-eb38-4bdb-8b7d-e46611851ee8-1556631114406/node_modules/normalize-street"
+    normalize-city "file:../../libs/normalize-city"
+    normalize-street "file:../../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -4575,7 +4576,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -4598,7 +4599,7 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
 "normalize-street@file:../../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-url@^1.4.0:
   version "1.9.1"
@@ -7216,8 +7217,9 @@ websocket-driver@>=0.5.1:
     websocket-extensions ">=0.1.1"
 
 websocket-extensions@>=0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.2.tgz#0e18781de629a18308ce1481650f67ffa2693a5d"
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 when@~3.6.x:
   version "3.6.4"
