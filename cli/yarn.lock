@@ -649,7 +649,7 @@ ieee754@^1.1.4:
   integrity sha512-GguP+DRY+pJ3soyIiGPTvdiVXjZ+DbXOxGpXn3eMvNW4x4irjqXm4wHKscC+TfxSJ0yw/S1F24tqdMNsMZTiLA==
 
 "impilib@file:../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -657,9 +657,10 @@ ieee754@^1.1.4:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.4-fd7dcd76-bac4-4da1-b1b6-3ea5e0a8c490-1556631189083/node_modules/normalize-city"
-    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.4-fd7dcd76-bac4-4da1-b1b6-3ea5e0a8c490-1556631189083/node_modules/normalize-street"
+    normalize-city "file:../libs/normalize-city"
+    normalize-street "file:../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -796,9 +797,9 @@ lodash.get@~4.4.2:
   integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
 
 lodash@^4.17.10, lodash@^4.8.0:
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
-  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^2.2.0:
   version "2.2.0"
@@ -917,7 +918,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-path@^2.0.0:
   version "2.1.1"
@@ -927,7 +928,7 @@ normalize-path@^2.0.0:
     remove-trailing-separator "^1.0.1"
 
 "normalize-street@file:../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
@@ -1200,6 +1201,11 @@ safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
+
+sax@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
+  integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
 semver@^5.3.0:
   version "5.6.0"
