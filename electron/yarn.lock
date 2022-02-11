@@ -404,8 +404,9 @@ chalk@^2.3.1:
     supports-color "^5.3.0"
 
 chownr@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
+  integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
 chromium-pickle-js@^0.2.0:
   version "0.2.0"
@@ -1195,7 +1196,7 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
 "impilib@file:../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -1203,9 +1204,10 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-city"
-    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-street"
+    normalize-city "file:../libs/normalize-city"
+    normalize-street "file:../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -1676,7 +1678,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.4.0:
   version "2.4.0"
@@ -1694,7 +1696,7 @@ normalize-path@^2.0.0:
     remove-trailing-separator "^1.0.1"
 
 "normalize-street@file:../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
