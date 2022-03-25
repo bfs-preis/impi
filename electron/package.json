@@ -47,7 +47,7 @@
         "@types/electron-settings": "^3.1.0",
         "@types/yargs": "^11.0.0",
         "cpr": "^3.0.1",
-        "electron": "^1.6.6",
+        "electron": "^13.6.6",
         "electron-builder": "^19.45.4",
         "electron-rebuild": "^1.8.2",
         "rimraf": "^2.6.2",
