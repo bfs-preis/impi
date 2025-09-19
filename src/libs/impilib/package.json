@@ -1,0 +1,67 @@
+{
+  "name": "impilib",
+  "version": "1.5.2",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "test": "NODE_NO_WARNINGS=1 mocha --loader=ts-node/esm tests/**/*.spec.ts --timeout 99999",
+    "test:watch": "mocha -r ts-node/register src/**/*.spec.ts --watch",
+    "test:coverage": "nyc mocha -r ts-node/register src/**/*.spec.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "bump": "pnpm version patch",
+    "tsc": "tsc"
+  },
+  "description": "Transforms bank data to IMPI output",
+  "dependencies": {
+    "normalize-common": "file:../normalize-common",
+    "csv-parse": "^5.6.0",
+    "moment": "catalog:",
+    "unzip": "catalog:",
+    "csv-stringify": "catalog:",
+    "iconv-lite": "catalog:",
+    "stream-transform": "catalog:",
+    "better-sqlite3": "catalog:",
+    "sqlite3": "catalog:",
+    "archiver": "catalog:",
+    "big-integer": "catalog:",
+    "dayjs": "catalog:",
+    "node-stream-zip": "catalog:",
+    "rxjs": "catalog:",
+    "sax": "catalog:",
+    "uuid": "catalog:",
+    "xmlbuilder2": "catalog:",
+    "normalize-city": "file:../normalize-city",
+    "normalize-street": "file:../normalize-street"
+  },
+  "devDependencies": {
+    "@types/chai": "catalog:testing",
+    "@types/mocha": "catalog:testing",
+    "@types/node": "catalog:",
+    "chai": "catalog:testing",
+    "mocha": "catalog:testing",
+    "nyc": "catalog:testing",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:",
+    "typescript": "catalog:lang",
+    "@types/uuid": "catalog:",
+    "@types/archiver": "catalog:",
+    "@types/better-sqlite3": "catalog:"
+  }
+}

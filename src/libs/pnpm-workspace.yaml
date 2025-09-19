@@ -1,0 +1,50 @@
+packages:
+  - normalize-common
+  - normalize-street
+  - normalize-city
+  - impilib
+  - generate-impi-geo-database
+
+catalog:
+  '@types/archiver': ^6.0.2
+  '@types/better-sqlite3': ^7.6.11
+  '@types/node': ^22.10.0
+  '@types/uuid': ^10.0.0
+  archiver: ^7.0.1
+  better-sqlite3: ^9.6.0
+  big-integer: ^1.6.52
+  commander: ^12.1.0
+  csv-stringify: ^6.5.2
+  dayjs: ^1.11.13
+  iconv-lite: ^0.6.3
+  moment: ^2.3.0
+  node-stream-zip: ^1.15.0
+  ora: ^9.0.0
+  rimraf: ^6.0.1
+  rxjs: ^7.8.1
+  sax: ^1.4.1
+  sqlite3: ^5.1.7
+  stream-transform: ^3.4.0
+  ts-node: ^10.9.2
+  unzip: ^0.1.11
+  uuid: ^10.0.0
+  winston: ^3.17.0
+  xmlbuilder2: ^3.1.1
+
+catalogs:
+  eslint:
+    '@typescript-eslint/eslint-plugin': ^8.44.0
+    '@typescript-eslint/parser': ^8.44.0
+    eslint: ^9.35.0
+    eslint-formatter-compact: ^8.40.0
+  lang:
+    typescript: ^5.9.2
+  testing:
+    '@types/chai': ^5.0.0
+    '@types/mocha': ^10.0.0
+    chai: ^5.0.0
+    mocha: ^10.8.2
+    nyc: ^17.0.0
+
+ignoredBuiltDependencies:
+  - better-sqlite3

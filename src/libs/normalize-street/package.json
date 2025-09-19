@@ -1,0 +1,45 @@
+{
+  "name": "normalize-street",
+  "version": "1.5.2",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "pnpm run clean",
+    "build": "pnpm run tsc",
+    "test": "NODE_NO_WARNINGS=1 mocha --loader=ts-node/esm src/**/*.spec.ts",
+    "test:watch": "mocha -r ts-node/register src/**/*.spec.ts --watch",
+    "test:coverage": "nyc mocha -r ts-node/register src/**/*.spec.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "bump": "pnpm version patch",
+    "tsc": "tsc"
+  },
+  "description": "Function for normalizing street names",
+  "dependencies": {
+    "normalize-common": "file:../normalize-common"
+  },
+  "devDependencies": {
+    "@types/chai": "catalog:testing",
+    "@types/mocha": "catalog:testing",
+    "@types/node": "catalog:",
+    "chai": "catalog:testing",
+    "mocha": "catalog:testing",
+    "nyc": "catalog:testing",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:"
+  }
+}

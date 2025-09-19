@@ -1,0 +1,36 @@
+{
+  "name": "normalize-common",
+  "version": "1.5.2",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "bump": "pnpm version patch",
+    "tsc": "tsc"
+  },
+  "description": "Common normalization utilities for street and city names",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:",
+    "typescript": "catalog:lang"
+  }
+}

@@ -1,0 +1,32 @@
+# pnpm configuration for IMPI project
+
+# Package manager settings
+package-manager=pnpm
+
+# Dependency resolution
+auto-install-peers=true
+shamefully-hoist=false
+strict-peer-dependencies=false
+
+# Performance settings
+prefer-frozen-lockfile=true
+enable-pre-post-scripts=true
+
+# Security settings
+audit-level=moderate
+
+# Node.js settings
+use-node-version=22.19.0
+
+# Registry settings (uncomment if using private registry)
+# registry=https://registry.npmjs.org/
+
+# Workspace settings
+link-workspace-packages=true
+save-workspace-protocol=rolling
+
+# Build settings
+ignore-workspace-root-check=false
+
+# Logging
+loglevel=info

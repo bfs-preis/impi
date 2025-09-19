@@ -1,0 +1,60 @@
+{
+  "name": "generate-impi-geo-database",
+  "version": "1.5.2",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "bump": "pnpm version patch",
+    "tsc": "tsc",
+    "build_win32": "pkg . --targets win-x86"
+  },
+  "description": "Generate the IMPI sqlite3 db from csv files",
+  "dependencies": {
+    "normalize-common": "file:../normalize-common",
+    "csv-parse": "^5.5.2",
+    "csv-stringify": "catalog:",
+    "iconv-lite": "catalog:",
+    "stream-transform": "catalog:",
+    "better-sqlite3": "catalog:",
+    "sqlite3": "catalog:",
+    "commander": "catalog:",
+    "ora": "catalog:",
+    "winston": "catalog:",
+    "normalize-city": "file:../normalize-city",
+    "normalize-street": "file:../normalize-street"
+  },
+  "devDependencies": {
+    "@types/chai": "catalog:testing",
+    "@types/mocha": "catalog:testing",
+    "@types/node": "catalog:",
+    "chai": "catalog:testing",
+    "mocha": "catalog:testing",
+    "nyc": "catalog:testing",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:",
+    "typescript": "catalog:lang",
+    "@types/uuid": "catalog:",
+    "@types/archiver": "catalog:",
+    "@types/better-sqlite3": "catalog:"
+  },
+  "bin": {
+    "generate-impi-db": "dist/generate-impi-db-cli.js"
+  }
+}
