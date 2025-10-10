@@ -1,8 +1,8 @@
-export { globalReplace, translate, validateStringInput } from './string-utils';
+export { globalReplace, translate, validateStringInput } from './string-utils.js';
 export {
   NormalizationConfig,
   NormalizationRule,
   createReplacementRules,
   applyRules,
   BaseNormalizer
-} from './base-normalizer';
+} from './base-normalizer.js';

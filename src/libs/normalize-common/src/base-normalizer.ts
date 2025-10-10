@@ -1,4 +1,4 @@
-import { globalReplace, translate, validateStringInput } from './string-utils';
+import { globalReplace, translate, validateStringInput } from './string-utils.js';
 
 export interface NormalizationRule {
   type: 'replace' | 'translate' | 'truncateAt' | 'removePrefix';

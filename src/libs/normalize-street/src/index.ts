@@ -1,3 +1,3 @@
-import { normalizeStreet, normalizeStreetNumber } from './normalizeStreet';
+import { normalizeStreet, normalizeStreetNumber } from './normalizeStreet.js';
 
 export { normalizeStreet, normalizeStreetNumber } 

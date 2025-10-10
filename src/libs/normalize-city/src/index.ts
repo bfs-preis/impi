@@ -1,3 +1,3 @@
-import { normalizeCity } from './normalizeCity';
+import { normalizeCity } from './normalizeCity.js';
 
 export { normalizeCity } 
