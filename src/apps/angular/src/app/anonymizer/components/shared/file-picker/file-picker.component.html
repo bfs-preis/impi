@@ -1,0 +1,13 @@
+<div class="file-picker-container">
+	<div class="file-picker-content">
+		<div class="file-info">
+			<span class="file-label">{{ label }}</span>
+			<span class="file-path" [title]="selectedPath || ''">
+				{{ mode === "file" ? getFileName() : getShortPath() }}
+			</span>
+		</div>
+		<button type="button" mat-icon-button obButton="tertiary" [matTooltip]="buttonText" [disabled]="disabled" (click)="selectFile()" class="file-picker-button">
+			<mat-icon [svgIcon]="getIcon()"></mat-icon>
+		</button>
+	</div>
+</div>

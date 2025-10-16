@@ -1,0 +1,75 @@
+<div class="settings-dialog">
+  <h2 mat-dialog-title>{{ 'anonymizer.Settings.Title' | translate }}</h2>
+
+  <mat-dialog-content>
+    <form class="settings-form">
+      <!-- CSV Encoding -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.CSVEncoding' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedEncoding" name="encoding">
+          @for (encoding of encodings; track encoding) {
+            <mat-option [value]="encoding">
+              {{ encoding }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- CSV Separator -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.CSVSeparater' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedSeparator" name="separator">
+          @for (sep of separators; track sep) {
+            <mat-option [value]="sep.value">
+              {{ sep.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Theme -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.Theme' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedTheme" name="theme">
+          <mat-option value="Light">
+            {{ 'anonymizer.Settings.ThemeLight' | translate }}
+          </mat-option>
+          <mat-option value="Dark">
+            {{ 'anonymizer.Settings.ThemeDark' | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Language -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.Language' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedLanguage" name="language">
+          @for (lang of languages; track lang) {
+            <mat-option [value]="lang.code">
+              {{ lang.label | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Sedex Sender ID -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.SedexSenderId' | translate }}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="selectedSedexSenderId"
+          name="sedexSenderId"
+          placeholder="e.g., 1234567890">
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button type="button" [obButton]="'secondary'" (click)="cancel()">
+      Cancel
+    </button>
+    <button type="button" [obButton]="'primary'" (click)="save()">
+      {{ 'anonymizer.Settings.ButtonClose' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,57 @@
+<div class="csv-selector-container">
+	<mat-card>
+		<mat-card-header>
+			<h3>{{ "anonymizer.Csv.Title" | translate }}</h3>
+		</mat-card-header>
+		<mat-card-content>
+			<!-- File Picker -->
+			<app-file-picker
+				[label]="'anonymizer.Csv.File' | translate"
+				[buttonText]="'anonymizer.Csv.SelectFile' | translate"
+				[filters]="filters"
+				[mode]="'file'"
+				[disabled]="disabled"
+				[selectedPath]="file"
+				(fileSelected)="onFileSelected($event)"
+			>
+			</app-file-picker>
+
+			<!-- Loading Spinner -->
+			@if (isValidating) {
+				<div class="validation-spinner">
+					<ob-spinner></ob-spinner>
+					<span>Validating CSV file...</span>
+				</div>
+			}
+
+			<!-- Error Message -->
+			@if (error && !isValidating) {
+				<div class="alert alert-danger" role="alert">
+					<mat-icon svgIcon="exclamation_circle"></mat-icon>
+					<span>{{ error }}</span>
+				</div>
+			}
+
+			<!-- CSV Info -->
+			@if (isValidFile && !isValidating) {
+				<div class="csv-info">
+					<div class="info-row">
+						<label>{{ "anonymizer.Csv.Rows" | translate }}</label>
+						<span class="badge bg-success">{{ formatRowCount() }}</span>
+					</div>
+				</div>
+			}
+			<!-- Validation Status Icon -->
+			@if (!isValidating) {
+				<div class="validation-status">
+					@if (isValidFile) {
+						<mat-icon svgIcon="checkmark_circle" class="text-success"> </mat-icon>
+					}
+					@if (!isValidFile && file) {
+						<mat-icon svgIcon="exclamation_circle" class="text-danger"> </mat-icon>
+					}
+				</div>
+			}
+		</mat-card-content>
+	</mat-card>
+</div>

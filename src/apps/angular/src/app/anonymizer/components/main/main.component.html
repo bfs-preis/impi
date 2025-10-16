@@ -1,0 +1,79 @@
+<div class="anonymizer-main-container">
+	<!-- Header with Settings and Help buttons -->
+	<div class="main-header">
+		<div class="header-content">
+			<h1>{{ "anonymizer.Main.Title" | translate }}</h1>
+			<p class="description">{{ "anonymizer.Main.Description" | translate }}</p>
+		</div>
+		<div class="header-actions">
+			<button type="button" mat-icon-button obButton="tertiary" [disabled]="isProcessing" (click)="openHelpDialog()" class="icon-button">
+				<mat-icon svgIcon="question" />
+			</button>
+			<button type="button" mat-icon-button obButton="tertiary" [disabled]="isProcessing" (click)="openSettingsDialog()" class="icon-button">
+				<mat-icon svgIcon="settings" />
+			</button>
+		</div>
+	</div>
+
+	<!-- 3-Step Workflow -->
+	<div class="workflow-steps">
+		<!-- Step 1: Database -->
+		<app-db-selector [disabled]="isProcessing" (isValid)="setState(0, $event)"> </app-db-selector>
+
+		<!-- Step 2: CSV Input -->
+		<app-csv-selector [disabled]="isProcessing" (isValid)="setState(1, $event)" (rowCountChange)="onRowCountChange($event)"> </app-csv-selector>
+
+		<!-- Step 3: Output Directory -->
+		<app-output-selector [disabled]="isProcessing" (isValid)="setState(2, $event)"> </app-output-selector>
+	</div>
+
+	<!-- Processing Section -->
+	<div class="processing-section">
+		<!-- Process Button -->
+		<div class="process-button-container">
+			<button
+				type="button"
+				obButton="primary"
+				[disabled]="!allValid() || isProcessing"
+				(click)="process()"
+				class="process-button"
+				[class.processing]="isProcessing"
+			>
+				<mat-icon [svgIcon]="isProcessing ? 'refresh' : 'play'" [class.spinning]="isProcessing"></mat-icon>
+				<span>{{ isProcessing ? "Processing..." : "Start Processing" }}</span>
+			</button>
+		</div>
+
+		<!-- Progress Information -->
+		@if (isProcessing || processedRows > 0) {
+			<div class="progress-info">
+				<div class="progress-stats">
+					<div class="stat">
+						<label>{{ "anonymizer.Main.Row" | translate }}</label>
+						<span>{{ processedRows }}/{{ maxRows }}</span>
+					</div>
+					<div class="stat">
+						<label>{{ "anonymizer.Main.Time" | translate }}</label>
+						<span>{{ getFormattedTime() }}</span>
+					</div>
+					<div class="stat">
+						<label>{{ "anonymizer.Main.ETA" | translate }}</label>
+						<span>{{ getFormattedEta() }}</span>
+					</div>
+				</div>
+				<!-- Progress Bar -->
+				<div class="progress-bar-container">
+					<mat-progress-bar mode="determinate" [value]="getProgressValue()" color="accent"> </mat-progress-bar>
+					<span class="progress-percentage">{{ getProgressValue().toFixed(1) }}%</span>
+				</div>
+				<!-- Error Alert -->
+				@if (error) {
+					<div class="alert alert-danger" role="alert">
+						<mat-icon svgIcon="exclamation_circle"></mat-icon>
+						<span>{{ error }}</span>
+					</div>
+				}
+			</div>
+		}
+	</div>
+</div>

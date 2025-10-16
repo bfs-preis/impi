@@ -1,0 +1,24 @@
+<div class="help-dialog">
+	<h2 mat-dialog-title>{{ "anonymizer.Help.Title" | translate }}</h2>
+
+	<mat-dialog-content>
+		<h3>{{ "anonymizer.Main.Title" | translate }}</h3>
+		<span style="padding-bottom: 10px; display: block">Version {{ this.appVersion }}</span>
+		<div>
+			<a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi/wiki" target="_blank">
+				{{ "anonymizer.Help.Documentation" | translate }} (https://github.com/bfs-preis/impi/wiki)
+			</a>
+		</div>
+		<div>
+			<a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi" target="_blank">
+				{{ "anonymizer.Help.SourceCode" | translate }} (https://github.com/bfs-preis/impi)
+			</a>
+		</div>
+	</mat-dialog-content>
+
+	<mat-dialog-actions align="end">
+		<button type="button" mat-button obButton="primary" cdkFocusInitial mat-dialog-close>
+			{{ "anonymizer.Help.ButtonClose" | translate }}
+		</button>
+	</mat-dialog-actions>
+</div>

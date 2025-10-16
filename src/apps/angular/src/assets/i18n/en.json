@@ -1,0 +1,63 @@
+{
+  "anonymizer": {
+    "Main": {
+      "Title": "IMPI Data Enrichment",
+      "Description": "Using this tool, the bankdata is enriched with geodata and then anonymized.",
+      "Row": "Row:",
+      "Time": "Time:",
+      "ETA": "ETA:",
+      "Error": "Error",
+      "Finished": "Finished",
+      "Duration": "Duration:"
+    },
+    "Db": {
+      "Title": "Geodata File",
+      "File": "File:",
+      "Period": "Period:",
+      "Version": "Version:",
+      "SelectFile": "Select DB File",
+      "KFactor": "Factor K testing"
+    },
+    "Csv": {
+      "Title": "Bankdata File",
+      "File": "File:",
+      "Rows": "Rows:",
+      "SelectFile": "Select CSV File"
+    },
+    "Out": {
+      "Title": "Output Directory",
+      "Directory": "Directory:",
+      "SelectFile": "Select Output Directory"
+    },
+    "Settings": {
+      "Title": "Settings",
+      "CSVEncoding": "CSV Encoding",
+      "CSVSeparater": "CSV Separater",
+      "SedexSenderId": "Sedex Sender Id",
+      "Theme": "Theme",
+      "ThemeDark": "Dark",
+      "ThemeLight": "Light",
+      "Language": "Language",
+      "LanguageEn": "English",
+      "LanguageDe": "German",
+      "LanguageFr": "French",
+      "LanguageIt": "Italian",
+      "ButtonClose": "Save & Close"
+    },
+    "Help": {
+      "Title": "Help",
+      "Documentation": "Documentation",
+      "SourceCode": "SourceCode",
+      "DevelopedBy": "Developed by",
+      "ButtonClose": "Close"
+    },
+    "KFactor": {
+      "Description": "Start the test to verify that the database fulfills the k factor.",
+      "ButtonStart": "Start",
+      "ButtonCancel": "Cancel",
+      "ButtonClose": "Close",
+      "SuccessMessage": "K factor fulfilled.",
+      "FailMessage": "K factor not fulfilled!"
+    }
+  }
+}

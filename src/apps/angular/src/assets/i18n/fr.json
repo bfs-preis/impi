@@ -1,0 +1,63 @@
+{
+  "anonymizer": {
+    "Main": {
+      "Title": "IMPI Enrichissement des Données",
+      "Description": "Par cet outil, les données bancaires sont enrichies avec des données géolocalisées et anonymisées ensuite.",
+      "Row": "Ligne:",
+      "Time": "Heure:",
+      "ETA": "ETA:",
+      "Error": "Erreur",
+      "Finished": "Terminé",
+      "Duration": "Durée:"
+    },
+    "Db": {
+      "Title": "Fichier des géodonnées",
+      "File": "Fichier:",
+      "Period": "Période:",
+      "Version": "Version:",
+      "SelectFile": "Choisir le fichier de base de données",
+      "KFactor": "Tester le facteur K "
+    },
+    "Csv": {
+      "Title": "Fichier données bancaires",
+      "File": "Fichier:",
+      "Rows": "Lignes:",
+      "SelectFile": "Choisir le fichier Csv"
+    },
+    "Out": {
+      "Title": "Répertoire de sortie",
+      "Directory": "Répertoire:",
+      "SelectFile": "Choisir le répertoire de sortie"
+    },
+    "Settings": {
+      "Title": "Paramètres",
+      "CSVEncoding": "Codage CSV",
+      "CSVSeparater": "Séparateur CSV",
+      "SedexSenderId": "Sedex Sender Id",
+      "Theme": "Thème",
+      "ThemeDark": "Sombre",
+      "ThemeLight": "Brillant",
+      "Language": "Langue",
+      "LanguageEn": "Anglais",
+      "LanguageDe": "Allemand",
+      "LanguageFr": "Français",
+      "LanguageIt": "Italien",
+      "ButtonClose": "Enregistrer et fermer"
+    },
+    "Help": {
+      "Title": "Aide",
+      "Documentation": "Documentation",
+      "SourceCode": "SourceCode",
+      "DevelopedBy": "Développé par",
+      "ButtonClose": "Fermer"
+    },
+    "KFactor": {
+      "Description": "Démarrer le test pour verifier le factor k",
+      "ButtonStart": "Démarrage",
+      "ButtonCancel": "Annuler",
+      "ButtonClose": "Fermer",
+      "SuccessMessage": "factor k satisfait",
+      "FailMessage": "factor k pas satisfait!"
+    }
+  }
+}
