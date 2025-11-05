@@ -1,0 +1,57 @@
+{
+    "name": "impi",
+    "productName": "IMPI",
+    "version": "1.5.2",
+    "type": "module",
+    "description": "IMPI Data enrichment tool",
+    "main": "app/index.js",
+    "scripts": {
+        "copyAnonHtml": "cpr ../apps/angular/dist/ ./app/anonymizer -o",
+        "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
+        "copyBackground": "cpr ./src/background/index-background.html ./app/background/index-background.html -o",
+        "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
+        "clean": "rimraf app",
+        "tsc": "tsc",
+        "start": "npm run copyBackground && npm run tsc && electron ./app -l debug --inspect --no-sandbox",
+        "release": "npm run build && electron-builder",
+        "rebuildNative": "electron-builder install-app-deps",
+        "build": "npm run clean && npm run tsc && npm run copyBackground && npm run copyAnonHtml && npm run createBuildPackageJson"
+    },
+    "keywords": [],
+    "author": "adi",
+    "license": "MIT",
+    "build": {
+        "directories": {
+            "output": "package"
+        },
+        "linux": {
+            "asar": false,
+            "files": [
+                "!src/"
+            ],
+            "target": "AppImage"
+        },
+        "appImage": {
+            "systemIntegration": "doNotAsk"
+        }
+    },
+    "dependencies": {
+        "colors": "^1.4.0",
+        "electron-log": "^5.4.3",
+        "electron-settings": "^4.0.4",
+        "impilib": "file:../libs/impilib/",
+        "ora": "^9.0.0",
+        "yargs": "^11.0.0"
+    },
+    "devDependencies": {
+        "@types/electron": "^1.6.12",
+        "@types/electron-settings": "^4.0.2",
+        "@types/yargs": "^17.0.34",
+        "cpr": "^3.0.1",
+        "electron": "^39.1.0",
+        "electron-builder": "^26.0.12",
+        "electron-rebuild": "^3.2.9",
+        "rimraf": "^6.1.0",
+        "typescript": "^5.9.3"
+    }
+}

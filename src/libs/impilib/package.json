@@ -1,6 +1,7 @@
 {
   "name": "impilib",
   "version": "1.5.2",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://git.softrain.ch/impi.git"
@@ -12,7 +13,6 @@
     "pnpm": ">=8.0.0"
   },
   "packageManager": "pnpm@8.15.1",
-  "type": "module",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {

@@ -1,5 +1,5 @@
 //https://github.com/SamDecrock/node-xmlreader/blob/master/xmlreader.js
-const sax = require("sax");
+import * as sax from "sax";
 
 export function read(xmlstring, callback) {
     const saxparser = sax.parser(true);

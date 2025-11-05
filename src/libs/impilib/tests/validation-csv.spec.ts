@@ -3,6 +3,7 @@ import 'mocha';
 
 import { checkValidationRules } from '../src/validation/checkValidationRules.js';
 import { IBankDataCsv } from '../src/types/IBankDataCsv.js';
+import { PeriodeDefinition } from '../src/validation/ValidationRules.js';
 import { csvTestfileValidation } from './Constants.js';
 import * as fs from 'fs';
 
@@ -20,6 +21,10 @@ function isNumeric(val: any): boolean {
 
 
 describe('default validation tests (' + csvTestfileValidation + ')', () => {
+
+    // Set the validation period (dates in test data are 16.07.2018, which should be outside this period)
+    PeriodeDefinition.PeriodFrom = new Date(2017, 0, 1); // January 1, 2017
+    PeriodeDefinition.PeriodTo = new Date(2017, 2, 31); // March 31, 2017
 
     const records = parse(fs.readFileSync(csvTestfileValidation, { encoding: 'latin1' }), {
         columns: true,

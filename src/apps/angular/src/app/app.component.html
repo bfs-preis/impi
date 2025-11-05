@@ -1,5 +1,13 @@
 <ob-master-layout [navigation]="[{ url: 'home', label: 'home' }]">
 	<ng-container obHeaderTitle>{{ "anonymizer.Main.Title" | translate }}</ng-container>
+	<ng-template #obHeaderControl>
+		<button type="button" mat-icon-button obButton="tertiary" class="icon-button">
+			<mat-icon svgIcon="question" />
+		</button>
+		<button type="button" mat-icon-button obButton="tertiary" class="icon-button">
+			<mat-icon svgIcon="settings" />
+		</button>
+	</ng-template>
 	<ng-container obFooterInfo>
 		<p>&copy; 2025 application operator</p>
 	</ng-container>

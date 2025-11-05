@@ -33,13 +33,13 @@ export const ValidationRules: IValidationRule[] = [
     {
         Id: 2, Message: "TransactionDate Format ≠ Date", ValCode: (row: IBankDataCsv): boolean => {
             if (row.transactiondate.length === 0) return true;
-            return moment(row.transactiondate, 'D.M.YYYY', true).isValid();
+            return moment(row.transactiondate, 'DD.MM.YYYY', true).isValid();
         }, RedFlag: true
     },
     {
         Id: 3, Message: "TransactionDate is not in the previous quarter", ValCode: (row: IBankDataCsv): boolean => {
             if (row.transactiondate.length === 0) return true;
-            const transactionDate = moment(row.transactiondate, 'D.M.YYYY', true);
+            const transactionDate = moment(row.transactiondate, 'DD.MM.YYYY', true);
             if (!transactionDate.isValid()) return true;
 
             if (transactionDate.isBetween(moment(PeriodeDefinition.PeriodFrom), moment(PeriodeDefinition.PeriodTo), 'day', '[]')) return true;

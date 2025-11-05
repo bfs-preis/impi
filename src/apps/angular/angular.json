@@ -28,6 +28,7 @@
               "base": "dist/angular"
             },
             "index": "src/index.html",
+            "baseHref": "./",
             "polyfills": [
               "zone.js"
             ],
