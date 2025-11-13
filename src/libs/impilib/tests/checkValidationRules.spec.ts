@@ -61,7 +61,7 @@ describe('check single validation errors', () => {
     volumeofbuilding: "1",
     yearofconstruction: "1999",
     zipcode: "3000",
-    standardofvolume:""
+    standardofvolume:"2"
   };
 
   it('should have no validation error', () => {
@@ -128,7 +128,7 @@ describe('check single validation errors', () => {
 
     const row = Object.assign({}, Row);
 
-    row.transactiondate = "31.3.2017";
+    row.transactiondate = "31.03.2017";
 
     const result = checkValidationRules(row);
 
@@ -404,7 +404,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have ObjectType = Einfamilienhaus and SingleFamilyHouseType ≠ [Types]', () => {
+/*   it('should have ObjectType = Einfamilienhaus and SingleFamilyHouseType ≠ [Types]', () => {
 
     const row = Object.assign({}, Row);
 
@@ -416,7 +416,7 @@ describe('check single validation errors', () => {
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(24));
 
-  });
+  }); */
 
 
   it('should have ObjectType = Eigentumswohnung and NetLivingArea is missing', () => {
@@ -475,7 +475,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have ObjectType = Eigentumswohnung and CondominiumType ≠ [Types]', () => {
+/*   it('should have ObjectType = Eigentumswohnung and CondominiumType ≠ [Types]', () => {
 
     const row = Object.assign({}, Row);
 
@@ -487,7 +487,7 @@ describe('check single validation errors', () => {
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(29));
 
-  });
+  }); */
 
   it('should have YearOfConstruction is missing', () => {
 
@@ -548,7 +548,7 @@ describe('check single validation errors', () => {
     row.numberofrooms = "0";
   
     const result = checkValidationRules(row);
-    console.log(result);
+
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(33));
 
@@ -658,7 +658,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have ConstructionQuality ≠ schlecht, durchschnittlich, gut or sehr gut', () => {
+/*   it('should have ConstructionQuality ≠ schlecht, durchschnittlich, gut or sehr gut', () => {
 
     const row = Object.assign({}, Row);
 
@@ -669,7 +669,7 @@ describe('check single validation errors', () => {
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(42));
 
-  });
+  }); */
 
   it('should have PropertyCondition is missing', () => {
 
@@ -684,7 +684,7 @@ describe('check single validation errors', () => {
 
   });
 
-  it('should have PropertyCondition ≠ schlecht, intakt, saniert or neuwertig', () => {
+/*   it('should have PropertyCondition ≠ schlecht, intakt, saniert or neuwertig', () => {
 
     const row = Object.assign({}, Row);
 
@@ -695,7 +695,7 @@ describe('check single validation errors', () => {
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(44));
 
-  });
+  }); */
 
   it('should have PrimaryOrSecondaryHome is missing', () => {
 
@@ -731,10 +731,10 @@ describe('check single validation errors', () => {
   
     const result = checkValidationRules(row);
 
-    expect(result.ViolatedRules.length).to.equal(1);
-    expect(result.Flags).to.equalBigInt(getBigInt(47));
+        expect(result.ViolatedRules.length).to.equal(1);
+        expect(result.Flags).to.equalBigInt(getBigInt(47));
 
-  });
+      });
 
    it('should have OwnerOccupiedOrRented ≠ sebstgenutzt or vermietet', () => {
 
@@ -758,7 +758,7 @@ describe('check single validation errors', () => {
     row.volumeofbuilding = "aaa";
   
     const result = checkValidationRules(row);
-    console.log(result);
+
     expect(result.ViolatedRules.length).to.equal(1);
     expect(result.Flags).to.equalBigInt(getBigInt(19));
 

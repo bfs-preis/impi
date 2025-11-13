@@ -1,0 +1,120 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Mocha Tests (impilib)",
+      "runtimeExecutable": "${workspaceFolder}/.vscode/nvm-node.sh",
+      "runtimeArgs": [
+        "--loader=${workspaceFolder}/src/libs/node_modules/.pnpm/ts-node@10.9.2_@types+node@22.18.6_typescript@5.9.2/node_modules/ts-node/esm.mjs",
+        "--no-warnings"
+      ],
+      "program": "${workspaceFolder}/src/libs/impilib/node_modules/mocha/bin/mocha.js",
+      "args": [
+        "--timeout",
+        "999999",
+        "${workspaceFolder}/src/libs/impilib/tests/**/*.spec.ts"
+      ],
+      "cwd": "${workspaceFolder}/src/libs/impilib",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "smartStep": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "env": {
+        "NODE_NO_WARNINGS": "1",
+        "NODE_PATH": "${workspaceFolder}/src/libs/impilib/node_modules:${workspaceFolder}/src/libs/node_modules/.pnpm/node_modules",
+        "TS_NODE_COMPILER_OPTIONS": "{\"sourceMap\":true,\"inlineSourceMap\":false,\"inlineSources\":true}"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current Test File",
+      "runtimeExecutable": "${workspaceFolder}/.vscode/nvm-node.sh",
+      "runtimeArgs": [
+        "--loader=${workspaceFolder}/src/libs/node_modules/.pnpm/ts-node@10.9.2_@types+node@22.18.6_typescript@5.9.2/node_modules/ts-node/esm.mjs",
+        "--no-warnings"
+      ],
+      "program": "${workspaceFolder}/src/libs/impilib/node_modules/mocha/bin/mocha.js",
+      "args": [
+        "--timeout",
+        "999999",
+        "${file}"
+      ],
+      "cwd": "${workspaceFolder}/src/libs/impilib",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "smartStep": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "env": {
+        "NODE_NO_WARNINGS": "1",
+        "NODE_PATH": "${workspaceFolder}/src/libs/impilib/node_modules:${workspaceFolder}/src/libs/node_modules/.pnpm/node_modules",
+        "TS_NODE_COMPILER_OPTIONS": "{\"sourceMap\":true,\"inlineSourceMap\":false,\"inlineSources\":true}"
+      }
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "Debug checkValidationRules Tests (JS Debug Terminal)",
+      "command": "cd src/libs/impilib && NODE_NO_WARNINGS=1 node --loader=${workspaceFolder}/src/libs/node_modules/.pnpm/ts-node@10.9.2_@types+node@22.18.6_typescript@5.9.2/node_modules/ts-node/esm.mjs node_modules/mocha/bin/mocha.js --timeout 999999 tests/checkValidationRules.spec.ts",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_PATH": "${workspaceFolder}/src/libs/impilib/node_modules:${workspaceFolder}/src/libs/node_modules/.pnpm/node_modules"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug checkValidationRules Tests",
+      "runtimeExecutable": "${workspaceFolder}/.vscode/nvm-node.sh",
+      "runtimeArgs": [
+        "--enable-source-maps",
+        "--loader=${workspaceFolder}/src/libs/node_modules/.pnpm/ts-node@10.9.2_@types+node@22.18.6_typescript@5.9.2/node_modules/ts-node/esm.mjs",
+        "--no-warnings"
+      ],
+      "program": "${workspaceFolder}/src/libs/impilib/node_modules/mocha/bin/mocha.js",
+      "args": [
+        "--timeout",
+        "999999",
+        "${workspaceFolder}/src/libs/impilib/tests/checkValidationRules.spec.ts"
+      ],
+      "cwd": "${workspaceFolder}/src/libs/impilib",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "stopOnEntry": false,
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/src/libs/impilib/node_modules/**"
+      ],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/src/libs/impilib/**/*.js"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/src/libs/impilib/**",
+        "!**/node_modules/**"
+      ],
+      "env": {
+        "NODE_NO_WARNINGS": "1",
+        "NODE_PATH": "${workspaceFolder}/src/libs/impilib/node_modules:${workspaceFolder}/src/libs/node_modules/.pnpm/node_modules",
+        "TS_NODE_COMPILER_OPTIONS": "{\"sourceMap\":true,\"inlineSourceMap\":true,\"inlineSources\":true,\"mapRoot\":\".\"}"
+      },
+      "outputCapture": "std"
+    }
+  ]
+}
