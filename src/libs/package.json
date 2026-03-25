@@ -19,10 +19,5 @@
     "@typescript-eslint/parser": "catalog:eslint",
     "eslint": "catalog:eslint",
     "typescript": "catalog:lang"
-  },
-  "pnpm": {
-    "overrides": {
-      "graceful-fs": "^4.2.11"
-    }
   }
 }
