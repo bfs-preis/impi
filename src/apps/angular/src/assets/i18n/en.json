@@ -42,19 +42,21 @@
       "LanguageDe": "German",
       "LanguageFr": "French",
       "LanguageIt": "Italian",
-      "ButtonClose": "Save & Close"
+      "ButtonClose": "Save & Close",
+      "ButtonCancel": "Cancel"
     },
     "Help": {
       "Title": "Help",
       "Documentation": "Documentation",
       "SourceCode": "SourceCode",
       "DevelopedBy": "Developed by",
-      "ButtonClose": "Close"
+      "ButtonClose": "Close",
+      "ButtonCancel": "Abbrechen"
     },
     "KFactor": {
       "Description": "Start the test to verify that the database fulfills the k factor.",
       "ButtonStart": "Start",
-      "ButtonCancel": "Cancel",
+      "ButtonCancel": "Abbrechen",
       "ButtonClose": "Close",
       "SuccessMessage": "K factor fulfilled.",
       "FailMessage": "K factor not fulfilled!"

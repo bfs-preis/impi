@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, app } from 'electron';
+import { ipcMain, BrowserWindow, app, dialog } from 'electron';
 import log from 'electron-log';
 import * as settings from 'electron-settings';
 
@@ -72,6 +72,36 @@ export function registerAnonMessages() {
             log.debug('send verify path response:' + valid);
             Main.GetMainWindow().webContents.send('verify path response', valid);
         })
+    });
+
+    ipcMain.on('select-file', async (event: any, filters: any[]) => {
+        const result = await dialog.showOpenDialog(Main.GetMainWindow(), {
+            properties: ['openFile'],
+            filters: filters || []
+        });
+        Main.GetMainWindow().webContents.send('select-file-response', result.canceled ? null : result.filePaths[0]);
+    });
+
+    ipcMain.on('select-directory', async () => {
+        const result = await dialog.showOpenDialog(Main.GetMainWindow(), {
+            properties: ['openDirectory']
+        });
+        Main.GetMainWindow().webContents.send('select-directory-response', result.canceled ? null : result.filePaths[0]);
+    });
+
+    ipcMain.on('get-setting', (event: any, key: string) => {
+        const appSettings: any = settings.get("AppSettings") || {};
+        Main.GetMainWindow().webContents.send('get-setting-response', { key, value: appSettings[key] });
+    });
+
+    ipcMain.on('set-setting', (event: any, payload: { key: string, value: any }) => {
+        let appSettings: any = settings.get("AppSettings") || {};
+        appSettings[payload.key] = payload.value;
+        settings.set("AppSettings", appSettings);
+    });
+
+    ipcMain.on('get-app-version', () => {
+        Main.GetMainWindow().webContents.send('get-app-version-response', app.getVersion());
     });
 
     ipcMain.on('checkkfactor', (event: any, file: string) => {

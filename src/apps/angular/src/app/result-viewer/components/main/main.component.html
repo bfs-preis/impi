@@ -1,0 +1,16 @@
+@if (processResult) {
+<mat-tab-group>
+    <mat-tab label="Info">
+        <div>
+            <app-process-info [ProcessResult]="processResult"></app-process-info>
+            <app-chart-correct [Violations]="processResult.Violations" [RowCount]="processResult.Meta.CsvRowCount"></app-chart-correct>
+        </div>
+    </mat-tab>
+    <mat-tab label="Validation">
+        <app-chart-violations [Violations]="processResult.Violations"></app-chart-violations>
+    </mat-tab>
+    <mat-tab label="Matches">
+        <app-chart-matches [Matches]="processResult.MatchSummary"></app-chart-matches>
+    </mat-tab>
+</mat-tab-group>
+}

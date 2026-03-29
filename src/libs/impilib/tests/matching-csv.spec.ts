@@ -9,7 +9,12 @@ import * as fs from 'fs';
 
 import { parse } from 'csv-parse/sync';
 
-describe('default matching tests (' + csvTestfileMatching +')', () => {
+describe('default matching tests (' + csvTestfileMatching +')', function() {
+
+    if (!fs.existsSync(csvTestfileMatching) || !fs.existsSync(testDatabase)) {
+        it('SKIPPED: test data files not found (' + csvTestfileMatching + ', ' + testDatabase + ')');
+        return;
+    }
 
     const geoDatabase = new GeoDatabase(testDatabase, (error) => {
         console.log(error);

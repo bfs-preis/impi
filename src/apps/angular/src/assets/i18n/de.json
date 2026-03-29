@@ -42,14 +42,16 @@
       "LanguageDe": "Deutsch",
       "LanguageFr": "Französisch",
       "LanguageIt": "Italienisch",
-      "ButtonClose": "Speichern & Schliessen"
+      "ButtonClose": "Speichern & Schliessen",
+      "ButtonCancel": "Abbrechen"
     },
     "Help": {
       "Title": "Hilfe",
       "Documentation": "Dokumentation",
       "SourceCode": "SourceCode",
       "DevelopedBy": "Entwickelt von",
-      "ButtonClose": "Schliessen"
+      "ButtonClose": "Schliessen",
+      "ButtonCancel": "Abbrechen"
     },
     "KFactor": {
       "Description": "Starten sie den Test um zu überprüfen ob die Datenbank den K Faktor erfüllt.",

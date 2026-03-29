@@ -20,7 +20,12 @@ function isNumeric(val: any): boolean {
 };
 
 
-describe('default validation tests (' + csvTestfileValidation + ')', () => {
+describe('default validation tests (' + csvTestfileValidation + ')', function() {
+
+    if (!fs.existsSync(csvTestfileValidation)) {
+        it('SKIPPED: test data file not found (' + csvTestfileValidation + ')');
+        return;
+    }
 
     // Set the validation period (dates in test data are 16.07.2018, which should be outside this period)
     PeriodeDefinition.PeriodFrom = new Date(2017, 0, 1); // January 1, 2017

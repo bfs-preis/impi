@@ -42,19 +42,21 @@
       "LanguageDe": "Allemand",
       "LanguageFr": "Français",
       "LanguageIt": "Italien",
-      "ButtonClose": "Enregistrer et fermer"
+      "ButtonClose": "Enregistrer et fermer",
+      "ButtonCancel": "Annuler"
     },
     "Help": {
       "Title": "Aide",
       "Documentation": "Documentation",
       "SourceCode": "SourceCode",
       "DevelopedBy": "Développé par",
-      "ButtonClose": "Fermer"
+      "ButtonClose": "Fermer",
+      "ButtonCancel": "Abbrechen"
     },
     "KFactor": {
       "Description": "Démarrer le test pour verifier le factor k",
       "ButtonStart": "Démarrage",
-      "ButtonCancel": "Annuler",
+      "ButtonCancel": "Abbrechen",
       "ButtonClose": "Fermer",
       "SuccessMessage": "factor k satisfait",
       "FailMessage": "factor k pas satisfait!"

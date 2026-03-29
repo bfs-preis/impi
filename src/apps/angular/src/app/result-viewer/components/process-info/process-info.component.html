@@ -1,0 +1,59 @@
+<div style="padding-top:20px">
+    <b>
+        <span>Process Info</span>
+    </b>
+    <table>
+        <tr>
+            <td>StartTime:</td>
+            <td>{{startTime}}</td>
+        </tr>
+        <tr>
+            <td>EndTime:</td>
+            <td>{{endTime}}</td>
+        </tr>
+        <tr>
+            <td>Duration:</td>
+            <td colspan="3">{{duration}}</td>
+        </tr>
+        <tr>
+            <td>File:</td>
+            <td>{{result?.Meta?.OutZipFile}}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>DbPeriodFrom:</td>
+            <td>{{dbPeriodFrom}}</td>
+        </tr>
+        <tr>
+            <td>DbPeriodTo:</td>
+            <td>{{dbPeriodTo}}</td>
+        </tr>
+        <tr>
+            <td>DbVersion:</td>
+            <td colspan="3">{{result?.Meta?.DbVersion}}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>CsvSeparator:</td>
+            <td>{{result?.Meta?.CsvSeparator}}</td>
+        </tr>
+        <tr>
+            <td>CsvEncoding:</td>
+            <td>{{result?.Meta?.CsvEncoding}}</td>
+        </tr>
+        <tr>
+            <td>CsvRowCount:</td>
+            <td colspan="3">{{result?.Meta?.CsvRowCount}}</td>
+        </tr>
+        <tr>
+            <td>Client Version:</td>
+            <td colspan="3">{{result?.Meta?.ClientVersion}}</td>
+        </tr>
+    </table>
+    <div *ngIf="result?.Error">
+        {{result?.Error?.message}}
+    </div>
+</div>

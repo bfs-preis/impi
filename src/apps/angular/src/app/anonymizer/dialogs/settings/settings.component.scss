@@ -1,12 +1,35 @@
-.settings-dialog {
-  .settings-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem 0;
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  min-width: 360px;
+}
 
-    .full-width {
-      width: 100%;
-    }
+.settings-section {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 1rem 1rem 0;
+  margin: 0;
+
+  legend {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6c757d;
+    padding: 0 0.5rem;
+    width: auto;
   }
+}
+
+.settings-row {
+  display: flex;
+  gap: 1rem;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.full-width {
+  width: 100%;
 }

@@ -1,0 +1,72 @@
+.help-content {
+  min-width: 380px;
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #f5f7f9;
+  border-radius: 4px;
+
+  .app-icon {
+    width: 40px;
+    height: 40px;
+    color: #263645;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .version {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+}
+
+.help-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.help-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: #f5f7f9;
+    border-color: #adb5bd;
+  }
+
+  mat-icon {
+    color: #263645;
+    flex-shrink: 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      font-size: 0.9rem;
+    }
+
+    span {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+  }
+}

@@ -33,7 +33,7 @@
     "normalize-common": "file:../normalize-common",
     "csv-parse": "^5.6.0",
     "moment": "catalog:",
-    "unzip": "catalog:",
+    "node-stream-zip": "catalog:",
     "csv-stringify": "catalog:",
     "iconv-lite": "catalog:",
     "stream-transform": "catalog:",

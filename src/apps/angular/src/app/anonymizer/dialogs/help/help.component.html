@@ -1,24 +1,36 @@
-<div class="help-dialog">
-	<h2 mat-dialog-title>{{ "anonymizer.Help.Title" | translate }}</h2>
+<h2 mat-dialog-title>{{ "anonymizer.Help.Title" | translate }}</h2>
 
-	<mat-dialog-content>
-		<h3>{{ "anonymizer.Main.Title" | translate }}</h3>
-		<span style="padding-bottom: 10px; display: block">Version {{ this.appVersion }}</span>
-		<div>
-			<a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi/wiki" target="_blank">
-				{{ "anonymizer.Help.Documentation" | translate }} (https://github.com/bfs-preis/impi/wiki)
-			</a>
-		</div>
-		<div>
-			<a class="mat-chip mat-accent mat-chip-selected" href="https://github.com/bfs-preis/impi" target="_blank">
-				{{ "anonymizer.Help.SourceCode" | translate }} (https://github.com/bfs-preis/impi)
-			</a>
-		</div>
-	</mat-dialog-content>
+<mat-dialog-content>
+  <div class="help-content">
+    <div class="app-info">
+      <mat-icon svgIcon="information" class="app-icon"></mat-icon>
+      <div>
+        <h3>{{ "anonymizer.Main.Title" | translate }}</h3>
+        <span class="version">Version {{ this.appVersion }}</span>
+      </div>
+    </div>
 
-	<mat-dialog-actions align="end">
-		<button type="button" mat-button obButton="primary" cdkFocusInitial mat-dialog-close>
-			{{ "anonymizer.Help.ButtonClose" | translate }}
-		</button>
-	</mat-dialog-actions>
-</div>
+    <div class="help-links">
+      <a class="help-link" href="https://github.com/bfs-preis/impi/wiki" target="_blank">
+        <mat-icon svgIcon="book"></mat-icon>
+        <div>
+          <strong>{{ "anonymizer.Help.Documentation" | translate }}</strong>
+          <span>github.com/bfs-preis/impi/wiki</span>
+        </div>
+      </a>
+      <a class="help-link" href="https://github.com/bfs-preis/impi" target="_blank">
+        <mat-icon svgIcon="cog"></mat-icon>
+        <div>
+          <strong>{{ "anonymizer.Help.SourceCode" | translate }}</strong>
+          <span>github.com/bfs-preis/impi</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-button obButton="primary" cdkFocusInitial mat-dialog-close>
+    {{ "anonymizer.Help.ButtonClose" | translate }}
+  </button>
+</mat-dialog-actions>

@@ -1,1 +1,1 @@
-export const environment = {banner: {text: 'LOCAL'}};
+export const environment = {banner: undefined};

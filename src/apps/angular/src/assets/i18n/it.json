@@ -42,19 +42,21 @@
       "LanguageDe": "Tedesco",
       "LanguageFr": "Francese",
       "LanguageIt": "Italiano",
-      "ButtonClose": "Salva & chiudi"
+      "ButtonClose": "Salva & chiudi",
+      "ButtonCancel": "Annulla"
     },
     "Help": {
       "Title": "Aiuto",
       "Documentation": "Documentazione",
       "SourceCode": "Codice sourceCode",
       "DevelopedBy": "Sviluppato da",
-      "ButtonClose": "Chiudi"
+      "ButtonClose": "Chiudi",
+      "ButtonCancel": "Abbrechen"
     },
     "KFactor": {
       "Description": "Avvia il test per verificare che la banca dati soddisfi il fattore k.",
       "ButtonStart": "Avvio",
-      "ButtonCancel": "Annulla",
+      "ButtonCancel": "Abbrechen",
       "ButtonClose": "Chiudi",
       "SuccessMessage": "fattore k soddisfatto.",
       "FailMessage": "fattore k non soddisfatto!"

@@ -74,7 +74,11 @@ export class Main {
 
   private static createBackgroundWindow(): void {
     const win = new BrowserWindow({
-      show: CommandLineCommand.Debug
+      show: CommandLineCommand.Debug,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      }
     });
 
     win.loadURL(`file://${__dirname}/background/index-background.html`);
@@ -85,18 +89,21 @@ export class Main {
   private static createMainWindow() {
     // Create the browser window.
     this.mainWindow = new BrowserWindow({
-      width: 800,
-      height: 500,
+      width: 1200,
+      height: 800,
       useContentSize: true,
       show: false,
-      resizable: false,
+      resizable: true,
       fullscreen: false,
-      titleBarStyle: 'hiddenInset',
-      /*    icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),*/
-      title: "IMPI"
+      minimizable: true,
+      maximizable: true,
+      title: "IMPI",
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.cjs'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
     });
-
-    this.mainWindow.setMenu(null);
 
     let url: string;
     if (CommandLineCommand.Development) {
@@ -105,6 +112,13 @@ export class Main {
       url = `file://${__dirname}/anonymizer/angular/browser/index.html`
     }
     this.mainWindow.loadURL(url);
+
+    // Forward renderer console to stdout
+    this.mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+      const levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+      const src = sourceId ? sourceId.replace(/.*\//, '') : '';
+      console.log(`[RENDERER:${levels[level] || level}] ${message}${src ? ` (${src}:${line})` : ''}`);
+    });
 
     // Open the DevTools.
     if (CommandLineCommand.Debug) {

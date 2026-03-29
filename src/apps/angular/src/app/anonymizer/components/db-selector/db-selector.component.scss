@@ -1,5 +1,10 @@
 .db-selector-container {
-  margin-bottom: 1.5rem;
+  height: 100%;
+
+  mat-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .validation-spinner {

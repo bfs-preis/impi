@@ -1,0 +1,47 @@
+version: 1.0.{build}
+skip_non_tags: true
+image: Visual Studio 2022
+environment:
+  nodejs_version: "22"
+
+cache:
+  - src\libs\node_modules
+  - src\apps\angular\node_modules
+  - src\electron\node_modules
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - ps: $env:package_version = (Get-Content -Raw -Path src\libs\package.json | ConvertFrom-Json).version
+  - npm install -g pnpm@10
+  - set CI=true
+  # Install and build libs
+  - cd src\libs && pnpm install && pnpm run build && cd ..\..
+  # Install Angular app
+  - cd src\apps\angular && pnpm install && cd ..\..\..
+  # Install Electron
+  - cd src\electron && pnpm install && cd ..\..
+
+build_script:
+  # Build Angular
+  - cd src\apps\angular && pnpm run build && cd ..\..\..
+  # Build Electron
+  - cd src\electron && pnpm run build && pnpm run release && cd ..\..
+
+after_build:
+  - 7z a impi-win-build.zip %APPVEYOR_BUILD_FOLDER%\src\electron\package\win-ia32-unpacked\*
+
+artifacts:
+  - path: .\src\electron\package\*.exe
+    name: win32-installer
+  - path: impi-win-build.zip
+    name: win32-package
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: VESVuAVyiNwOfXXB1Oj3/tEsB03dlTwL9Fq6+H1cp6i3QggoQDBul2N83/jUpKyw
+  artifact: win32-installer,win32-package
+  draft: true
+  prerelease: false
+  force_update: true
+  tag: v$(package_version)

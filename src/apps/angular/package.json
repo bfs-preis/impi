@@ -26,6 +26,7 @@
     "@oblique/oblique": "^14.0.0",
     "@popperjs/core": "^2.11.8",
     "angular-oauth2-oidc": "^20.0.2",
+    "chart.js": "^4.4.0",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
     "rxjs": "~7.8.0",

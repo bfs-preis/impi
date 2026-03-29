@@ -1,0 +1,16 @@
+.mat-mdc-list[dense] .mat-mdc-list-option,
+.mat-mdc-selection-list[dense] .mat-mdc-list-option {
+    height: 25px !important;
+}
+
+.mat-expansion-panel-header {
+    padding-left: 8px !important;
+    padding-right: 24px !important;
+}
+
+.mat-expansion-panel-body {
+    padding-top: 0px !important;
+    padding-right: 24px !important;
+    padding-bottom: 8px !important;
+    padding-left: 8px !important;
+}

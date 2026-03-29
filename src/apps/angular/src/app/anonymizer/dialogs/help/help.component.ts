@@ -2,6 +2,7 @@ import {ObButtonModule} from '@oblique/oblique';
 import {Component} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
 import {ElectronService} from '../../services/electron.service';
 import {TranslateModule} from '@ngx-translate/core';
 /**
@@ -12,7 +13,7 @@ import {TranslateModule} from '@ngx-translate/core';
 	selector: 'app-help-dialog',
 	templateUrl: './help.component.html',
 	styleUrls: ['./help.component.scss'],
-	imports: [TranslateModule, ObButtonModule, MatButtonModule, MatDialogModule]
+	imports: [TranslateModule, ObButtonModule, MatButtonModule, MatDialogModule, MatIconModule]
 })
 export class HelpDialogComponent {
 	appVersion: string;

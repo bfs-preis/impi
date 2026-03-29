@@ -9,13 +9,14 @@
         "copyAnonHtml": "cpr ../apps/angular/dist/ ./app/anonymizer -o",
         "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
         "copyBackground": "cpr ./src/background/index-background.html ./app/background/index-background.html -o",
+        "copyPreload": "cpr ./src/preload.cjs ./app/preload.cjs -o",
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
-        "start": "npm run copyBackground && npm run tsc && electron ./app -l debug --inspect --no-sandbox",
+        "start": "npm run copyBackground && npm run copyPreload && npm run tsc && electron ./app -l debug --inspect --no-sandbox",
         "release": "npm run build && electron-builder",
         "rebuildNative": "electron-builder install-app-deps",
-        "build": "npm run clean && npm run tsc && npm run copyBackground && npm run copyAnonHtml && npm run createBuildPackageJson"
+        "build": "npm run clean && npm run tsc && npm run copyPreload && npm run copyBackground && npm run copyAnonHtml && npm run createBuildPackageJson"
     },
     "keywords": [],
     "author": "adi",

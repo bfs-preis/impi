@@ -1,20 +1,4 @@
 <div class="anonymizer-main-container">
-	<!-- Header with Settings and Help buttons -->
-	<div class="main-header">
-		<div class="header-content">
-			<h1>{{ "anonymizer.Main.Title" | translate }}</h1>
-			<p class="description">{{ "anonymizer.Main.Description" | translate }}</p>
-		</div>
-		<div class="header-actions">
-			<button type="button" mat-icon-button obButton="tertiary" [disabled]="isProcessing" (click)="openHelpDialog()" class="icon-button">
-				<mat-icon svgIcon="question" />
-			</button>
-			<button type="button" mat-icon-button obButton="tertiary" [disabled]="isProcessing" (click)="openSettingsDialog()" class="icon-button">
-				<mat-icon svgIcon="settings" />
-			</button>
-		</div>
-	</div>
-
 	<!-- 3-Step Workflow -->
 	<div class="workflow-steps">
 		<!-- Step 1: Database -->

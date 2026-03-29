@@ -1,0 +1,38 @@
+{
+  "name": "impi-cli",
+  "version": "1.5.2",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "impi": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "IMPI command-line interface for batch processing",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "package": "npx @yao-pkg/pkg . --targets node22-linux-x64,node22-win-x64"
+  },
+  "dependencies": {
+    "impilib": "file:../libs/impilib",
+    "yargs": "^17.7.0",
+    "ora": "^8.1.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/yargs": "^17.0.34",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,6 +1,6 @@
 import * as xmlbuilder from 'xmlbuilder2';
 import * as xmlreader from './xmlreader.js';
-import * as unzip from 'unzip';
+import StreamZip from 'node-stream-zip';
 import * as fs from "fs";
 import moment from 'moment';
 import { ILogResult } from './log-result.js';
@@ -18,122 +18,102 @@ export function createEmptyLogMatchingTypeArray(): ILogMatchingType[] {
     return map
 }
 
-export function readResultZipFile(file: string, callback: (result: ILogResult) => void) {
+export async function readResultZipFile(file: string, callback: (result: ILogResult) => void) {
     if (!fs.existsSync(file)) {
         throw new Error("File doesnt exists!");
     }
 
-    fs.createReadStream(file)
-        .pipe(unzip.Parse())
-        .on('entry', function (entry) {
-            const fileName: string = entry.path;
-            if (fileName.endsWith(".xml")) {
-                streamToString(entry, (data: string) => {
-                    xmlreader.read(data, function (_, res) {
+    const zip = new StreamZip.async({ file });
+    try {
+        const entries = await zip.entries();
+        for (const entry of Object.values(entries)) {
+            if (entry.name.endsWith(".xml")) {
+                const data = await zip.entryData(entry.name);
+                const xmlString = data.toString('utf-8');
 
-                        const mapping:any={
-                            Mappings:{},
-                            Scales:{}
-                        };
-                        res.Log.Mapping.at(0).Mappings.at(0).each((_, m) => {
-                            mapping.Mappings[m.attributes().Name]={};
-                            m.each((_,m2)=>{
-                                mapping.Mappings[m.attributes().Name][m2.attributes().Name]=m2.attributes().Value;
-                            });
+                xmlreader.read(xmlString, function (_, res) {
+
+                    const mapping: any = {
+                        Mappings: {},
+                        Scales: {}
+                    };
+                    res.Log.Mapping.at(0).Mappings.at(0).each((_, m) => {
+                        mapping.Mappings[m.attributes().Name] = {};
+                        m.each((_, m2) => {
+                            mapping.Mappings[m.attributes().Name][m2.attributes().Name] = m2.attributes().Value;
                         });
-
-                        res.Log.Mapping.at(0).Scales.at(0).each((_, m) => {
-                            mapping.Scales[m.attributes().Name]=m.attributes().Value;
-                        });
-
-                        const matchsummary: ILogMatchingType[] = [];
-                        res.Log.MatchSummery.at(0).Match.each((_, m) => {
-                            matchsummary.push({
-                                Id: m.attributes().Id,
-                                Count: m.attributes().Count,
-                                Name: m.attributes().Name
-                            } as ILogMatchingType
-
-                            );
-                        });
-
-                        const violations: ILogViolation[] = [];
-                        res.Log.Violations.at(0).Rule.each((_, r) => {
-                            const rows: number[] = [];
-                            if (r.Row)
-                                r.Row.each((_, row) => rows.push(row.text()));
-                            violations.push(
-                                {
-                                    Id: r.attributes().Id,
-                                    Text: r.attributes().Text,
-                                    Count: r.attributes().Count,
-                                    Rows: rows,
-                                    RedFlag: (r.attributes().RedFlag === 'true')
-                                } as ILogViolation);
-                        })
-
-                        const rows: ILogRow[] = []
-                        res.Log.Rows.at(0).Row.each((_, m) => {
-                            const logRow = {
-
-                                Index: m.attributes().Index,
-                                MatchingType: m.attributes().MatchingType,
-                                Violations: []
-
-                            } as ILogRow;
-
-                            m.Violation.each((_, n) => {
-                                logRow.Violations.push(n.text());
-                            });
-                            rows.push(logRow);
-                        });
-
-                        callback({
-                            Meta: {
-                                ClientVersion: res.Log.Meta.at(0).attributes().ClientVersion,
-                                CsvEncoding: res.Log.Meta.at(0).attributes().CsvEncoding,
-                                CsvDelimiter: res.Log.Meta.at(0).attributes().CsvDelimiter,
-                                CsvRowCount: res.Log.Meta.at(0).attributes().CsvRowCount,
-                                CsvSeparator: res.Log.Meta.at(0).attributes().CsvSeparator,
-                                DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom, "DD.MM.YYYY").valueOf(),
-                                DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo, "DD.MM.YYYY").valueOf(),
-                                DbVersion: res.Log.Meta.at(0).attributes().DbVersion,
-                                EndTime: moment(res.Log.Meta.at(0).attributes().EndTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
-                                StartTime: moment(res.Log.Meta.at(0).attributes().StartTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
-                                MappingFile: res.Log.Meta.at(0).attributes().MappingFile,
-                                OutZipFile: res.Log.Meta.at(0).attributes().OutZipFile,
-                                SedexSenderId: res.Log.Meta.at(0).attributes().SedexSenderId,
-                            } as ILogMeta,
-                            Error: res.Log.Exception ? res.Log.Exception.at(0).text() : null,
-                            Mapping: mapping,
-                            MatchSummary: matchsummary,
-                            Rows: rows,
-                            Violations: violations
-
-
-
-
-
-
-
-
-                        } as ILogResult);
                     });
-                });
-            } else {
-                entry.autodrain();
-            }
-        });
-}
 
-function streamToString(stream, cb) {
-    const chunks: string[] = [];
-    stream.on('data', (chunk) => {
-        chunks.push(chunk.toString());
-    });
-    stream.on('end', () => {
-        cb(chunks.join(''));
-    });
+                    res.Log.Mapping.at(0).Scales.at(0).each((_, m) => {
+                        mapping.Scales[m.attributes().Name] = m.attributes().Value;
+                    });
+
+                    const matchsummary: ILogMatchingType[] = [];
+                    res.Log.MatchSummery.at(0).Match.each((_, m) => {
+                        matchsummary.push({
+                            Id: m.attributes().Id,
+                            Count: m.attributes().Count,
+                            Name: m.attributes().Name
+                        } as ILogMatchingType);
+                    });
+
+                    const violations: ILogViolation[] = [];
+                    res.Log.Violations.at(0).Rule.each((_, r) => {
+                        const rows: number[] = [];
+                        if (r.Row)
+                            r.Row.each((_, row) => rows.push(row.text()));
+                        violations.push(
+                            {
+                                Id: r.attributes().Id,
+                                Text: r.attributes().Text,
+                                Count: r.attributes().Count,
+                                Rows: rows,
+                                RedFlag: (r.attributes().RedFlag === 'true')
+                            } as ILogViolation);
+                    })
+
+                    const rows: ILogRow[] = []
+                    res.Log.Rows.at(0).Row.each((_, m) => {
+                        const logRow = {
+                            Index: m.attributes().Index,
+                            MatchingType: m.attributes().MatchingType,
+                            Violations: []
+                        } as ILogRow;
+
+                        m.Violation.each((_, n) => {
+                            logRow.Violations.push(n.text());
+                        });
+                        rows.push(logRow);
+                    });
+
+                    callback({
+                        Meta: {
+                            ClientVersion: res.Log.Meta.at(0).attributes().ClientVersion,
+                            CsvEncoding: res.Log.Meta.at(0).attributes().CsvEncoding,
+                            CsvRowCount: res.Log.Meta.at(0).attributes().CsvRowCount,
+                            CsvSeparator: res.Log.Meta.at(0).attributes().CsvSeparator,
+                            DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom, "DD.MM.YYYY").valueOf(),
+                            DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo, "DD.MM.YYYY").valueOf(),
+                            DbVersion: res.Log.Meta.at(0).attributes().DbVersion,
+                            EndTime: moment(res.Log.Meta.at(0).attributes().EndTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
+                            StartTime: moment(res.Log.Meta.at(0).attributes().StartTime, "DD.MM.YYYY HH:mm:ss").valueOf(),
+                            MappingFile: res.Log.Meta.at(0).attributes().MappingFile,
+                            OutZipFile: res.Log.Meta.at(0).attributes().OutZipFile,
+                            SedexSenderId: res.Log.Meta.at(0).attributes().SedexSenderId,
+                        } as ILogMeta,
+                        Error: res.Log.Exception ? res.Log.Exception.at(0).text() : null,
+                        Mapping: mapping,
+                        MatchSummary: matchsummary,
+                        Rows: rows,
+                        Violations: violations
+                    } as ILogResult);
+                });
+                break; // Only process the first XML file
+            }
+        }
+    } finally {
+        await zip.close();
+    }
 }
 
 export function LogAsXmlString(result: ILogResult): string {

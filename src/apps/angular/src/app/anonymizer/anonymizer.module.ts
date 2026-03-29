@@ -26,16 +26,10 @@ import {CsvSelectorComponent} from './components/csv-selector/csv-selector.compo
 import {OutputSelectorComponent} from './components/output-selector/output-selector.component';
 import {FilePickerComponent} from './components/shared/file-picker/file-picker.component';
 
-// Dialogs
-import {SettingsDialogComponent} from './dialogs/settings/settings.component';
-
 // Services
-import {ElectronService} from './services/electron.service';
-import {ElectronMockService} from './services/electron-mock.service';
 import {ProcessingService} from './services/processing.service';
 
 @NgModule({
-	declarations: [SettingsDialogComponent],
 	imports: [
 		CommonModule,
 		FormsModule,
@@ -67,10 +61,6 @@ import {ProcessingService} from './services/processing.service';
 		MainComponent
 	],
 	providers: [
-		{
-			provide: ElectronService,
-			useClass: ElectronMockService
-		},
 		ProcessingService
 	]
 })
