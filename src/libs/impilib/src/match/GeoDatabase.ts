@@ -1,5 +1,6 @@
 import pkg from 'sqlite3';
 const { verbose, Database } = pkg;
+import type { Database as DatabaseType } from 'sqlite3';
 import { IBuildingRecord } from '../types/IBuildingRecord.js';
 import moment from 'moment';
 
@@ -10,8 +11,24 @@ export interface IDbInfo {
     Version: string;
 }
 
+interface VersionRow {
+    version: string;
+    period_from: string;
+    period_to: string;
+}
+
+interface KFactorRow {
+    a: number;
+    b: number;
+}
+
+interface CenterRow {
+    egid: number;
+    community: string;
+}
+
 export class GeoDatabase {
-    private _db: any;
+    private _db: DatabaseType;
     private _file: string;
 
     constructor(file: string, errorCallback: (err: Error) => void) {
@@ -29,7 +46,7 @@ export class GeoDatabase {
     }
 
     verifyDb(callback: (dbInfo: IDbInfo | null, err: Error | null) => void): void {
-        this._db.get("SELECT * FROM VERSION", [], (err: Error, row: any) => {
+        this._db.get("SELECT * FROM VERSION", [], (err: Error, row: VersionRow) => {
             if (err) {
                 return callback(null, err);
             } else {
@@ -91,7 +108,7 @@ export class GeoDatabase {
                     GROUP BY CAT_LAGE
                     HAVING (COUNT(CAT_LAGE) < 3))) b;`;
 
-        this._db.get(sqlQuery, [], (err: Error, row: any) => {
+        this._db.get(sqlQuery, [], (err: Error, row: KFactorRow) => {
             if (err) {
                 return callback(null, err);
             } else {
@@ -103,7 +120,7 @@ export class GeoDatabase {
 
 
     searchAddress(street: string, zipCode: number, callback: (err: Error | null, rows: IBuildingRecord[] | null) => void) {
-        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: any) => {
+        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: IBuildingRecord[]) => {
             if (err) {
                 return callback(err, null);
             }
@@ -114,7 +131,7 @@ export class GeoDatabase {
     }
 
     searchAddressWithMappings(street: string, zipCode: number, callback: (err: Error | null, rows: IBuildingRecord[] | null) => void) {
-        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: any) => {
+        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: IBuildingRecord[]) => {
             if (err) {
                 return callback(err, null);
             }
@@ -125,7 +142,7 @@ export class GeoDatabase {
     }
 
     searchDesignationOfBuilding(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE DESIGNATION_OF_BUILDING=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: any) => {
+        this._db.all("SELECT DISTINCT * FROM BUILDINGS WHERE DESIGNATION_OF_BUILDING=@street AND ZIP_CODE=@zipcode", [street, zipCode], (err: Error, rows: IBuildingRecord[]) => {
             if (err) {
                 return callback(err, null);
             }
@@ -150,7 +167,7 @@ export class GeoDatabase {
     }
 
     searchCenterStreet(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode AND STREET=@street", [zipCode, street], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE ZIP_CODE=@zipcode AND STREET=@street", [zipCode, street], (err: Error, rows: CenterRow[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -174,7 +191,7 @@ export class GeoDatabase {
     }
 
     searchCenterStreetWithMappings(street: string, zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERSTREETS WHERE STREET=@street AND ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [street, zipCode], (err: Error, rows: CenterRow[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -198,7 +215,7 @@ export class GeoDatabase {
     }
 
     searchCenterCommunities(zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE=@zipcode", [zipCode], (err: Error, rows: CenterRow[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -222,7 +239,7 @@ export class GeoDatabase {
     }
 
     searchCenterCommunitiesWithMappings(zipCode: number, community: string | null, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [zipCode], (err: Error, rows: any[]) => {
+        this._db.all("SELECT EGID,COMMUNITY FROM CENTERCOMMUNITIES WHERE ZIP_CODE IN ( SELECT ALTERNATIV FROM ADDITIONALCOMMUNITIES WHERE ORIGINAL= @zipcode )", [zipCode], (err: Error, rows: CenterRow[]) => {
             if (err) {
                 return callback(err, null);
             } else if (rows && rows.length > 0) {
@@ -246,7 +263,7 @@ export class GeoDatabase {
     }
 
     private _searchEGID(egid: number, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
-        this._db.get("SELECT * FROM BUILDINGS WHERE EGID=@egid", [egid], (err: Error, row: any) => {
+        this._db.get("SELECT * FROM BUILDINGS WHERE EGID=@egid", [egid], (err: Error, row: IBuildingRecord) => {
             if (err) {
                 return callback(err, null);
             } else {

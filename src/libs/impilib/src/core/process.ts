@@ -15,7 +15,7 @@ import { PeriodeDefinition } from '../validation/ValidationRules.js';
 import { match } from '../match/match.js';
 import { GeoDatabase } from '../match/GeoDatabase.js';
 
-import { ILogRow, ILogResult, ILogViolation, ILogMeta } from '../index.js';
+import { ILogRow, ILogResult, ILogViolation, ILogMeta, IMapping } from '../index.js';
 import { LogAsXmlString, createEmptyLogMatchingTypeArray } from './log-file-xml.js';
 
 export interface IProcessOption {
@@ -33,7 +33,7 @@ export interface IProcessOption {
     ClientVersion: string;
 }
 
-function IsBankDataCsvRow(row: any): string[] {
+function IsBankDataCsvRow(row: Record<string, unknown>): string[] {
 
     const missingColumns: string[] = [];
     for (const p of Object.getOwnPropertyNames(new BankDataCsv())) {
@@ -82,7 +82,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
             ClientVersion: options.ClientVersion || "unknown",
 
         } as ILogMeta,
-        Mapping: undefined,
+        Mapping: undefined as IMapping | undefined,
         MatchSummary: createEmptyLogMatchingTypeArray(),
         Violations: violations,
         Rows: [] as ILogRow[],
@@ -107,14 +107,19 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
     };
 
     //Load Mapping File
-    let mappingObj = {};
+    let mappingObj: MappingObject = { Mappings: {} };
     if (options.MappingFile && fs.existsSync(options.MappingFile)) {
         fs.readFile(options.MappingFile, 'utf8', function (err, data) {
             if (err) {
                 console.log(err);
                 handlingError(err);
             }
-            mappingObj = JSON.parse(data);
+            try {
+                mappingObj = JSON.parse(data);
+            } catch (parseError) {
+                handlingError(parseError instanceof Error ? parseError : new Error('Invalid JSON in mapping file'));
+                return;
+            }
             result.Mapping = mappingObj;
         });
     }
@@ -143,7 +148,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
 
     //Transformer
     let rowNumber = 1;
-    const transformer = transform({ parallel: 1 } as TransformOption, (record: any, callback: (err: Error | null, data: any) => void) => {
+    const transformer = transform({ parallel: 1 } as TransformOption, (record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void) => {
         myTransform(record, callback, result, rowNumber, geodb, mappingObj);
         rowNumber++;
     });
@@ -193,12 +198,16 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
 }
 
 // tslint:disable-next-line:max-line-length
-function myTransform(record: any, callback: (err: Error | null, data: any) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: any) {
+interface MappingObject {
+    Mappings: Record<string, Record<string, string>>;
+}
+
+function myTransform(record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: MappingObject) {
 
     //Check headers
     if (rowNumber === 1) {
         const missingColumns = IsBankDataCsvRow(record);
-        if (missingColumns.length != 0) {
+        if (missingColumns.length !== 0) {
             callback(new Error("Missing Columns:" + missingColumns.join(",")), null);
         }
     }
@@ -217,7 +226,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     }
 
     //Validate
-    const result: ICheckValidationRuleResult = checkValidationRules(record as IBankDataCsv);
+    const result: ICheckValidationRuleResult = checkValidationRules(record as unknown as IBankDataCsv);
 
     //Store Validation Results
     for (const rule of result.ViolatedRules) {
@@ -242,30 +251,7 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
         }
         //Translate yearofconstruction to nomenclatur
         if (k === 'yearofconstruction') {
-            let year: number = isNaN(+record[k]) ? 0 : +record[k];
-            if (year > 0) {
-                if (year < 1919) {
-                    year = 1;
-                }
-                else if (year >= 1919 && year <= 1945) {
-                    year = 2;
-                }
-                else if (year >= 1946 && year <= 1970) {
-                    year = 3;
-                }
-                else if (year >= 1971 && year <= 1990) {
-                    year = 4;
-                }
-                else if (year >= 1991 && year <= 2005) {
-                    year = 5;
-                }
-                else if (year >= 2006 && year <= 2015) {
-                    year = 6;
-                } else if (year > 2015) {
-                    year = 7;
-                }
-            }
-            outRecord[k] = year.toString();
+            outRecord[k] = categorizeYearOfConstruction(record[k]).toString();
         }
     }
 
@@ -273,11 +259,11 @@ function myTransform(record: any, callback: (err: Error | null, data: any) => vo
     outRecord.validationflags = result.Flags.toString();
 
     //GWR & Geodata
-    return match((record as IBankDataCsv), geodb, (record, err, matchingType) => {
+    return match((record as unknown as IBankDataCsv), geodb, (record, err, matchingType) => {
         outRecord.matchingtype = (+matchingType).toString();
 
         //MatchingType Summary
-        const logMatchigType = processResult.MatchSummary.find((m) => m.Id == +(matchingType));
+        const logMatchigType = processResult.MatchSummary.find((m) => m.Id === +(matchingType));
         if (logMatchigType) {
             logMatchigType.Count++;
         } else {
@@ -355,4 +341,27 @@ function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: Stri
 
     const xml = createSedexEnvelope(sedexSenderId, fileName.replace("data_", ""));
     fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });
+}
+
+/**
+ * Year-of-construction category boundaries for IMPI nomenclature.
+ * Each entry: [maxYear, categoryCode]. Applied in order; first match wins.
+ */
+const YEAR_OF_CONSTRUCTION_CATEGORIES: ReadonlyArray<[number, number]> = [
+    [1918, 1],
+    [1945, 2],
+    [1970, 3],
+    [1990, 4],
+    [2005, 5],
+    [2015, 6],
+];
+
+function categorizeYearOfConstruction(value: string): number {
+    const year = isNaN(+value) ? 0 : +value;
+    if (year <= 0) return 0;
+
+    for (const [maxYear, code] of YEAR_OF_CONSTRUCTION_CATEGORIES) {
+        if (year <= maxYear) return code;
+    }
+    return 7; // After 2015
 }

@@ -14,13 +14,9 @@ export function checkValidationRules(row: IBankDataCsv): ICheckValidationRuleRes
     const violatedRules: IValidationRule[] = [];
 
     for (const s of ValidationRules) {
-        try {
-            if (!s.ValCode(row)) {
-                violatedRules.push(s);
-                flags = flags.or(bigInt(2).pow(s.Id));
-            }
-        }catch (e) {
-            throw e;
+        if (!s.ValCode(row)) {
+            violatedRules.push(s);
+            flags = flags.or(bigInt(2).pow(s.Id));
         }
     }
 

@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, Input, Output} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -15,9 +16,11 @@ import {ElectronService, FileFilter} from '../../../services/electron.service';
 	templateUrl: './file-picker.component.html',
 	styleUrls: ['./file-picker.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, MatButtonModule, ObButtonModule, MatTooltipModule]
+	imports: [MatIconModule, MatButtonModule, ObButtonModule, MatTooltipModule],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilePickerComponent {
+	private readonly destroyRef = inject(DestroyRef);
 	@Input() label = 'Select File';
 	@Input() buttonText = 'Browse';
 	@Input() filters: FileFilter[] = [];
@@ -36,7 +39,7 @@ export class FilePickerComponent {
 
 		const observable = this.mode === 'file' ? this.electronService.selectFile(this.filters) : this.electronService.selectDirectory();
 
-		observable.subscribe(path => {
+		observable.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(path => {
 			if (path) {
 				this.selectedPath = path;
 				this.fileSelected.emit(path);

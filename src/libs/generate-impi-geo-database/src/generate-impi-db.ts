@@ -82,7 +82,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     parser.on('readable', function () {
         let record: any;
         while (record = parser.read()) {
-            if (stmt === null) throw "Statement null!";
+            if (stmt === null) throw new Error("Statement null!");
 
             const array = def.Fields.map(c => {
                 const dbFieldName = c.Name.replace(/_/g, "");
@@ -119,9 +119,9 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 rowCount++;
                 if (rowCallback) rowCallback(rowCount);
             }
-            catch (err:any) {
+            catch (err: unknown) {
                 winston.log('verbose', def);
-                winston.warn(err.message, JSON.stringify(record));
+                winston.warn((err instanceof Error ? err.message : String(err)), JSON.stringify(record));
             }
         }
     });

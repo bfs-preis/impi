@@ -57,12 +57,12 @@
       "SourceCode": "SourceCode",
       "DevelopedBy": "Développé par",
       "ButtonClose": "Fermer",
-      "ButtonCancel": "Abbrechen"
+      "ButtonCancel": "Annuler"
     },
     "KFactor": {
       "Description": "Démarrer le test pour verifier le factor k",
       "ButtonStart": "Démarrage",
-      "ButtonCancel": "Abbrechen",
+      "ButtonCancel": "Annuler",
       "ButtonClose": "Fermer",
       "SuccessMessage": "factor k satisfait",
       "FailMessage": "factor k pas satisfait!"

@@ -1,4 +1,4 @@
-import { ipcMain, app, dialog, utilityProcess } from 'electron';
+import { ipcMain, app, dialog, utilityProcess, type IpcMainEvent, type FileFilter } from 'electron';
 import log from 'electron-log';
 import * as settings from 'electron-settings';
 import * as path from 'path';
@@ -10,6 +10,20 @@ import { ValidateOutputDir, ValidateInputCsv, ValidateDatabase, CheckKFactor } f
 import { IProcessOption } from 'impilib';
 import { registerResultViewerMessages } from './report-viewer-messages.js';
 
+interface AppSettings {
+    CSVEncoding?: string;
+    CSVSeparater?: string;
+    CSVFile?: string;
+    DBFile?: string;
+    OutDirectory?: string;
+    SedexSenderId?: string;
+    MappingFile?: string;
+    Theme?: string;
+    Language?: string;
+    ShowRedFlags?: boolean;
+    [key: string]: unknown;
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -17,9 +31,9 @@ let isProcessing: boolean = false;
 
 export function registerAnonMessages() {
 
-    ipcMain.on('background-start', (event: any, processOptions: IProcessOption) => {
+    ipcMain.on('background-start', (_event: IpcMainEvent, processOptions: IProcessOption) => {
         // Use options from renderer, fall back to AppSettings for missing values
-        const appSettings: any = settings.get("AppSettings") || {};
+        const appSettings = ((settings.getSync("AppSettings") || {}) as unknown as AppSettings);
         processOptions.CsvEncoding = processOptions.CsvEncoding || appSettings.CSVEncoding || 'utf8';
         processOptions.CsvSeparator = processOptions.CsvSeparator || appSettings.CSVSeparater || ';';
         processOptions.InputCsvFile = processOptions.InputCsvFile || appSettings.CSVFile || '';
@@ -42,7 +56,7 @@ export function registerAnonMessages() {
         child.stdout?.on('data', (data: Buffer) => console.log(`[BACKGROUND] ${data.toString().trim()}`));
         child.stderr?.on('data', (data: Buffer) => console.error(`[BACKGROUND:ERR] ${data.toString().trim()}`));
 
-        child.on('message', (message: any) => {
+        child.on('message', (message: { type: string; payload?: Record<string, unknown> }) => {
             console.log('[MAIN] child message:', message.type);
             if (message.type === 'result') {
                 console.log('[MAIN] processing complete, error:', !!message.payload?.Error);
@@ -62,7 +76,7 @@ export function registerAnonMessages() {
         isProcessing = true;
     });
 
-    ipcMain.on('verify db', (event: any, file: string) => {
+    ipcMain.on('verify db', (_event: IpcMainEvent, file: string) => {
         ValidateDatabase(file)
             .then((dbinfo) => {
                 console.log('[MAIN] verify db result:', JSON.stringify(dbinfo));
@@ -72,7 +86,7 @@ export function registerAnonMessages() {
             });
     });
 
-    ipcMain.on('verify csv', (event: any, payload: { file: string, delimiter: string }) => {
+    ipcMain.on('verify csv', (_event: IpcMainEvent, payload: { file: string, delimiter: string }) => {
         ValidateInputCsv(payload.file, payload.delimiter)
             .then((count) => {
                 Main.GetMainWindow().webContents.send('verify csv response', { rowcount: count, err: null });
@@ -81,13 +95,15 @@ export function registerAnonMessages() {
             });
     });
 
-    ipcMain.on('verify path', (event: any, path: string) => {
+    ipcMain.on('verify path', (_event: IpcMainEvent, path: string) => {
         ValidateOutputDir(path).then((valid) => {
             Main.GetMainWindow().webContents.send('verify path response', valid);
-        })
+        }).catch((error) => {
+            Main.GetMainWindow().webContents.send('verify path response', false);
+        });
     });
 
-    ipcMain.on('select-file', async (event: any, filters: any[]) => {
+    ipcMain.on('select-file', async (_event: IpcMainEvent, filters: FileFilter[]) => {
         const result = await dialog.showOpenDialog(Main.GetMainWindow(), {
             properties: ['openFile'],
             filters: filters || []
@@ -102,13 +118,13 @@ export function registerAnonMessages() {
         Main.GetMainWindow().webContents.send('select-directory-response', result.canceled ? null : result.filePaths[0]);
     });
 
-    ipcMain.on('set-setting', (event: any, payload: { key: string, value: any }) => {
-        let appSettings: any = settings.get("AppSettings") || {};
+    ipcMain.on('set-setting', (_event: IpcMainEvent, payload: { key: string, value: unknown }) => {
+        const appSettings = ((settings.getSync("AppSettings") || {}) as unknown as AppSettings);
         appSettings[payload.key] = payload.value;
-        settings.set("AppSettings", appSettings);
+        settings.setSync("AppSettings", appSettings as any);
     });
 
-    ipcMain.on('checkkfactor', (event: any, file: string) => {
+    ipcMain.on('checkkfactor', (_event: IpcMainEvent, file: string) => {
         CheckKFactor(file).then((check) => {
             Main.GetMainWindow().webContents.send('checkkfactor response', { check: check, err: null });
         }).catch((error) => {

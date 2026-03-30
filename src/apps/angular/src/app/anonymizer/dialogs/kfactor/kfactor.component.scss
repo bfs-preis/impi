@@ -1,26 +1,10 @@
-.kfactor-dialog {
-  .kfactor-content {
-    padding: 1rem 0;
+.description {
+	color: #6c757d;
+	margin-bottom: 1rem;
+}
 
-    .description {
-      margin-bottom: 1.5rem;
-      color: #6c757d;
-    }
-
-
-    .result-state {
-      margin-top: 1rem;
-
-      .alert {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem;
-
-        mat-icon {
-          font-size: 1.5rem;
-        }
-      }
-    }
-  }
+.spinner-area {
+	display: flex;
+	justify-content: center;
+	padding: 1rem 0;
 }

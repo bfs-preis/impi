@@ -57,12 +57,12 @@
       "SourceCode": "Codice sourceCode",
       "DevelopedBy": "Sviluppato da",
       "ButtonClose": "Chiudi",
-      "ButtonCancel": "Abbrechen"
+      "ButtonCancel": "Annulla"
     },
     "KFactor": {
       "Description": "Avvia il test per verificare che la banca dati soddisfi il fattore k.",
       "ButtonStart": "Avvio",
-      "ButtonCancel": "Abbrechen",
+      "ButtonCancel": "Annulla",
       "ButtonClose": "Chiudi",
       "SuccessMessage": "fattore k soddisfatto.",
       "FailMessage": "fattore k non soddisfatto!"

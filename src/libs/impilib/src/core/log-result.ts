@@ -1,8 +1,13 @@
 import { MatchingTypeEnum } from "../index.js";
 
+export interface IMapping {
+    Mappings: Record<string, Record<string, string>>;
+    Scales?: Record<string, string>;
+}
+
 export interface ILogResult {
     Meta: ILogMeta;
-    Mapping: any | undefined;
+    Mapping: IMapping | undefined;
     Violations: ILogViolation[];
     MatchSummary: ILogMatchingType[];
     Rows: ILogRow[];

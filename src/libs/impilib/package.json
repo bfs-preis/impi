@@ -42,7 +42,6 @@
     "archiver": "catalog:",
     "big-integer": "catalog:",
     "dayjs": "catalog:",
-    "node-stream-zip": "catalog:",
     "rxjs": "catalog:",
     "sax": "catalog:",
     "uuid": "catalog:",

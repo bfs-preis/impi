@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow } from 'electron';
 
 import log from 'electron-log';
 import * as settings from 'electron-settings';
@@ -32,6 +32,9 @@ export class Main {
     if (CommandLineCommand.Command === CommandEnum.Cli) {
       CliProcess(CommandLineCommand).then((exitCode: number) => {
         process.exit(exitCode);
+      }).catch((error) => {
+        log.error('CLI process failed:', error);
+        process.exit(1);
       })
     } else {
       this.startElectron();
@@ -61,28 +64,26 @@ export class Main {
       }
     });
 
-    /* app.on('activate', () => {
-      // On OS X it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
+    app.on('activate', () => {
       if (this.mainWindow === null) {
         this.createMainWindow();
-        this.createBackgroundWindow();
       }
-    }); */
+    });
   }
 
   private static createMainWindow() {
     // Create the browser window.
     this.mainWindow = new BrowserWindow({
-      width: 1000,
-      height: 475,
-      useContentSize: true,
+      width: 1200,
+      height: 600,
+      useContentSize: false,
       show: false,
       resizable: true,
       fullscreen: false,
       minimizable: true,
       maximizable: true,
       title: "IMPI",
+      autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.cjs'),
         contextIsolation: true,
@@ -115,20 +116,6 @@ export class Main {
       this.mainWindow = null;
     });
 
-    this.mainWindow.on('close', (e: any) => {
-      /* if (isProcessing) {
-         dialog.showMessageBox(mainWindow, {
-           type: "warning",
-           title: "Close Window",
-           message: "Can't close Window while processing.",
-           detail: "Wait until processing is finished.",
-           buttons: ["OK"],
-           defaultId: 0
-         });
-         e.preventDefault();
-         return;
-       }*/
-    });
 
 
 
@@ -144,22 +131,11 @@ export class Main {
 
     });
 
-/*     this.mainWindow.webContents.on('new-window', function (e, url) {
-      log.debug("new-window: " + url);
-      e.preventDefault();
-      let b = shell.openExternal(url);
-      log.debug("external open: " + b);
-    }); */
   };
 
   public static createResultWindow() {
     const win = new BrowserWindow({
       show: false,
-      /*parent: mainWindow,
-      resizable:true,
-      titleBarStyle:'default',
-      fullscreenable :true,
-      fullscree:true*/
     });
 
     win.setMenu(null);

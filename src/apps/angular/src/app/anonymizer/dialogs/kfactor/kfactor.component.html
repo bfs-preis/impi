@@ -1,57 +1,30 @@
-<div class="kfactor-dialog">
-	<h2 mat-dialog-title>{{ "anonymizer.Db.KFactor" | translate }}</h2>
+<h2 mat-dialog-title>{{ "anonymizer.Db.KFactor" | translate }}</h2>
 
-	<mat-dialog-content>
-		<div class="kfactor-content">
-			<p class="description">
-				{{ "anonymizer.KFactor.Description" | translate }}
-			</p>
-
-			<!-- Checking State -->
-
-			<div style="min-height: 64px">
-				<ob-spinner [channel]="channel" />
+<mat-dialog-content>
+	@switch (state) {
+		@case ('checking') {
+			<p class="description">{{ "anonymizer.KFactor.Description" | translate }}</p>
+			<div class="spinner-area">
+				<mat-spinner diameter="32"></mat-spinner>
 			</div>
+		}
+		@case ('success') {
+			<ob-alert type="success">{{ "anonymizer.KFactor.SuccessMessage" | translate }}</ob-alert>
+		}
+		@case ('error') {
+			<ob-alert type="error">{{ error || ("anonymizer.KFactor.FailMessage" | translate) }}</ob-alert>
+		}
+	}
+</mat-dialog-content>
 
-			<!-- Result State -->
-			@if (checkComplete && !isChecking) {
-				<div class="result-state">
-					<!-- Success -->
-					@if (checkResult && !error) {
-						<div class="alert alert-success">
-							<mat-icon svgIcon="checkmark_circle"></mat-icon>
-							<span>{{ "anonymizer.KFactor.SuccessMessage" | translate }}</span>
-						</div>
-					}
-					<!-- Failure -->
-					@if (!checkResult || error) {
-						<div class="alert alert-danger">
-							<mat-icon svgIcon="exclamation_circle"></mat-icon>
-							<span>
-								{{ error || ("anonymizer.KFactor.FailMessage" | translate) }}
-							</span>
-						</div>
-					}
-				</div>
-			}
-		</div>
-	</mat-dialog-content>
-
-	<mat-dialog-actions align="end">
-		@if (!checkComplete) {
-			<button type="button" mat-button obButton="secondary" (click)="cancel()" [disabled]="isChecking">
-				{{ "anonymizer.KFactor.ButtonCancel" | translate }}
-			</button>
-		}
-		@if (!checkComplete) {
-			<button type="button" mat-button obButton="primary" (click)="startCheck()" [disabled]="isChecking">
-				{{ "anonymizer.KFactor.ButtonStart" | translate }}
-			</button>
-		}
-		@if (checkComplete) {
-			<button type="button" mat-button obButton="primary" (click)="close()">
-				{{ "anonymizer.KFactor.ButtonClose" | translate }}
-			</button>
-		}
-	</mat-dialog-actions>
-</div>
+<mat-dialog-actions align="end">
+	@if (state === 'checking') {
+		<button type="button" mat-button obButton="secondary" (click)="cancel()">
+			{{ "anonymizer.KFactor.ButtonCancel" | translate }}
+		</button>
+	} @else {
+		<button type="button" mat-button obButton="primary" (click)="close()">
+			{{ "anonymizer.KFactor.ButtonClose" | translate }}
+		</button>
+	}
+</mat-dialog-actions>

@@ -37,11 +37,11 @@ program.on('--help', function () {
 
 program.parse(process.argv);
 
-const streetCsv = (program.streetCsv === undefined || program.streetCsv.toString().trim().lenght) ? null : program.streetCsv.toString().trim();
-const communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().lenght) ? null : program.communitiesCsv.toString().trim();
-const buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().lenght) ? null : program.buildingsCsv.toString().trim();
-const additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().lenght) ? null : program.additionalCommunitiesCsv.toString().trim();
-const encoding = (program.encoding === undefined || program.encoding.toString().trim().lenght) ? "windows1252" : program.encoding.toString().trim();
+const streetCsv = (program.streetCsv === undefined || program.streetCsv.toString().trim().length === 0) ? null : program.streetCsv.toString().trim();
+const communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().length === 0) ? null : program.communitiesCsv.toString().trim();
+const buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().length === 0) ? null : program.buildingsCsv.toString().trim();
+const additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().length === 0) ? null : program.additionalCommunitiesCsv.toString().trim();
+const encoding = (program.encoding === undefined || program.encoding.toString().trim().length === 0) ? "windows1252" : program.encoding.toString().trim();
 
 const config = {
     csv: {

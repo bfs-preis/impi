@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {TranslateModule} from '@ngx-translate/core';
@@ -15,9 +16,11 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './csv-selector.component.html',
 	styleUrls: ['./csv-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule]
+	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CsvSelectorComponent implements OnInit {
+	private readonly destroyRef = inject(DestroyRef);
 	@Input() disabled = false;
 	@Output() readonly isValid = new EventEmitter<boolean>();
 	@Output() readonly rowCountChange = new EventEmitter<number>();
@@ -66,7 +69,7 @@ export class CsvSelectorComponent implements OnInit {
 		// Get delimiter from settings
 		const delimiter = this.electronService.getSetting<string>('CSVSeparater', ';');
 
-		this.electronService.verifyCsv(this.file, delimiter).subscribe({
+		this.electronService.verifyCsv(this.file, delimiter).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: rows => {
 				this.rowCount = rows;
 				this.isValidFile = true;

@@ -3,7 +3,7 @@ import { ValidationRules, IValidationRule } from './validation/ValidationRules.j
 import { GeoDatabase, IDbInfo } from './match/GeoDatabase.js';
 import { MatchingTypeEnum } from './match/match.js';
 import { readResultZipFile, createEmptyLogMatchingTypeArray } from './core/log-file-xml.js';
-import { ILogResult, ILogMeta, ILogViolation, ILogRow, ILogMatchingType } from './core/log-result.js';
+import { ILogResult, ILogMeta, ILogViolation, ILogRow, ILogMatchingType, IMapping } from './core/log-result.js';
 export {
     processFile,
     IProcessOption,
@@ -12,6 +12,7 @@ export {
     ILogViolation,
     ILogRow,
     ILogMatchingType,
+    IMapping,
     ValidationRules,
     IValidationRule,
     IDbInfo,

@@ -7,13 +7,13 @@ import { GeoDatabase, IDbInfo, CheckInputFileFormat } from 'impilib';
 export function CheckKFactor(dbFile:string):Promise<boolean | null> {
     log.debug('CheckKFactor:' + dbFile);
     return new Promise((resolve, reject) => {
-        let handleDbError = (err: Error) => {
+        const handleDbError = (err: Error) => {
             log.error(err);
             reject(err);
             return;
         };
 
-        let database = new GeoDatabase(dbFile, handleDbError);
+        const database = new GeoDatabase(dbFile, handleDbError);
         database.kFactorCheck((check: boolean | null, err: Error | null) => {
             if (err) {
                 handleDbError(err);
@@ -27,13 +27,13 @@ export function CheckKFactor(dbFile:string):Promise<boolean | null> {
 export function ValidateDatabase(dbFile: string): Promise<IDbInfo> {
     log.debug('ValidateDatabase:' + dbFile);
     return new Promise((resolve, reject) => {
-        let handleDbError = (err: Error) => {
+        const handleDbError = (err: Error) => {
             log.error(err);
             reject(err);
             return;
         };
 
-        let database = new GeoDatabase(dbFile, handleDbError);
+        const database = new GeoDatabase(dbFile, handleDbError);
         database.verifyDb((dbInfo: IDbInfo | null, err: Error | null) => {
             if (err) {
                 handleDbError(err);
@@ -50,14 +50,14 @@ export async function ValidateInputCsv(csvFile: string, delimiter: string): Prom
     log.debug('ValidateInputCsv:' + csvFile);
 
     return new Promise<number>((resolve, reject) => {
-        let handleError = (err: Error) => {
+        const handleError = (err: Error) => {
             log.error(err);
             return reject(err);
         };
 
         if (fs.existsSync(csvFile)) {
 
-            var lineReader = readLine.createInterface({
+            const lineReader = readLine.createInterface({
                 input: fs.createReadStream(csvFile)
             });
 
@@ -71,7 +71,7 @@ export async function ValidateInputCsv(csvFile: string, delimiter: string): Prom
             });
 
             lineReader.on('close', function () {
-                let missingColumns = CheckInputFileFormat(headerLine, delimiter);
+                const missingColumns = CheckInputFileFormat(headerLine, delimiter);
                 if (missingColumns.length > 0) {
                     return handleError(new Error("Missing Columns:" + missingColumns.join(",")));
                 }
@@ -86,7 +86,5 @@ export async function ValidateInputCsv(csvFile: string, delimiter: string): Prom
 
 export function ValidateOutputDir(outputDir: string): Promise<boolean> {
     log.debug('ValidateOutputDir:' + outputDir);
-    return new Promise((resolve, reject) => {
-        fs.exists(outputDir, (exists: boolean) => resolve(exists));
-    });
+    return Promise.resolve(fs.existsSync(outputDir));
 }

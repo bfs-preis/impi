@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {TranslateModule} from '@ngx-translate/core';
@@ -15,9 +16,11 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './output-selector.component.html',
 	styleUrls: ['./output-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule]
+	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutputSelectorComponent implements OnInit {
+	private readonly destroyRef = inject(DestroyRef);
 	@Input() disabled = false;
 	@Output() isValid = new EventEmitter<boolean>();
 
@@ -52,7 +55,7 @@ export class OutputSelectorComponent implements OnInit {
 
 		this.isValidating = true;
 
-		this.electronService.verifyPath(this.path).subscribe({
+		this.electronService.verifyPath(this.path).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: valid => {
 				this.isValidPath = valid;
 				this.isValidating = false;

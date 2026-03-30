@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
@@ -19,9 +20,11 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './db-selector.component.html',
 	styleUrls: ['./db-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, TranslateModule, FilePickerComponent, MatButtonModule, MatTooltipModule, MatCardModule]
+	imports: [MatIconModule, TranslateModule, FilePickerComponent, MatButtonModule, MatTooltipModule, MatCardModule],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DbSelectorComponent implements OnInit {
+	private readonly destroyRef = inject(DestroyRef);
 	@Input() disabled = false;
 	@Output() readonly isValid = new EventEmitter<boolean>();
 
@@ -68,7 +71,7 @@ export class DbSelectorComponent implements OnInit {
 		this.isValidating = true;
 		this.error = null;
 
-		this.electronService.verifyDatabase(this.file).subscribe({
+		this.electronService.verifyDatabase(this.file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: dbInfo => {
 				// Normalize dates — IPC may serialize Date objects as ISO strings
 				dbInfo.PeriodFrom = new Date(dbInfo.PeriodFrom).getTime();

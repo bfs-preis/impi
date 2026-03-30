@@ -12,7 +12,7 @@ export function createEmptyLogMatchingTypeArray(): ILogMatchingType[] {
 
     for (const n in MatchingTypeEnum) {
         if (typeof MatchingTypeEnum[n] === 'number') {
-            map.push({ Id: <any>MatchingTypeEnum[n], Name: n, Count: 0 });
+            map.push({ Id: MatchingTypeEnum[n] as unknown as number, Name: n, Count: 0 });
         }
     }
     return map
@@ -33,7 +33,7 @@ export async function readResultZipFile(file: string, callback: (result: ILogRes
 
                 xmlreader.read(xmlString, function (_, res) {
 
-                    const mapping: any = {
+                    const mapping: { Mappings: Record<string, Record<string, string>>; Scales: Record<string, string> } = {
                         Mappings: {},
                         Scales: {}
                     };
@@ -126,6 +126,7 @@ export function LogAsXmlString(result: ILogResult): string {
 
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function _generateXml(result: ILogResult): any {
 
     const root = xmlbuilder.create({ encoding: 'utf-8' }).ele('Log');
@@ -165,10 +166,11 @@ function _generateXml(result: ILogResult): any {
         }
 
         const scalesElement = mappingElement.ele("Scales");
-        for (const p of Object.getOwnPropertyNames(result.Mapping.Scales)) {
+        const scales = result.Mapping.Scales || {};
+        for (const p of Object.getOwnPropertyNames(scales)) {
             scalesElement.ele("ScaleProperty",{
                 "Name":p,
-                "Value":result.Mapping.Scales[p]
+                "Value":scales[p]
             });
         }
     }
@@ -212,7 +214,7 @@ function _generateXml(result: ILogResult): any {
     }
 
     if (result.Error) {
-        if (result.Error.stack != undefined) {
+        if (result.Error.stack !== undefined) {
             root.ele("Exception").dat(result.Error.stack);
         } else {
             root.ele("Exception").dat(result.Error.message);
