@@ -114,3 +114,4 @@ src/electron/app/messages/anonymizer-messages.js
 src/electron/app/messages/report-viewer-messages.js
 src/electron/app/validation/input-validation.js
 /.direnv
+/test-data
