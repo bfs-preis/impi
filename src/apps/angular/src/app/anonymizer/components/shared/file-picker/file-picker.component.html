@@ -2,7 +2,7 @@
 	<div class="file-picker-content">
 		<div class="file-info">
 			<span class="file-label">{{ label }}</span>
-			<span class="file-path" [title]="selectedPath || ''">
+			<span class="file-path" [matTooltip]="selectedPath || ''" matTooltipPosition="below">
 				{{ mode === "file" ? getFileName() : getShortPath() }}
 			</span>
 		</div>

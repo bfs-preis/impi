@@ -8,7 +8,9 @@
       "ETA": "ETA:",
       "Error": "Error",
       "Finished": "Finished",
-      "Duration": "Duration:"
+      "Duration": "Duration:",
+      "ButtonStart": "Start Processing",
+      "ButtonProcessing": "Processing..."
     },
     "Db": {
       "Title": "Geodata File",
@@ -16,18 +18,21 @@
       "Period": "Period:",
       "Version": "Version:",
       "SelectFile": "Select DB File",
-      "KFactor": "Factor K testing"
+      "KFactor": "Factor K testing",
+      "Step": "Step 1"
     },
     "Csv": {
       "Title": "Bankdata File",
       "File": "File:",
       "Rows": "Rows:",
-      "SelectFile": "Select CSV File"
+      "SelectFile": "Select CSV File",
+      "Step": "Step 2"
     },
     "Out": {
       "Title": "Output Directory",
       "Directory": "Directory:",
-      "SelectFile": "Select Output Directory"
+      "SelectFile": "Select Output Directory",
+      "Step": "Step 3"
     },
     "Settings": {
       "Title": "Settings",
@@ -43,7 +48,8 @@
       "LanguageFr": "French",
       "LanguageIt": "Italian",
       "ButtonClose": "Save & Close",
-      "ButtonCancel": "Cancel"
+      "ButtonCancel": "Cancel",
+      "MappingFile": "Mapping File"
     },
     "Help": {
       "Title": "Help",
@@ -60,6 +66,18 @@
       "ButtonClose": "Close",
       "SuccessMessage": "K factor fulfilled.",
       "FailMessage": "K factor not fulfilled!"
+    },
+    "Processing": {
+      "Title": "Processing",
+      "Rows": "Rows:",
+      "Time": "Time:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Rows/s:",
+      "TotalRows": "Total Rows:",
+      "TotalTime": "Total Time:",
+      "SuccessMessage": "Processing completed successfully.",
+      "ButtonCancel": "Cancel",
+      "ButtonClose": "Close"
     }
   }
 }

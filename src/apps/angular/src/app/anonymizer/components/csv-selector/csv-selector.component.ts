@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {TranslateModule} from '@ngx-translate/core';
-import {ObSpinnerModule} from '@oblique/oblique';
+import {ObAlertModule, ObSpinnerModule} from '@oblique/oblique';
 import {ElectronService, FileFilter} from '../../services/electron.service';
 import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 
@@ -15,7 +15,7 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './csv-selector.component.html',
 	styleUrls: ['./csv-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, TranslateModule, ObSpinnerModule, FilePickerComponent, MatCardModule]
+	imports: [MatIconModule, TranslateModule, ObAlertModule, ObSpinnerModule, FilePickerComponent, MatCardModule]
 })
 export class CsvSelectorComponent implements OnInit {
 	@Input() disabled = false;

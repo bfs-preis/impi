@@ -1,7 +1,10 @@
 <div class="csv-selector-container">
 	<mat-card>
 		<mat-card-header>
-			<h3>{{ "anonymizer.Csv.Title" | translate }}</h3>
+			<mat-card-title>
+				<span class="step-badge">{{ "anonymizer.Csv.Step" | translate }}</span>
+				{{ "anonymizer.Csv.Title" | translate }}
+			</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
 			<!-- File Picker -->
@@ -26,10 +29,7 @@
 
 			<!-- Error Message -->
 			@if (error && !isValidating) {
-				<div class="alert alert-danger" role="alert">
-					<mat-icon svgIcon="exclamation_circle"></mat-icon>
-					<span>{{ error }}</span>
-				</div>
+				<ob-alert type="error">{{ error }}</ob-alert>
 			}
 
 			<!-- CSV Info -->

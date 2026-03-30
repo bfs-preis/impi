@@ -30,6 +30,9 @@
             # Common native module dependencies
             openssl
             zlib
+
+            # GitHub CLI
+            gh
           ];
 
           shellHook = ''

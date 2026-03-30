@@ -8,7 +8,9 @@
       "ETA": "ETA:",
       "Error": "Fehler",
       "Finished": "Abgeschlossen",
-      "Duration": "Dauer:"
+      "Duration": "Dauer:",
+      "ButtonStart": "Verarbeitung starten",
+      "ButtonProcessing": "Verarbeitung..."
     },
     "Db": {
       "Title": "Geodaten Datei",
@@ -16,18 +18,21 @@
       "Period": "Periode:",
       "Version": "Version:",
       "SelectFile": "Auswählen der DB Datei",
-      "KFactor": "Faktor K testen"
+      "KFactor": "Faktor K testen",
+      "Step": "Schritt 1"
     },
     "Csv": {
       "Title": "Bankdaten Datei",
       "File": "Datei:",
       "Rows": "Zeilen:",
-      "SelectFile": "Auswählen der Csv Datei"
+      "SelectFile": "Auswählen der Csv Datei",
+      "Step": "Schritt 2"
     },
     "Out": {
       "Title": "Ausgabe Verzeichnis",
       "Directory": "Pfad:",
-      "SelectFile": "Auswählen des Ausgabe Verzeichnises"
+      "SelectFile": "Auswählen des Ausgabe Verzeichnises",
+      "Step": "Schritt 3"
     },
     "Settings": {
       "Title": "Einstellungen",
@@ -43,7 +48,8 @@
       "LanguageFr": "Französisch",
       "LanguageIt": "Italienisch",
       "ButtonClose": "Speichern & Schliessen",
-      "ButtonCancel": "Abbrechen"
+      "ButtonCancel": "Abbrechen",
+      "MappingFile": "Mapping Datei"
     },
     "Help": {
       "Title": "Hilfe",
@@ -60,6 +66,18 @@
       "ButtonClose": "Schliessen",
       "SuccessMessage": "Der K Faktor ist erfüllt.",
       "FailMessage": "Der K Faktor ist nicht erfüllt!"
+    },
+    "Processing": {
+      "Title": "Verarbeitung",
+      "Rows": "Zeilen:",
+      "Time": "Zeit:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Zeilen/s:",
+      "TotalRows": "Total Zeilen:",
+      "TotalTime": "Gesamtdauer:",
+      "SuccessMessage": "Die Verarbeitung wurde erfolgreich abgeschlossen.",
+      "ButtonCancel": "Abbrechen",
+      "ButtonClose": "Schliessen"
     }
   }
 }

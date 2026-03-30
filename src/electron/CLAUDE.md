@@ -19,11 +19,10 @@ Start Angular dev server first (`cd src/apps/angular && pnpm run start`), then:
 
 ```bash
 npm run tsc && npm run copyPreload && npm run copyBackground
-ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron ./app -- --dev --debug -l debug --no-sandbox
+IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 ```
 
-- `--dev` loads from `http://localhost:4200` (hot reload)
-- `--debug` opens DevTools
+- `IMPI_DEV=1` loads from `http://localhost:4200` (hot reload)
 - Renderer console logs forwarded to stdout as `[RENDERER:LEVEL]`
 - Angular changes auto-reload without restarting Electron
 

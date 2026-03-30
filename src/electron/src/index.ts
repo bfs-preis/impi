@@ -106,7 +106,7 @@ export class Main {
     });
 
     let url: string;
-    if (CommandLineCommand.Development) {
+    if (CommandLineCommand.Development || process.env.IMPI_DEV === '1') {
       url = "http://localhost:4200";
     } else {
       url = `file://${__dirname}/anonymizer/angular/browser/index.html`

@@ -35,8 +35,8 @@ export class GeoDatabase {
             } else {
                 return callback({
                     File: this._file,
-                    PeriodFrom: moment(row.period_from, 'D.M.YYYY', true).toDate(),
-                    PeriodTo: moment(row.period_to, 'D.M.YYYY', true).toDate(),
+                    PeriodFrom: moment(row.period_from, ['D.M.YYYY', 'DD.MM.YYYY']).toDate(),
+                    PeriodTo: moment(row.period_to, ['D.M.YYYY', 'DD.MM.YYYY']).toDate(),
                     Version: row.version
                 } as IDbInfo, null);
             }

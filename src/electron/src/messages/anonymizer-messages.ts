@@ -30,17 +30,18 @@ export function registerAnonMessages() {
     });
 
     ipcMain.on('background-start', (event: any, processOptions: IProcessOption) => {
-        let appSettings: any = settings.get("AppSettings");
-        processOptions.CsvEncoding = appSettings.CSVEncoding;
-        processOptions.CsvSeparator = appSettings.CSVSeparater;
-        processOptions.InputCsvFile = appSettings.CSVFile;
-        processOptions.DatabaseFile = appSettings.DBFile;
-        processOptions.OutputPath = appSettings.OutDirectory;
-        processOptions.SedexSenderId = appSettings.SedexSenderId;
-        processOptions.MappingFile = appSettings.MappingFile;
+        // Use options from renderer, fall back to AppSettings for missing values
+        let appSettings: any = settings.get("AppSettings") || {};
+        processOptions.CsvEncoding = processOptions.CsvEncoding || appSettings.CSVEncoding || 'utf8';
+        processOptions.CsvSeparator = processOptions.CsvSeparator || appSettings.CSVSeparater || ';';
+        processOptions.InputCsvFile = processOptions.InputCsvFile || appSettings.CSVFile || '';
+        processOptions.DatabaseFile = processOptions.DatabaseFile || appSettings.DBFile || '';
+        processOptions.OutputPath = processOptions.OutputPath || appSettings.OutDirectory || '';
+        processOptions.SedexSenderId = processOptions.SedexSenderId || appSettings.SedexSenderId || '';
+        processOptions.MappingFile = processOptions.MappingFile || appSettings.MappingFile || 'mapping.json';
         processOptions.ClientVersion = app.getVersion();
 
-        log.debug('send background-start:' + JSON.stringify(processOptions));
+        console.log('[MAIN] background-start:', JSON.stringify(processOptions));
         Main.GetBackgroundWindow().webContents.send('background-start', processOptions);
         isProcessing = true;
     });
@@ -48,7 +49,7 @@ export function registerAnonMessages() {
     ipcMain.on('verify db', (event: any, file: string) => {
         ValidateDatabase(file)
             .then((dbinfo) => {
-                log.debug('send verify db response:' + JSON.stringify(dbinfo));
+                console.log('[MAIN] verify db result:', JSON.stringify(dbinfo));
                 Main.GetMainWindow().webContents.send('verify db response', { dbInfo: dbinfo, err: null });
             }).catch((error) => {
                 log.debug('send verify db response:' + + error.message);

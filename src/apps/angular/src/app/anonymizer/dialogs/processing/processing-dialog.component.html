@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>{{ "anonymizer.Processing.Title" | translate }}</h2>
+
+<mat-dialog-content>
+	@switch (state) {
+		@case ('processing') {
+			<div class="progress-stats">
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.Rows" | translate }}</label>
+					<span>{{ processedRows }} / {{ maxRows }}</span>
+				</div>
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.Time" | translate }}</label>
+					<span>{{ formattedTime }}</span>
+				</div>
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.ETA" | translate }}</label>
+					<span>{{ formattedEta }}</span>
+				</div>
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.RowsPerSecond" | translate }}</label>
+					<span>{{ rowsPerSecond | number:'1.0-0' }}</span>
+				</div>
+			</div>
+
+			<div class="progress-bar-container">
+				<mat-progress-bar mode="determinate" [value]="progressValue"></mat-progress-bar>
+				<span class="progress-percentage">{{ progressValue.toFixed(1) }}%</span>
+			</div>
+		}
+
+		@case ('success') {
+			<ob-alert type="success">
+				{{ "anonymizer.Processing.SuccessMessage" | translate }}
+			</ob-alert>
+			<div class="summary-stats">
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.TotalRows" | translate }}</label>
+					<span>{{ processedRows }}</span>
+				</div>
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.TotalTime" | translate }}</label>
+					<span>{{ formattedTime }}</span>
+				</div>
+				<div class="stat">
+					<label>{{ "anonymizer.Processing.RowsPerSecond" | translate }}</label>
+					<span>{{ rowsPerSecond | number:'1.0-0' }}</span>
+				</div>
+			</div>
+		}
+
+		@case ('error') {
+			<ob-alert type="error">{{ error }}</ob-alert>
+		}
+	}
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	@if (state === 'processing') {
+		<button type="button" mat-button obButton="secondary" (click)="cancel()">
+			{{ "anonymizer.Processing.ButtonCancel" | translate }}
+		</button>
+	} @else {
+		<button type="button" mat-button obButton="primary" (click)="close()">
+			{{ "anonymizer.Processing.ButtonClose" | translate }}
+		</button>
+	}
+</mat-dialog-actions>

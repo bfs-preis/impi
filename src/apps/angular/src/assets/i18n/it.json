@@ -8,7 +8,9 @@
       "ETA": "ETA:",
       "Error": "Errore",
       "Finished": "Completato",
-      "Duration": "Durata"
+      "Duration": "Durata",
+      "ButtonStart": "Avvia elaborazione",
+      "ButtonProcessing": "Elaborazione..."
     },
     "Db": {
       "Title": "File geodati",
@@ -16,18 +18,21 @@
       "Period": "Periodo:",
       "Version": "Versione:",
       "SelectFile": "Scelta file banca dati",
-      "KFactor": "Testare il fattore K"
+      "KFactor": "Testare il fattore K",
+      "Step": "Passo 1"
     },
     "Csv": {
       "Title": "File banca dati",
       "File": "File:",
       "Rows": "Linee:",
-      "SelectFile": "Scelta del file CSV"
+      "SelectFile": "Scelta del file CSV",
+      "Step": "Passo 2"
     },
     "Out": {
       "Title": "Output directory",
       "Directory": "Directory:",
-      "SelectFile": "Scelta output-directory"
+      "SelectFile": "Scelta output-directory",
+      "Step": "Passo 3"
     },
     "Settings": {
       "Title": "Impostazioni",
@@ -43,7 +48,8 @@
       "LanguageFr": "Francese",
       "LanguageIt": "Italiano",
       "ButtonClose": "Salva & chiudi",
-      "ButtonCancel": "Annulla"
+      "ButtonCancel": "Annulla",
+      "MappingFile": "File di mapping"
     },
     "Help": {
       "Title": "Aiuto",
@@ -60,6 +66,18 @@
       "ButtonClose": "Chiudi",
       "SuccessMessage": "fattore k soddisfatto.",
       "FailMessage": "fattore k non soddisfatto!"
+    },
+    "Processing": {
+      "Title": "Elaborazione",
+      "Rows": "Righe:",
+      "Time": "Tempo:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Righe/s:",
+      "TotalRows": "Righe totali:",
+      "TotalTime": "Durata totale:",
+      "SuccessMessage": "Elaborazione completata con successo.",
+      "ButtonCancel": "Annulla",
+      "ButtonClose": "Chiudi"
     }
   }
 }

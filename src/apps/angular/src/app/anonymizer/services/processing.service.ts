@@ -1,71 +1,65 @@
 import {Injectable} from '@angular/core';
-import {Observable, interval, of} from 'rxjs';
-import {delay, finalize, map, switchMap, take} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 import {ILogResult, IProcessOption, ProcessProgress} from '../models';
 
-/**
- * Service for handling data processing operations
- * In mock mode, simulates processing with progress updates
- */
+function getIpc(): any {
+	return (window as any).electron?.ipcRenderer;
+}
+
 @Injectable()
 export class ProcessingService {
-	/**
-	 * Process data with given options
-	 * Returns observable that emits progress updates
-	 */
-	processData(options: IProcessOption): Observable<ProcessProgress> {
-		const maxRows = options.CsvRowCount;
 
-		// Simulate processing with progress updates every 100ms
-		return interval(100).pipe(
-			take(maxRows),
-			map(tick => ({
-				processedRow: tick + 1,
-				maxRows,
-				percentage: ((tick + 1) / maxRows) * 100
-			}))
-		);
-	}
-
-	/**
-	 * Get the final result after processing completes
-	 */
-	getProcessingResult(options: IProcessOption): Observable<ILogResult> {
-		// Simulate processing time
-		const processingTime = options.CsvRowCount * 100;
-
-		return of(null).pipe(
-			delay(processingTime),
-			map(() => {
-				// Mock successful result
-				const result: ILogResult = {
-					Success: true,
-					ProcessedRows: options.CsvRowCount,
-					Duration: processingTime
-				};
-				return result;
-			})
-		);
-	}
-
-	/**
-	 * Process data and return final result with progress updates
-	 * This combines both progress updates and final result
-	 */
 	processWithResult(options: IProcessOption, onProgress: (progress: ProcessProgress) => void): Observable<ILogResult> {
-		return this.processData(options).pipe(
-			finalize(() => {
-				// Processing complete
-			}),
-			// Subscribe to progress updates
-			map(progress => {
-				onProgress(progress);
-				return progress;
-			}),
-			// Wait for all progress updates to complete
-			take(options.CsvRowCount),
-			// Then get the final result
-			switchMap(() => this.getProcessingResult(options))
-		);
+		const ipc = getIpc();
+		return ipc
+			? this.processViaIpc(options, onProgress, ipc)
+			: this.processMock(options, onProgress);
+	}
+
+	private processViaIpc(options: IProcessOption, onProgress: (progress: ProcessProgress) => void, ipc: any): Observable<ILogResult> {
+		return new Observable(observer => {
+			const progressHandler = (progress: {processedRow: number; maxRows: number}) => {
+				onProgress({
+					processedRow: progress.processedRow,
+					maxRows: progress.maxRows,
+					percentage: (progress.processedRow / progress.maxRows) * 100
+				});
+			};
+
+			const resultHandler = (result: any) => {
+				ipc.removeListener?.('background-response-row', progressHandler);
+				observer.next(result as ILogResult);
+				observer.complete();
+			};
+
+			ipc.on('background-response-row', progressHandler);
+			ipc.once('background-response', resultHandler);
+			ipc.send('background-start', options);
+
+			// Teardown: clean up listeners on unsubscribe (cancel)
+			return () => {
+				ipc.removeListener?.('background-response-row', progressHandler);
+				ipc.removeListener?.('background-response', resultHandler);
+			};
+		});
+	}
+
+	private processMock(options: IProcessOption, onProgress: (progress: ProcessProgress) => void): Observable<ILogResult> {
+		return new Observable(observer => {
+			const maxRows = options.CsvRowCount || 100;
+			let row = 0;
+			const timer = setInterval(() => {
+				row++;
+				onProgress({processedRow: row, maxRows, percentage: (row / maxRows) * 100});
+				if (row >= maxRows) {
+					clearInterval(timer);
+					observer.next({Success: true, ProcessedRows: maxRows, Duration: row * 50} as ILogResult);
+					observer.complete();
+				}
+			}, 50);
+
+			// Teardown: stop interval on unsubscribe (cancel)
+			return () => clearInterval(timer);
+		});
 	}
 }

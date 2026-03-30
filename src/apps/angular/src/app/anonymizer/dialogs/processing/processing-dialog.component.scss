@@ -1,0 +1,58 @@
+.progress-stats,
+.summary-stats {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background-color: #f5f7f9;
+	border-radius: 4px;
+}
+
+.stat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
+
+	label {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: #6c757d;
+		text-transform: uppercase;
+		margin: 0;
+	}
+
+	span {
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: #212529;
+	}
+}
+
+.progress-bar-container {
+	position: relative;
+	margin-bottom: 0.5rem;
+
+	mat-progress-bar {
+		height: 20px;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	.progress-percentage {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: #fff;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		z-index: 1;
+	}
+}
+
+.summary-stats {
+	margin-top: 1rem;
+}

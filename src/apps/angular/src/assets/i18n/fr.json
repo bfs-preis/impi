@@ -8,7 +8,9 @@
       "ETA": "ETA:",
       "Error": "Erreur",
       "Finished": "Terminé",
-      "Duration": "Durée:"
+      "Duration": "Durée:",
+      "ButtonStart": "Démarrer le traitement",
+      "ButtonProcessing": "Traitement..."
     },
     "Db": {
       "Title": "Fichier des géodonnées",
@@ -16,18 +18,21 @@
       "Period": "Période:",
       "Version": "Version:",
       "SelectFile": "Choisir le fichier de base de données",
-      "KFactor": "Tester le facteur K "
+      "KFactor": "Tester le facteur K ",
+      "Step": "Étape 1"
     },
     "Csv": {
       "Title": "Fichier données bancaires",
       "File": "Fichier:",
       "Rows": "Lignes:",
-      "SelectFile": "Choisir le fichier Csv"
+      "SelectFile": "Choisir le fichier Csv",
+      "Step": "Étape 2"
     },
     "Out": {
       "Title": "Répertoire de sortie",
       "Directory": "Répertoire:",
-      "SelectFile": "Choisir le répertoire de sortie"
+      "SelectFile": "Choisir le répertoire de sortie",
+      "Step": "Étape 3"
     },
     "Settings": {
       "Title": "Paramètres",
@@ -43,7 +48,8 @@
       "LanguageFr": "Français",
       "LanguageIt": "Italien",
       "ButtonClose": "Enregistrer et fermer",
-      "ButtonCancel": "Annuler"
+      "ButtonCancel": "Annuler",
+      "MappingFile": "Fichier de mapping"
     },
     "Help": {
       "Title": "Aide",
@@ -60,6 +66,18 @@
       "ButtonClose": "Fermer",
       "SuccessMessage": "factor k satisfait",
       "FailMessage": "factor k pas satisfait!"
+    },
+    "Processing": {
+      "Title": "Traitement",
+      "Rows": "Lignes:",
+      "Time": "Temps:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Lignes/s:",
+      "TotalRows": "Total lignes:",
+      "TotalTime": "Durée totale:",
+      "SuccessMessage": "Le traitement a été effectué avec succès.",
+      "ButtonCancel": "Annuler",
+      "ButtonClose": "Fermer"
     }
   }
 }
