@@ -1,3 +1,38 @@
+.chart-container {
+    position: relative;
+    width: 50vw;
+    margin: 0 auto;
+}
+
+.legend-list {
+    display: table;
+}
+
+.legend-row {
+    display: table-row;
+}
+
+.legend-color-box {
+    display: table-cell;
+    float: left;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.legend-count {
+    display: table-cell;
+    width: 50px;
+    min-width: 50px;
+    padding-left: 10px;
+}
+
+.legend-label {
+    display: table-cell;
+    padding-left: 10px;
+    white-space: pre;
+}
+
 .mat-mdc-list[dense] .mat-mdc-list-option,
 .mat-mdc-selection-list[dense] .mat-mdc-list-option {
     height: 25px !important;

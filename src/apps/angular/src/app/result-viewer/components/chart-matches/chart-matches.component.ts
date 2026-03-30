@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, ViewEncapsulation, Input } from '@angular/core';
 import { ChartDataSet, ChartsComponent } from '../shared/charts/charts.component';
 import { ILogMatchingType } from '../../models';
 
@@ -10,7 +10,7 @@ import { ILogMatchingType } from '../../models';
   standalone: true,
   imports: [ChartsComponent]
 })
-export class ChartMatchesComponent implements OnInit {
+export class ChartMatchesComponent {
 
   data!: ChartDataSet;
   matches!: ILogMatchingType[];
@@ -25,10 +25,6 @@ export class ChartMatchesComponent implements OnInit {
       this.prepareData();
     }
   }
-
-  constructor() { }
-
-  ngOnInit(): void { }
 
   prepareData(): void {
     const data = this.matches.map((v) => ({ Text: v.Name, Count: v.Count }));

@@ -198,11 +198,10 @@ function parseCommandLine(): ICommandLine {
         .help()
         .version();
 
-    let arg: any;
     if (isNotPackaged) {
-        arg = argv.argv;
+        argv.argv;
     } else {
-        arg = argv.parse(process.argv.slice(1));
+        argv.parse(process.argv.slice(1));
     }
 
     return commandOptions;

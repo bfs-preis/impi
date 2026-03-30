@@ -8,16 +8,16 @@ import colors from 'colors';
 
 export async function CliProcess(commandLine: ICommandLine): Promise<number> {
 
-    if (commandLine.Command != CommandEnum.Cli) throw new Error("Only Cli Command allowed in here");
+    if (commandLine.Command !== CommandEnum.Cli) throw new Error("Only Cli Command allowed in here");
 
     const top_start = Date.now();
 
-    let handleError = (error: any) => {
+    const handleError = (error: Error | unknown) => {
         spinners[currentSpinnerIndex].spinner.fail(spinners[currentSpinnerIndex].spinner.text + " " + error);
         log.error(error);
     }
 
-    var spinners = [
+    const spinners = [
         { name: 'Validate Database', spinner: ora('Validate Database') },
         { name: 'Validate Input File', spinner: ora('Validate Input File') },
         { name: 'Validate Output Folder', spinner: ora('Validate Output Folder') },
@@ -39,7 +39,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
         spinners[currentSpinnerIndex].spinner.text = colors.magenta(spinners[currentSpinnerIndex].name) + " | Processed Rows --> " + colors.yellow(rows.toString()) + "/" + colors.yellow(maxRows.toString()) + " | " + "Time --> " + colors.yellow(nicetime((Date.now() - start))) + " | " + colors.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
     };
 
-    var currentSpinnerIndex = 0;
+    let currentSpinnerIndex = 0;
 
     try {
 
@@ -63,8 +63,8 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
         currentSpinnerIndex++;
         if (commandLine.KFactorTest) {
             spinners[currentSpinnerIndex].spinner.start();
-            var geoDatabase = new GeoDatabase(commandLine.DBFile, handleError);
-            var result = await geoDatabase.kFactorCheckAsync();
+            const geoDatabase = new GeoDatabase(commandLine.DBFile, handleError);
+            const result = await geoDatabase.kFactorCheckAsync();
             if (result) {
                 spinners[currentSpinnerIndex].spinner.succeed();
             }
@@ -89,7 +89,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
             ClientVersion: app.getVersion(),
         };
 
-        var start = Date.now();
+        const start = Date.now();
         spinners[currentSpinnerIndex].spinner.start();
         let process: Promise<number> = new Promise((resolve, reject) => {
             processFile(options,

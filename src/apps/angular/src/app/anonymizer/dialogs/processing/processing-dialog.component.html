@@ -60,6 +60,11 @@
 			{{ "anonymizer.Processing.ButtonCancel" | translate }}
 		</button>
 	} @else {
+		@if (state === 'success') {
+			<button type="button" mat-button obButton="secondary" (click)="viewResults()">
+				{{ "anonymizer.Processing.ButtonView" | translate }}
+			</button>
+		}
 		<button type="button" mat-button obButton="primary" (click)="close()">
 			{{ "anonymizer.Processing.ButtonClose" | translate }}
 		</button>

@@ -17,12 +17,20 @@ export function match(
     geoDatabase: GeoDatabase,
     callback: (record: IBuildingRecord | null, err: Error | null, matchingType: MatchingTypeEnum) => void): void {
 
-    //Validate
-    const hasStreet: boolean = (record as IBankDataCsv).street == undefined || (record as IBankDataCsv).street.length == 0 ? false : true;
-    let hasZipCode: boolean = (record as IBankDataCsv).zipcode == undefined || (record as IBankDataCsv).zipcode.length == 0 ? false : true;
-    const hasCommunity: boolean = (record as IBankDataCsv).community == undefined || (record as IBankDataCsv).community.length == 0 ? false : true;
-    // tslint:disable-next-line:max-line-length
-    const hasStreetNumber: boolean = (record as IBankDataCsv).streetnumber == undefined || (record as IBankDataCsv).streetnumber.length == 0 ? false : true;
+    _matchAsync(record, geoDatabase)
+        .then(([row, matchingType]) => callback(row, null, matchingType))
+        .catch((error) => callback(null, error, MatchingTypeEnum.NoMatchingWithError));
+}
+
+async function _matchAsync(
+    record: IBankDataCsv,
+    geoDatabase: GeoDatabase
+): Promise<[IBuildingRecord | null, MatchingTypeEnum]> {
+
+    const hasStreet = !!record.street?.length;
+    let hasZipCode = !!record.zipcode?.length;
+    const hasCommunity = !!record.community?.length;
+    const hasStreetNumber = !!record.streetnumber?.length;
 
     const zipcode = +record.zipcode;
 
@@ -31,71 +39,46 @@ export function match(
     }
 
     if (!hasZipCode) {
-        return callback(null, null, MatchingTypeEnum.NoMatching);
+        return [null, MatchingTypeEnum.NoMatching];
     }
 
-    const nCommunity = hasCommunity ? normalizeCity((record as IBankDataCsv).community) : null;
+    const nCommunity = hasCommunity ? normalizeCity(record.community) : null;
 
-    //only zipcode no street
+    // Only zipcode, no street
     if (!hasStreet) {
-
-        _searchCenterCommunities(geoDatabase, zipcode, nCommunity)
-            .then((row) => {
-                if (row)
-                    return callback(row, null, MatchingTypeEnum.CenterCommunitiesMatching);
-                else
-                    return callback(null, null, MatchingTypeEnum.NoMatching);
-            })
-            .catch((error) => {
-                return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
-            });
-        return;
+        const row = await _searchCenterCommunities(geoDatabase, zipcode, nCommunity);
+        return row
+            ? [row, MatchingTypeEnum.CenterCommunitiesMatching]
+            : [null, MatchingTypeEnum.NoMatching];
     }
 
-    // we have zip_code && street
-    const nStreet = normalizeStreet((record as IBankDataCsv).street);
+    // We have zip_code && street
+    const nStreet = normalizeStreet(record.street);
     const nStreetnumber = hasStreetNumber ? normalizeStreetNumber(record.streetnumber) : "";
-    _searchAddress(geoDatabase, nStreet, nStreetnumber, zipcode, nCommunity)
-        .then((row) => {
-            if (row) {
-                return callback(row, null, MatchingTypeEnum.PointMatching);
-            }
-            else {
-                _searchDesignationOfBuilding(geoDatabase, nStreet, zipcode, nCommunity)
-                    .then((row) => {
-                        if (row) {
-                            return callback(row, null, MatchingTypeEnum.PointMatching);
-                        }
-                        else {
-                            _searchCenterStreet(geoDatabase, nStreet, zipcode, nCommunity)
-                                .then((center_row) => {
-                                    if (center_row) {
-                                        return callback(center_row, null, MatchingTypeEnum.CenterStreetMatching);
-                                    } else {
-                                        _searchCenterCommunities(geoDatabase, zipcode, nCommunity)
-                                            .then((row) => {
-                                                if (row)
-                                                    return callback(row, null, MatchingTypeEnum.CenterCommunitiesMatching);
-                                                else
-                                                    return callback(null, null, MatchingTypeEnum.NoMatching);
-                                            })
-                                            .catch((error) => {
-                                                return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
-                                            });
-                                    }
-                                })
-                                .catch((error) => {
-                                    return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
-                                });
-                        }
-                    }).catch((error) => {
-                        return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
-                    });
-            }
-        })
-        .catch((error) => {
-            return callback(null, error, MatchingTypeEnum.NoMatchingWithError);
-        });
+
+    // Try point matching via address
+    const addressRow = await _searchAddress(geoDatabase, nStreet, nStreetnumber, zipcode, nCommunity);
+    if (addressRow) {
+        return [addressRow, MatchingTypeEnum.PointMatching];
+    }
+
+    // Try point matching via designation of building
+    const designationRow = await _searchDesignationOfBuilding(geoDatabase, nStreet, zipcode, nCommunity);
+    if (designationRow) {
+        return [designationRow, MatchingTypeEnum.PointMatching];
+    }
+
+    // Try center street matching
+    const centerStreetRow = await _searchCenterStreet(geoDatabase, nStreet, zipcode, nCommunity);
+    if (centerStreetRow) {
+        return [centerStreetRow, MatchingTypeEnum.CenterStreetMatching];
+    }
+
+    // Fall back to center communities matching
+    const centerRow = await _searchCenterCommunities(geoDatabase, zipcode, nCommunity);
+    return centerRow
+        ? [centerRow, MatchingTypeEnum.CenterCommunitiesMatching]
+        : [null, MatchingTypeEnum.NoMatching];
 }
 
 function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: string, zipcode: number, communitiy: string | null): Promise<IBuildingRecord | null> {
@@ -230,4 +213,3 @@ function _searchCenterStreet(geoDatabase: GeoDatabase, street: string, zipcode: 
         });
     });
 }
-

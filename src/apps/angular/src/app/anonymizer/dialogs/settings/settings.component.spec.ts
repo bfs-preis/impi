@@ -53,8 +53,7 @@ describe('SettingsDialogComponent', () => {
 	it('should load default settings', () => {
 		expect(component.selectedEncoding).toBe('utf8');
 		expect(component.selectedSeparator).toBe(';');
-		expect(component.selectedTheme).toBe('Light');
-		expect(component.selectedLanguage).toBe('de');
+		expect(component.selectedSedexSenderId).toBe('');
 	});
 
 	it('should have encoding options', () => {

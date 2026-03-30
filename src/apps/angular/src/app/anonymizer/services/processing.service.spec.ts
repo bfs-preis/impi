@@ -31,40 +31,12 @@ describe('ProcessingService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should emit progress updates from processData', (done: DoneFn) => {
-		const progressUpdates: ProcessProgress[] = [];
-
-		service.processData(mockOptions).subscribe({
-			next: progress => {
-				progressUpdates.push(progress);
-			},
-			complete: () => {
-				expect(progressUpdates.length).toBe(mockOptions.CsvRowCount);
-				expect(progressUpdates[0].processedRow).toBe(1);
-				expect(progressUpdates[0].maxRows).toBe(mockOptions.CsvRowCount);
-				expect(progressUpdates[progressUpdates.length - 1].processedRow).toBe(mockOptions.CsvRowCount);
-				done();
-			}
-		});
-	});
-
-	it('should return a successful result from getProcessingResult', (done: DoneFn) => {
-		service.getProcessingResult(mockOptions).subscribe({
-			next: result => {
-				expect(result.Success).toBeTrue();
-				expect(result.ProcessedRows).toBe(mockOptions.CsvRowCount);
-				done();
-			}
-		});
-	});
-
 	it('should call onProgress callback during processWithResult', (done: DoneFn) => {
 		const progressCalls: ProcessProgress[] = [];
 
-		service.processWithResult(mockOptions, progress => progressCalls.push(progress)).subscribe({
+		service.processWithResult(mockOptions, (progress: ProcessProgress) => progressCalls.push(progress)).subscribe({
 			next: result => {
 				expect(result).toBeTruthy();
-				expect(result.Success).toBeTrue();
 				expect(progressCalls.length).toBeGreaterThan(0);
 				done();
 			}

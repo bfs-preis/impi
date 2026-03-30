@@ -2,8 +2,20 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ILogResult, IProcessOption, ProcessProgress} from '../models';
 
-function getIpc(): any {
-	return (window as any).electron?.ipcRenderer;
+interface IpcRenderer {
+	send(channel: string, ...args: unknown[]): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	once(channel: string, listener: (...args: any[]) => void): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	on(channel: string, listener: (...args: any[]) => void): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	removeListener?(channel: string, listener: (...args: any[]) => void): void;
+}
+
+function getIpc(): IpcRenderer | undefined {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const win = window as any;
+	return win.electron?.ipcRenderer as IpcRenderer | undefined;
 }
 
 @Injectable()
@@ -16,7 +28,7 @@ export class ProcessingService {
 			: this.processMock(options, onProgress);
 	}
 
-	private processViaIpc(options: IProcessOption, onProgress: (progress: ProcessProgress) => void, ipc: any): Observable<ILogResult> {
+	private processViaIpc(options: IProcessOption, onProgress: (progress: ProcessProgress) => void, ipc: IpcRenderer): Observable<ILogResult> {
 		return new Observable(observer => {
 			const progressHandler = (progress: {processedRow: number; maxRows: number}) => {
 				onProgress({
@@ -26,9 +38,9 @@ export class ProcessingService {
 				});
 			};
 
-			const resultHandler = (result: any) => {
+			const resultHandler = (result: ILogResult) => {
 				ipc.removeListener?.('background-response-row', progressHandler);
-				observer.next(result as ILogResult);
+				observer.next(result);
 				observer.complete();
 			};
 

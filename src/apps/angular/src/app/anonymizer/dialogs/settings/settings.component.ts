@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ElectronService} from '../../services/electron.service';
 
@@ -12,7 +12,7 @@ import {ElectronService} from '../../services/electron.service';
 	styleUrls: ['./settings.component.scss'],
 	standalone: false
 })
-export class SettingsDialogComponent implements OnInit {
+export class SettingsDialogComponent {
 	selectedEncoding: string;
 	selectedSeparator: string;
 	selectedSedexSenderId: string;
@@ -34,8 +34,6 @@ export class SettingsDialogComponent implements OnInit {
 		this.selectedSeparator = this.electronService.getSetting('CSVSeparater', ';');
 		this.selectedSedexSenderId = this.electronService.getSetting('SedexSenderId', '');
 	}
-
-	ngOnInit(): void {}
 
 	save(): void {
 		this.electronService.setSetting('CSVEncoding', this.selectedEncoding);

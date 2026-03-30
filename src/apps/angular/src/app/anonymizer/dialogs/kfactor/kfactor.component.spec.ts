@@ -17,6 +17,7 @@ describe('KfactorDialogComponent', () => {
 		electronServiceSpy.checkKFactor.and.returnValue(of(true));
 
 		dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+		dialogRefSpy.disableClose = false;
 
 		await TestBed.configureTestingModule({
 			imports: [
@@ -41,30 +42,27 @@ describe('KfactorDialogComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should have default state', () => {
-		expect(component.isChecking).toBeFalse();
-		expect(component.checkComplete).toBeFalse();
-		expect(component.checkResult).toBeNull();
+	it('should auto-start check on init', () => {
+		expect(electronServiceSpy.checkKFactor).toHaveBeenCalledWith('/mock/test.db');
+	});
+
+	it('should show success state when check passes', () => {
+		expect(component.state).toBe('success');
 		expect(component.error).toBeNull();
 	});
 
-	it('should have dialog data with file path', () => {
-		expect(component.data.file).toBe('/mock/test.db');
+	it('should show error state when check fails', async () => {
+		electronServiceSpy.checkKFactor.and.returnValue(of(false));
+		component.state = 'checking';
+		component.ngOnInit();
+		expect(component.state).toBe('error');
 	});
 
-	it('should start check and update state on success', () => {
-		component.startCheck();
-		expect(component.isChecking).toBeFalse();
-		expect(component.checkComplete).toBeTrue();
-		expect(component.checkResult).toBeTrue();
-	});
-
-	it('should handle check error', () => {
+	it('should show error state on service error', async () => {
 		electronServiceSpy.checkKFactor.and.returnValue(throwError(() => new Error('Check failed')));
-		component.startCheck();
-		expect(component.isChecking).toBeFalse();
-		expect(component.checkComplete).toBeTrue();
-		expect(component.checkResult).toBeFalse();
+		component.state = 'checking';
+		component.ngOnInit();
+		expect(component.state).toBe('error');
 		expect(component.error).toBe('Check failed');
 	});
 

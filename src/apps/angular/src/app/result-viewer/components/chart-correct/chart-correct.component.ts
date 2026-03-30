@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, ViewEncapsulation, Input, inject } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ChartDataSet, ChartsComponent } from '../shared/charts/charts.component';
 import { ILogViolation } from '../../models';
 
@@ -8,13 +9,15 @@ import { ILogViolation } from '../../models';
   styleUrls: ['./chart-correct.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [ChartsComponent]
+  imports: [ChartsComponent, TranslateModule]
 })
-export class ChartCorrectComponent implements OnInit {
+export class ChartCorrectComponent {
 
   data!: ChartDataSet;
   violations!: ILogViolation[];
   rowCount = 0;
+
+  private readonly translate = inject(TranslateService);
 
   @Input()
   set Violations(v: ILogViolation[]) {
@@ -28,12 +31,6 @@ export class ChartCorrectComponent implements OnInit {
     this.prepareData();
   }
 
-  constructor() { }
-
-  ngOnInit(): void {
-    this.prepareData();
-  }
-
   prepareData(): void {
     if (!this.violations || this.rowCount === 0) return;
 
@@ -41,7 +38,10 @@ export class ChartCorrectComponent implements OnInit {
 
     this.data = {
       Data: [(this.rowCount - 1 - countValidationErrors), countValidationErrors],
-      Labels: ['Correct Rows', 'Rows with Violations'],
+      Labels: [
+        this.translate.instant('resultViewer.Charts.CorrectRows'),
+        this.translate.instant('resultViewer.Charts.RowsWithViolations')
+      ],
       Colors: ['green', 'red']
     } as ChartDataSet;
   }

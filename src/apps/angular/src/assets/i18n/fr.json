@@ -77,7 +77,30 @@
       "TotalTime": "Durée totale:",
       "SuccessMessage": "Le traitement a été effectué avec succès.",
       "ButtonCancel": "Annuler",
-      "ButtonClose": "Fermer"
+      "ButtonClose": "Fermer",
+      "ButtonView": "Voir les résultats"
+    }
+  },
+  "resultViewer": {
+    "ProcessInfo": {
+      "Title": "Informations de traitement",
+      "StartTime": "Heure de début:",
+      "EndTime": "Heure de fin:",
+      "Duration": "Durée:",
+      "File": "Fichier:",
+      "DbPeriodFrom": "Période DB de:",
+      "DbPeriodTo": "Période DB à:",
+      "DbVersion": "Version DB:",
+      "CsvSeparator": "Séparateur CSV:",
+      "CsvEncoding": "Codage CSV:",
+      "CsvRowCount": "Nombre de lignes CSV:",
+      "ClientVersion": "Version client:"
+    },
+    "Charts": {
+      "Legend": "Légende",
+      "ValidationErrors": "Erreurs de validation",
+      "CorrectRows": "Lignes correctes",
+      "RowsWithViolations": "Lignes avec erreurs"
     }
   }
 }

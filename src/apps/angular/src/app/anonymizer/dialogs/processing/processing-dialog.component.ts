@@ -72,6 +72,11 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 		this.dialogRef.close(this.result);
 	}
 
+	viewResults(): void {
+		localStorage.setItem('impi_lastResult', JSON.stringify(this.result));
+		window.open(`${window.location.origin}/#/result-viewer`, '_blank');
+	}
+
 	get formattedTime(): string {
 		return moment.utc(this.processingTime).format('HH:mm:ss');
 	}

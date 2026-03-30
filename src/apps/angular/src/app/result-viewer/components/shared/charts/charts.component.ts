@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { TranslateModule } from '@ngx-translate/core';
 import Chart from 'chart.js/auto';
 
 export class ChartDataSet {
@@ -16,13 +17,13 @@ export class ChartDataSet {
   styleUrls: ['./charts.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [CommonModule, MatExpansionModule, MatListModule]
+  imports: [CommonModule, MatExpansionModule, MatListModule, TranslateModule]
 })
-export class ChartsComponent implements OnInit {
+export class ChartsComponent {
 
   data!: ChartDataSet;
   myChart: Chart | null = null;
-  legendDataSource: any[] = [];
+  legendDataSource: Array<{data: number; label: string; color: string; index: string}> = [];
 
   @ViewChild('myChart', { static: true }) _chart!: ElementRef;
 
@@ -38,8 +39,6 @@ export class ChartsComponent implements OnInit {
   ShowLegend = true;
 
   constructor() { }
-
-  ngOnInit(): void { }
 
   poolColors(a: number): string[] {
     const pool: string[] = [];
@@ -99,11 +98,12 @@ export class ChartsComponent implements OnInit {
     }
   }
 
-  onLegendClick(index: number, selected: boolean): void {
+  onLegendClick(index: string | number, selected: boolean): void {
     if (this.myChart) {
       const meta = this.myChart.getDatasetMeta(0);
-      if (meta.data[index]) {
-        (meta.data[index] as any).hidden = !selected;
+      const idx = +index;
+      if (meta.data[idx]) {
+        (meta.data[idx] as unknown as {hidden: boolean}).hidden = !selected;
         this.myChart.update();
       }
     }

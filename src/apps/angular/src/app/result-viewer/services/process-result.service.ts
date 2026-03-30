@@ -1,30 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ILogResult } from '../models';
 
-declare const electron: any;
-
 @Injectable()
 export class ProcessResultService {
 
-  private get ipcRenderer() {
-    return electron?.ipcRenderer;
-  }
-
   GetProcessResult(): Promise<ILogResult | null> {
-    return new Promise(resolve => {
-      this.ipcRenderer.send('ask-for-process-result', null);
-      this.ipcRenderer.once('process-result', (_event: any, payload: ILogResult | null) => {
-        resolve(payload);
-      });
-    });
+    const stored = localStorage.getItem('impi_lastResult');
+    if (stored) {
+      try {
+        return Promise.resolve(JSON.parse(stored) as ILogResult);
+      } catch {
+        return Promise.resolve(null);
+      }
+    }
+    return Promise.resolve(null);
   }
 
   GetShowAllValidationErrors(): Promise<boolean> {
-    return new Promise(resolve => {
-      this.ipcRenderer.send('ask-for-show-redflags', null);
-      this.ipcRenderer.once('redflags-result', (_event: any, payload: boolean | null) => {
-        resolve(payload ?? true);
-      });
-    });
+    return Promise.resolve(true);
   }
 }

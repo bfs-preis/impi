@@ -22,7 +22,7 @@ export interface IProcessOption {
     InputCsvFile: string;
     CsvEncoding: string;
     CsvSeparator: string;
-    DatabaseFile: String;
+    DatabaseFile: string;
     OutputPath: string;
     DbVersion: string;
     DbPeriodFrom: number;
@@ -292,7 +292,7 @@ function myTransform(record: Record<string, string>, callback: (err: Error | nul
     });
 }
 
-function writeZipFile(outputPath: string, fileName: String, log: string): Promise<void> {
+function writeZipFile(outputPath: string, fileName: string, log: string): Promise<void> {
 
     return new Promise((resolve, reject) => {
         const zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
@@ -337,7 +337,7 @@ function writeZipFile(outputPath: string, fileName: String, log: string): Promis
     });
 }
 
-function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: String): void {
+function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: string): void {
 
     const xml = createSedexEnvelope(sedexSenderId, fileName.replace("data_", ""));
     fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });

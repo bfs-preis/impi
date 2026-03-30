@@ -89,25 +89,25 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
                 return record[dbFieldName];
             });
 
-            if (record.street != undefined && record.street.length > 0) {
+            if (record.street !== undefined && record.street.length > 0) {
                 const nStreet = normalizeStreet(record.street);
                 const i = def.Fields.map((t) => t.Name).indexOf("street");
                 array[i] = nStreet;
             }
 
-            if (record.designationofbuilding != undefined && record.designationofbuilding.length > 0) {
+            if (record.designationofbuilding !== undefined && record.designationofbuilding.length > 0) {
                 const ndesignationofbuilding = normalizeStreet(record.designationofbuilding);
                 const i = def.Fields.map((t) => t.Name).indexOf("designation_of_building");
                 array[i] = ndesignationofbuilding;
             }
 
-            if (record.community != undefined && record.community.length > 0) {
+            if (record.community !== undefined && record.community.length > 0) {
                 const nCommunity = normalizeCity(record.community);
                 const i = def.Fields.map((t) => t.Name).indexOf("community");
                 array[i] = nCommunity;
             }
 
-            if (record.streetnumber != undefined && record.streetnumber.length > 0) {
+            if (record.streetnumber !== undefined && record.streetnumber.length > 0) {
                 const nStreetNumner = normalizeStreetNumber(record.streetnumber);
                 const i = def.Fields.map((t) => t.Name).indexOf("street_number");
                 array[i] = nStreetNumner;
@@ -274,7 +274,7 @@ export function checkKFactor(database: string): boolean {
     const db = new Database(database);
     const row = db.prepare(sqlQuery).get();
 
-    return ((row.a + row.b) == 0);
+    return ((row.a + row.b) === 0);
 
 }
 

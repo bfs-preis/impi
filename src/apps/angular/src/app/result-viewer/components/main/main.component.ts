@@ -29,10 +29,12 @@ export class MainComponent implements OnInit {
       const flag = values[1];
 
       if (r) {
-        if (flag === false) {
+        if (flag === false && r.Violations) {
           r.Violations = r.Violations.filter((v) => v.RedFlag === true);
         }
-        r.Violations = r.Violations.sort((a, b) => a.Id - b.Id);
+        if (r.Violations) {
+          r.Violations = r.Violations.sort((a, b) => a.Id - b.Id);
+        }
         this.processResult = r;
       }
     });

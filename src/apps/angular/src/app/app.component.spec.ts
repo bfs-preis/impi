@@ -1,12 +1,23 @@
 import {TestBed} from '@angular/core/testing';
 import {RouterModule} from '@angular/router';
+import {TranslateModule} from '@ngx-translate/core';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDialog} from '@angular/material/dialog';
 import {AppComponent} from './app.component';
+import {ElectronService} from './anonymizer/services/electron.service';
 
 describe('AppComponent', () => {
 	beforeEach(async () => {
+		const electronSpy = jasmine.createSpyObj('ElectronService', ['getSetting']);
+		const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+
 		await TestBed.configureTestingModule({
-			imports: [RouterModule.forRoot([])],
-			declarations: [AppComponent]
+			imports: [RouterModule.forRoot([]), TranslateModule.forRoot(), NoopAnimationsModule],
+			declarations: [AppComponent],
+			providers: [
+				{provide: ElectronService, useValue: electronSpy},
+				{provide: MatDialog, useValue: dialogSpy}
+			]
 		}).compileComponents();
 	});
 
@@ -14,18 +25,5 @@ describe('AppComponent', () => {
 		const fixture = TestBed.createComponent(AppComponent);
 		const app = fixture.componentInstance;
 		expect(app).toBeTruthy();
-	});
-
-	it(`should have as title 'angular'`, () => {
-		const fixture = TestBed.createComponent(AppComponent);
-		const app = fixture.componentInstance;
-		expect(app.title).toEqual('angular');
-	});
-
-	it('should render title', () => {
-		const fixture = TestBed.createComponent(AppComponent);
-		fixture.detectChanges();
-		const compiled = fixture.nativeElement as HTMLElement;
-		expect(compiled.querySelector('h1')?.textContent).toContain('Hello, angular');
 	});
 });

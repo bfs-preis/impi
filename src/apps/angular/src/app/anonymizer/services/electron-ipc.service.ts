@@ -3,14 +3,30 @@ import {Observable, BehaviorSubject} from 'rxjs';
 import {ElectronService, FileFilter} from './electron.service';
 import {IDbInfo} from '../models';
 
-function getIpc(): any {
-	return (window as any).electron?.ipcRenderer;
+interface IpcRenderer {
+	send(channel: string, ...args: unknown[]): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	once(channel: string, listener: (...args: any[]) => void): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	on(channel: string, listener: (...args: any[]) => void): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	removeListener?(channel: string, listener: (...args: any[]) => void): void;
+}
+
+interface IpcError {
+	message: string;
+}
+
+function getIpc(): IpcRenderer | undefined {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const win = window as any;
+	return win.electron?.ipcRenderer as IpcRenderer | undefined;
 }
 
 @Injectable()
 export class ElectronIpcService extends ElectronService {
 
-	private get ipc(): any {
+	private get ipc(): IpcRenderer | undefined {
 		return getIpc();
 	}
 
@@ -70,7 +86,7 @@ export class ElectronIpcService extends ElectronService {
 				observer.error(new Error('Not in Electron'));
 				return;
 			}
-			this.ipc.once('verify db response', (payload: {dbInfo: IDbInfo | null; err: any}) => {
+			this.ipc.once('verify db response', (payload: {dbInfo: IDbInfo | null; err: IpcError | null}) => {
 				if (payload.err) {
 					observer.error(new Error(payload.err.message));
 				} else if (payload.dbInfo) {
@@ -88,7 +104,7 @@ export class ElectronIpcService extends ElectronService {
 				observer.error(new Error('Not in Electron'));
 				return;
 			}
-			this.ipc.once('verify csv response', (payload: {rowcount: number; err: any}) => {
+			this.ipc.once('verify csv response', (payload: {rowcount: number; err: IpcError | null}) => {
 				if (payload.err) {
 					observer.error(new Error(payload.err.message));
 				} else {
@@ -121,7 +137,7 @@ export class ElectronIpcService extends ElectronService {
 				observer.error(new Error('Not in Electron'));
 				return;
 			}
-			this.ipc.once('checkkfactor response', (payload: {check: boolean | null; err: any}) => {
+			this.ipc.once('checkkfactor response', (payload: {check: boolean | null; err: IpcError | null}) => {
 				if (payload.err) {
 					observer.error(new Error(payload.err.message));
 				} else {

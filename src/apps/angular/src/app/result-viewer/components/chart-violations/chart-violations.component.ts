@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, ViewEncapsulation, Input } from '@angular/core';
 import { ChartDataSet, ChartsComponent } from '../shared/charts/charts.component';
 import { ILogViolation } from '../../models';
 
@@ -10,7 +10,7 @@ import { ILogViolation } from '../../models';
   standalone: true,
   imports: [ChartsComponent]
 })
-export class ChartViolationsComponent implements OnInit {
+export class ChartViolationsComponent {
 
   data!: ChartDataSet;
   violations!: ILogViolation[];
@@ -24,10 +24,6 @@ export class ChartViolationsComponent implements OnInit {
       this.prepareData();
     }
   }
-
-  constructor() { }
-
-  ngOnInit(): void { }
 
   prepareData(): void {
     const data = [...this.violations].sort((v1, v2) => v1.Id - v2.Id);

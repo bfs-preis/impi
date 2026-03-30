@@ -77,7 +77,30 @@
       "TotalTime": "Durata totale:",
       "SuccessMessage": "Elaborazione completata con successo.",
       "ButtonCancel": "Annulla",
-      "ButtonClose": "Chiudi"
+      "ButtonClose": "Chiudi",
+      "ButtonView": "Visualizza risultati"
+    }
+  },
+  "resultViewer": {
+    "ProcessInfo": {
+      "Title": "Informazioni elaborazione",
+      "StartTime": "Ora di inizio:",
+      "EndTime": "Ora di fine:",
+      "Duration": "Durata:",
+      "File": "File:",
+      "DbPeriodFrom": "Periodo DB da:",
+      "DbPeriodTo": "Periodo DB a:",
+      "DbVersion": "Versione DB:",
+      "CsvSeparator": "Separatore CSV:",
+      "CsvEncoding": "Codifica CSV:",
+      "CsvRowCount": "Righe CSV:",
+      "ClientVersion": "Versione client:"
+    },
+    "Charts": {
+      "Legend": "Legenda",
+      "ValidationErrors": "Errori di validazione",
+      "CorrectRows": "Righe corrette",
+      "RowsWithViolations": "Righe con errori"
     }
   }
 }
