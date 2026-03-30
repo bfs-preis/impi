@@ -1,5 +1,6 @@
 import {Component, Inject, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {DecimalPipe} from '@angular/common';
+import {Router} from '@angular/router';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
@@ -50,7 +51,8 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 		@Inject(MAT_DIALOG_DATA) private readonly options: IProcessOption,
 		private readonly processingService: ProcessingService,
 		private readonly spinnerService: ObSpinnerService,
-		private readonly zone: NgZone
+		private readonly zone: NgZone,
+		private readonly router: Router
 	) {
 		this.maxRows = options.CsvRowCount || 0;
 	}
@@ -74,7 +76,8 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 
 	viewResults(): void {
 		localStorage.setItem('impi_lastResult', JSON.stringify(this.result));
-		window.open(`${window.location.origin}/#/result-viewer`, '_blank');
+		this.dialogRef.close(this.result);
+		this.router.navigate(['/result-viewer']);
 	}
 
 	get formattedTime(): string {

@@ -101,6 +101,15 @@
       "ValidationErrors": "Erreurs de validation",
       "CorrectRows": "Lignes correctes",
       "RowsWithViolations": "Lignes avec erreurs"
+    },
+    "ResultViewer": {
+      "Title": "Résultat",
+      "Rows": "Lignes",
+      "Duration": "Durée",
+      "SuccessRate": "Taux de réussite",
+      "Matching": "Types de matching",
+      "Violations": "Erreurs de validation",
+      "NoData": "Aucun résultat disponible"
     }
   }
 }

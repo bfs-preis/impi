@@ -1,7 +1,7 @@
 .chart-container {
     position: relative;
-    width: 50vw;
-    margin: 0 auto;
+    width: 100%;
+    max-height: 200px;
 }
 
 .legend-list {
@@ -15,37 +15,22 @@
 .legend-color-box {
     display: table-cell;
     float: left;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
 }
 
 .legend-count {
     display: table-cell;
-    width: 50px;
-    min-width: 50px;
-    padding-left: 10px;
+    width: 40px;
+    min-width: 40px;
+    padding-left: 8px;
+    font-size: 0.85rem;
 }
 
 .legend-label {
     display: table-cell;
-    padding-left: 10px;
+    padding-left: 8px;
     white-space: pre;
-}
-
-.mat-mdc-list[dense] .mat-mdc-list-option,
-.mat-mdc-selection-list[dense] .mat-mdc-list-option {
-    height: 25px !important;
-}
-
-.mat-expansion-panel-header {
-    padding-left: 8px !important;
-    padding-right: 24px !important;
-}
-
-.mat-expansion-panel-body {
-    padding-top: 0px !important;
-    padding-right: 24px !important;
-    padding-bottom: 8px !important;
-    padding-left: 8px !important;
+    font-size: 0.85rem;
 }

@@ -1,0 +1,83 @@
+.dashboard {
+  padding: 1rem;
+}
+
+.kpi-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.kpi-card {
+  flex: 1;
+  text-align: center;
+
+  ::ng-deep .mat-mdc-card-content {
+    padding: 0.25rem 0.5rem !important;
+  }
+}
+
+.kpi-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.kpi-label {
+  font-size: 0.7rem;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.output-row {
+  margin-bottom: 1rem;
+}
+
+.output-card {
+  ::ng-deep .mat-mdc-card-content {
+    padding: 0.5rem !important;
+  }
+}
+
+.output-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.output-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: #047857;
+  font-size: 0.8rem;
+  font-family: monospace;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.chart-section {
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  app-charts {
+    display: block;
+    max-height: 200px;
+  }
+}

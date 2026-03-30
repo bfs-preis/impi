@@ -101,6 +101,15 @@
       "ValidationErrors": "Validation Errors",
       "CorrectRows": "Correct Rows",
       "RowsWithViolations": "Rows with Violations"
+    },
+    "ResultViewer": {
+      "Title": "Result",
+      "Rows": "Rows",
+      "Duration": "Duration",
+      "SuccessRate": "Success Rate",
+      "Matching": "Matching Types",
+      "Violations": "Validation Errors",
+      "NoData": "No results available"
     }
   }
 }

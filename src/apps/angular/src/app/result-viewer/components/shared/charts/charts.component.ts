@@ -31,12 +31,16 @@ export class ChartsComponent {
   public set Data(data: ChartDataSet) {
     this.data = data;
     if (this.data) {
-      this.drawChart();
+      // Defer to next tick so all inputs (chartType) are bound
+      setTimeout(() => this.drawChart());
     }
   }
 
   @Input()
   ShowLegend = true;
+
+  @Input()
+  chartType: 'pie' | 'bar' | 'doughnut' = 'pie';
 
   constructor() { }
 
@@ -70,15 +74,18 @@ export class ChartsComponent {
       labels: this.data.Labels
     };
 
+    const isBar = this.chartType === 'bar';
+
     this.myChart = new Chart(this._chart.nativeElement, {
-      type: 'pie',
+      type: this.chartType,
       data: data,
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        ...(isBar ? { indexAxis: 'y' as const } : {}),
         plugins: {
           legend: {
-            display: false,
-            position: 'right'
+            display: false
           }
         }
       }

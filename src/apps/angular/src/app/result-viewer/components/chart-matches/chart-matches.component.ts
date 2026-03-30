@@ -21,7 +21,6 @@ export class ChartMatchesComponent {
   set Matches(m: ILogMatchingType[]) {
     this.matches = m;
     if (this.matches) {
-      this.matches = this.matches.slice(0, 5);
       this.prepareData();
     }
   }

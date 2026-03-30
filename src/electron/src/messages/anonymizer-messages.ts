@@ -1,4 +1,4 @@
-import { ipcMain, app, dialog, utilityProcess, type IpcMainEvent, type FileFilter } from 'electron';
+import { ipcMain, app, dialog, shell, utilityProcess, type IpcMainEvent, type FileFilter } from 'electron';
 import log from 'electron-log';
 import * as settings from 'electron-settings';
 import * as path from 'path';
@@ -116,6 +116,10 @@ export function registerAnonMessages() {
             properties: ['openDirectory']
         });
         Main.GetMainWindow().webContents.send('select-directory-response', result.canceled ? null : result.filePaths[0]);
+    });
+
+    ipcMain.on('open-path', (_event: IpcMainEvent, filePath: string) => {
+        shell.openPath(filePath);
     });
 
     ipcMain.on('set-setting', (_event: IpcMainEvent, payload: { key: string, value: unknown }) => {

@@ -27,7 +27,7 @@ export class ChartViolationsComponent {
 
   prepareData(): void {
     const data = [...this.violations].sort((v1, v2) => v1.Id - v2.Id);
-    const selColors = data.map((v) => this.colors[v.Id - 1]);
+    const selColors = data.map((v) => v.RedFlag ? '#99191e' : this.colors[v.Id - 1]);
 
     this.data = {
       Data: data.map((r) => r.Count),

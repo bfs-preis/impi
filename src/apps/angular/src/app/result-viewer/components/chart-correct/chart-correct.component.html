@@ -3,7 +3,7 @@
         <span>{{ 'resultViewer.Charts.ValidationErrors' | translate }}</span>
     </b>
     <div>
-        <app-charts [Data]="this.data" [ShowLegend]="false">
+        <app-charts [Data]="this.data" [chartType]="'doughnut'" [ShowLegend]="false">
         </app-charts>
     </div>
 </div>

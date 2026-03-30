@@ -2,7 +2,7 @@
   <canvas #myChart></canvas>
 </div>
 
-<div *ngIf="ShowLegend && legendDataSource">
+<div *ngIf="ShowLegend && chartType !== 'bar' && legendDataSource">
   <mat-expansion-panel>
     <mat-expansion-panel-header collapsedHeight="36px" expandedHeight="36px">
       <mat-panel-title>
