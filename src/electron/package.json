@@ -21,21 +21,6 @@
     "keywords": [],
     "author": "adi",
     "license": "MIT",
-    "build": {
-        "directories": {
-            "output": "package"
-        },
-        "linux": {
-            "asar": false,
-            "files": [
-                "!src/"
-            ],
-            "target": "AppImage"
-        },
-        "appImage": {
-            "systemIntegration": "doNotAsk"
-        }
-    },
     "dependencies": {
         "colors": "^1.4.0",
         "electron-log": "^5.4.3",
