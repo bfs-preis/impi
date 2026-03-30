@@ -1,0 +1,20 @@
+{
+  "name": "impi",
+  "version": "1.5.2",
+  "main": "index.js",
+  "author": "Adrian Bähler <adrian.baehler@softrain.ch>",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bfs-preis/impi.git"
+  },
+  "scripts": {
+    "start:rv": "cd apps/result-viewer && yarn start",
+    "start:a": "cd apps/anonymizer && yarn start",
+    "start:electron": "cd electron && yarn start"
+  },
+  "devDependencies": {
+    "projecto": "^1.0.13"
+  }
+}

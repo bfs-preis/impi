@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            src/libs/pnpm-lock.yaml
+            src/apps/angular/pnpm-lock.yaml
+
+      - name: Build libraries
+        run: pnpm install && pnpm build
+        working-directory: src/libs
+
+      - name: Build Angular frontend
+        run: pnpm install && pnpm run build
+        working-directory: src/apps/angular
+
+      - name: Build Electron app
+        run: npm ci && npm run build
+        working-directory: src/electron
+
+      - name: Build & publish — Linux
+        if: runner.os == 'Linux'
+        run: npx electron-builder --linux --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & publish — Windows
+        if: runner.os == 'Windows'
+        run: npx electron-builder --win --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & publish — macOS
+        if: runner.os == 'macOS'
+        run: npx electron-builder --mac --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

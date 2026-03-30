@@ -1,0 +1,49 @@
+appId: ch.bfs.impi
+productName: IMPI
+directories:
+  output: package
+  app: app
+
+files:
+  - "**/*"
+  - "!src/"
+
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+    - pacman
+    - tar.gz
+  category: Office
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - ia32
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.business
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+
+appImage:
+  systemIntegration: doNotAsk
+
+publish:
+  provider: github
+  owner: bfs-preis
+  repo: impi
