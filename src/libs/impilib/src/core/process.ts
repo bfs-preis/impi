@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as iconv from 'iconv-lite';
+import iconv from 'iconv-lite';
 import {transform,Options as TransformOption} from 'stream-transform';
 import { parse,Options } from 'csv-parse';
 import {stringify} from 'csv-stringify';
@@ -143,10 +143,10 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
 
     //Transformer
     let rowNumber = 1;
-    const transformer = transform({ parallel: 1 } as TransformOption,(record: any, callback: (err: Error | null, data: any) => void) => {
+    const transformer = transform({ parallel: 1 } as TransformOption, (record: any, callback: (err: Error | null, data: any) => void) => {
         myTransform(record, callback, result, rowNumber, geodb, mappingObj);
         rowNumber++;
-    }, undefined);
+    });
 
     transformer.on('error', function (err: Error) {
         handlingError(err);

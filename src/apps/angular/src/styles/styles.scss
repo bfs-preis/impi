@@ -1,21 +1,7 @@
-// this file should contain only imports. Rules should be grouped by features and placed into the corresponding file
-
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.ob-master-layout-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-router-outlet + * {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 // Hide Oblique's hardcoded accessibility link in footer
@@ -34,4 +20,33 @@ router-outlet + * {
   border-radius: 3px;
   margin-right: 0.5rem;
   vertical-align: middle;
+}
+
+// Card validation status — colored left border
+.mat-mdc-card {
+  border-left: 4px solid #acb4bd !important; // ob-secondary-200 (default/empty)
+  transition: border-color 0.3s ease;
+
+  &.card-valid {
+    border-left-color: #047857 !important; // ob-green-700 (success)
+  }
+
+  &.card-error {
+    border-left-color: #99191e !important; // ob-red-800 (error)
+  }
+
+  &.card-validating {
+    border-left-color: #ea580c !important; // ob-orange-600 (warning)
+  }
+}
+
+.header-action {
+  margin-left: auto;
+}
+
+// Reserve space in card headers to match mat-icon-button height
+.header-spacer {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
 }

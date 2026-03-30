@@ -26,13 +26,13 @@ export function createSedexEnvelope(senderId: string, messageId: string) {
             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
             'xsi:schemaLocation': 'http://www.ech.ch/xmlns/eCH-0090/1 http://www.ech.ch/xmlns/eCH-0090/1/eCH-0090-1-0.xsd'
         })
-        .ele('eCH-0090:messageId', messageId).up()
-        .ele('eCH-0090:messageType', '1086').up()
-        .ele('eCH-0090:messageClass', '0').up()
-        .ele('eCH-0090:senderId', senderId).up()
-        .ele('eCH-0090:recipientId', '4-213246-6').up()
-        .ele('eCH-0090:eventDate', messageDate).up()
-        .ele('eCH-0090:messageDate', messageDate).up()
+        .ele('eCH-0090:messageId').txt(messageId).up()
+        .ele('eCH-0090:messageType').txt('1086').up()
+        .ele('eCH-0090:messageClass').txt('0').up()
+        .ele('eCH-0090:senderId').txt(senderId).up()
+        .ele('eCH-0090:recipientId').txt('4-213246-6').up()
+        .ele('eCH-0090:eventDate').txt(messageDate).up()
+        .ele('eCH-0090:messageDate').txt(messageDate).up()
 
     return env.end({ prettyPrint: true });
 }

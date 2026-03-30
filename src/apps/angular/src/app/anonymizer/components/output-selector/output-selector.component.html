@@ -1,54 +1,22 @@
-<div class="output-selector-container">
-	<mat-card>
-		<mat-card-header>
-			<mat-card-title>
-				<span class="step-badge">{{ "anonymizer.Out.Step" | translate }}</span>
-				{{ "anonymizer.Out.Title" | translate }}
-			</mat-card-title>
-		</mat-card-header>
-		<mat-card-content>
-			<!-- Directory Picker -->
-			<app-file-picker
-				[label]="'anonymizer.Out.Directory' | translate"
-				[buttonText]="'anonymizer.Out.SelectFile' | translate"
-				[mode]="'directory'"
-				[disabled]="disabled"
-				[selectedPath]="path"
-				(fileSelected)="onPathSelected($event)"
-			>
-			</app-file-picker>
-
-			<!-- Loading Spinner -->
-			@if (isValidating) {
-				<div class="validation-spinner">
-					<ob-spinner></ob-spinner>
-					<span>Validating directory...</span>
-				</div>
-			}
-
-			<!-- Path Display -->
-			@if (isValidPath && !isValidating) {
-				<div class="path-info">
-					<div class="info-row">
-						<label>{{ "anonymizer.Out.Directory" | translate }}</label>
-						<span class="path-display" [title]="path || ''">
-							{{ getShortPath() }}
-						</span>
-					</div>
-				</div>
-			}
-
-			<!-- Validation Status Icon -->
-			@if (!isValidating) {
-				<div class="validation-status">
-					@if (isValidPath) {
-						<mat-icon svgIcon="checkmark_circle" class="text-success"> </mat-icon>
-					}
-					@if (!isValidPath && path) {
-						<mat-icon svgIcon="exclamation_circle" class="text-danger"> </mat-icon>
-					}
-				</div>
-			}
-		</mat-card-content>
-	</mat-card>
-</div>
+<mat-card [class.card-valid]="isValidPath && !isValidating"
+	[class.card-error]="!!path && !isValidPath && !isValidating"
+	[class.card-validating]="isValidating"
+	>
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Out.Step" | translate }}</span>
+			{{ "anonymizer.Out.Title" | translate }}
+		</mat-card-title>
+		<span class="header-spacer"></span>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Out.Directory' | translate"
+			[buttonText]="'anonymizer.Out.SelectFile' | translate"
+			[mode]="'directory'"
+			[disabled]="disabled"
+			[selectedPath]="path"
+			(fileSelected)="onPathSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

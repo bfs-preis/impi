@@ -1,68 +1,24 @@
-<div class="db-selector-container">
-	<mat-card>
-		<mat-card-header>
-			<mat-card-title>
-				<span class="step-badge">{{ "anonymizer.Db.Step" | translate }}</span>
-				{{ "anonymizer.Db.Title" | translate }}
-			</mat-card-title>
-		</mat-card-header>
-		<mat-card-content>
-			<!-- File Picker -->
-			<app-file-picker
-				[label]="'anonymizer.Db.File' | translate"
-				[buttonText]="'anonymizer.Db.SelectFile' | translate"
-				[filters]="filters"
-				[mode]="'file'"
-				[disabled]="disabled"
-				[selectedPath]="file"
-				(fileSelected)="onFileSelected($event)"
-			>
-			</app-file-picker>
-
-			<!-- Loading Spinner -->
-			@if (isValidating) {
-				<div class="validation-spinner">
-					<ob-spinner></ob-spinner>
-					<span>Validating database...</span>
-				</div>
-			}
-
-			<!-- Error Message -->
-			@if (error && !isValidating) {
-				<ob-alert type="error">{{ error }}</ob-alert>
-			}
-
-			<!-- Database Info -->
-			@if (isValidFile && dbInfo && !isValidating) {
-				<div class="db-info">
-					<div class="info-row">
-						<label>{{ "anonymizer.Db.Version" | translate }}</label>
-						<span class="badge bg-primary">{{ getVersion() }}</span>
-					</div>
-					<div class="info-row">
-						<label>{{ "anonymizer.Db.Period" | translate }}</label>
-						<span class="badge bg-info">{{ getPeriod() }}</span>
-					</div>
-					<div class="info-row">
-						<button type="button" mat-button obButton="secondary" [matTooltip]="getKFactorTooltip()" (click)="openKFactorDialog()">
-							<mat-icon svgIcon="checkmark_circle"></mat-icon>
-							{{ "anonymizer.Db.KFactor" | translate }}
-						</button>
-					</div>
-				</div>
-			}
-
-			<!-- Validation Status Icon -->
-			@if (!isValidating) {
-				<div class="validation-status">
-					@if (isValidFile) {
-						<mat-icon svgIcon="checkmark_circle" class="text-success"> </mat-icon>
-					}
-					@if (!isValidFile && file) {
-						<mat-icon svgIcon="exclamation_circle" class="text-danger"> </mat-icon>
-					}
-				</div>
-			}
-		</mat-card-content>
-	</mat-card>
-</div>
+<mat-card [class.card-valid]="isValidFile && !isValidating"
+	[class.card-error]="!!error && !isValidating"
+	[class.card-validating]="isValidating">
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Db.Step" | translate }}</span>
+			{{ "anonymizer.Db.Title" | translate }}
+		</mat-card-title>
+		<button type="button" mat-icon-button [matTooltip]="'anonymizer.Db.KFactor' | translate" [disabled]="!isValidFile" (click)="openKFactorDialog()" class="header-action">
+			<mat-icon svgIcon="key"></mat-icon>
+		</button>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Db.File' | translate"
+			[buttonText]="'anonymizer.Db.SelectFile' | translate"
+			[filters]="filters"
+			[mode]="'file'"
+			[disabled]="disabled"
+			[selectedPath]="file"
+			(fileSelected)="onFileSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

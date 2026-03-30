@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {TranslateModule} from '@ngx-translate/core';
-import {ObAlertModule, ObSpinnerModule} from '@oblique/oblique';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ElectronService, FileFilter} from '../../services/electron.service';
 import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 
@@ -15,7 +15,7 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './csv-selector.component.html',
 	styleUrls: ['./csv-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, TranslateModule, ObAlertModule, ObSpinnerModule, FilePickerComponent, MatCardModule]
+	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule]
 })
 export class CsvSelectorComponent implements OnInit {
 	@Input() disabled = false;
@@ -88,5 +88,19 @@ export class CsvSelectorComponent implements OnInit {
 
 	formatRowCount(): string {
 		return this.rowCount.toLocaleString();
+	}
+
+	getCardClass(): string {
+		if (this.isValidating) return 'card-validating';
+		if (this.isValidFile) return 'card-valid';
+		if (this.error) return 'card-error';
+		return '';
+	}
+
+	getCardTooltip(): string {
+		if (this.isValidating) return 'Validating...';
+		if (this.isValidFile) return `${this.rowCount.toLocaleString()} Zeilen`;
+		if (this.error) return this.error;
+		return '';
 	}
 }

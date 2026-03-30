@@ -17,7 +17,6 @@ import { CliProcess } from './cmd-line/cli-process.js';
 
 export class Main {
   private static mainWindow: Electron.BrowserWindow | null;
-  private static backgroundWindow: Electron.BrowserWindow | null;
   private static resultWindow: Electron.BrowserWindow | null;
 
   static Start() {
@@ -72,25 +71,11 @@ export class Main {
     }); */
   }
 
-  private static createBackgroundWindow(): void {
-    const win = new BrowserWindow({
-      show: CommandLineCommand.Debug,
-      webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false,
-      }
-    });
-
-    win.loadURL(`file://${__dirname}/background/index-background.html`);
-
-    this.backgroundWindow = win;
-  }
-
   private static createMainWindow() {
     // Create the browser window.
     this.mainWindow = new BrowserWindow({
-      width: 1200,
-      height: 800,
+      width: 1000,
+      height: 475,
       useContentSize: true,
       show: false,
       resizable: true,
@@ -127,14 +112,6 @@ export class Main {
 
     // Emitted when the window is closed.
     this.mainWindow.on('closed', () => {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      if (this.backgroundWindow && !this.backgroundWindow.isDestroyed()) {
-
-        this.backgroundWindow.close();
-        this.backgroundWindow = null;
-      }
       this.mainWindow = null;
     });
 
@@ -212,7 +189,6 @@ export class Main {
     }
     else {
       this.createMainWindow();
-      this.createBackgroundWindow();
       log.debug("Register Anonymizer Messages");
       registerAnonMessages();
     }
@@ -221,11 +197,6 @@ export class Main {
   public static GetMainWindow(): BrowserWindow {
     if (!Main.mainWindow) throw Error("MainWindow null");
     return Main.mainWindow;
-  }
-
-  public static GetBackgroundWindow(): BrowserWindow {
-    if (!Main.backgroundWindow) throw Error("BackgroundWindow null");
-    return Main.backgroundWindow;
   }
 
   public static GetResultWindow(): BrowserWindow {

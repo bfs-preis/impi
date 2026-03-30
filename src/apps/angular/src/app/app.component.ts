@@ -17,12 +17,15 @@ export class AppComponent {
 	}
 
 	openHelpDialog(): void {
-		this.dialog.open(HelpDialogComponent);
+		this.dialog.open(HelpDialogComponent, {
+			maxHeight: '80vh'
+		});
 	}
 
 	openSettingsDialog(): void {
 		this.dialog.open(SettingsDialogComponent, {
 			width: '560px',
+			maxHeight: '80vh',
 			autoFocus: false
 		});
 	}

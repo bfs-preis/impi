@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -49,7 +49,8 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 		private readonly dialogRef: MatDialogRef<ProcessingDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) private readonly options: IProcessOption,
 		private readonly processingService: ProcessingService,
-		private readonly spinnerService: ObSpinnerService
+		private readonly spinnerService: ObSpinnerService,
+		private readonly zone: NgZone
 	) {
 		this.maxRows = options.CsvRowCount || 0;
 	}
@@ -90,14 +91,16 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 
 		this.subscription = this.processingService
 			.processWithResult(this.options, progress => {
-				this.processedRows = progress.processedRow;
-				this.maxRows = progress.maxRows;
-				this.progressValue = progress.percentage;
-				this.updateEta();
+				this.zone.run(() => {
+					this.processedRows = progress.processedRow;
+					this.maxRows = progress.maxRows;
+					this.progressValue = progress.percentage;
+					this.updateEta();
+				});
 			})
 			.subscribe({
-				next: result => this.onComplete(result),
-				error: err => this.onError(err.message || 'Unknown error')
+				next: result => this.zone.run(() => this.onComplete(result)),
+				error: err => this.zone.run(() => this.onError(err.message || 'Unknown error'))
 			});
 	}
 

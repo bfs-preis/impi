@@ -5,7 +5,6 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {ObAlertModule, ObButtonModule, ObSpinnerModule} from '@oblique/oblique';
 import {ElectronService, FileFilter} from '../../services/electron.service';
 import {IDbInfo} from '../../models';
 import {KfactorDialogComponent} from '../../dialogs/kfactor/kfactor.component';
@@ -20,7 +19,7 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './db-selector.component.html',
 	styleUrls: ['./db-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, TranslateModule, ObAlertModule, ObButtonModule, ObSpinnerModule, FilePickerComponent, MatButtonModule, MatTooltipModule, MatCardModule]
+	imports: [MatIconModule, TranslateModule, FilePickerComponent, MatButtonModule, MatTooltipModule, MatCardModule]
 })
 export class DbSelectorComponent implements OnInit {
 	@Input() disabled = false;
@@ -103,8 +102,18 @@ export class DbSelectorComponent implements OnInit {
 		return `${from} - ${to}`;
 	}
 
-	getKFactorTooltip(): string {
-		return this.translate.instant('anonymizer.Db.KFactor');
+	getCardClass(): string {
+		if (this.isValidating) return 'card-validating';
+		if (this.isValidFile) return 'card-valid';
+		if (this.error) return 'card-error';
+		return '';
+	}
+
+	getCardTooltip(): string {
+		if (this.isValidating) return 'Validating...';
+		if (this.isValidFile && this.dbInfo) return `Version: ${this.getVersion()}\nPeriode: ${this.getPeriod()}`;
+		if (this.error) return this.error;
+		return '';
 	}
 
 	openKFactorDialog(): void {

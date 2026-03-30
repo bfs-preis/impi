@@ -1,29 +1,17 @@
 .anonymizer-main-container {
 	width: 100%;
-	height: 100%;
 	padding: 1.5rem;
 	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
 }
 
 .workflow-steps {
 	display: flex;
-	flex-direction: row;
-	align-items: stretch;
-	flex: 1;
-	min-height: 0;
-	margin-bottom: 1.5rem;
 	gap: 1rem;
+	margin-bottom: 1.5rem;
 
 	> * {
 		flex: 1 1 0;
 		min-width: 0;
-	}
-
-	:host ::ng-deep mat-card {
-		height: 100%;
-		box-sizing: border-box;
 	}
 }
 

@@ -1,57 +1,23 @@
-<div class="csv-selector-container">
-	<mat-card>
-		<mat-card-header>
-			<mat-card-title>
-				<span class="step-badge">{{ "anonymizer.Csv.Step" | translate }}</span>
-				{{ "anonymizer.Csv.Title" | translate }}
-			</mat-card-title>
-		</mat-card-header>
-		<mat-card-content>
-			<!-- File Picker -->
-			<app-file-picker
-				[label]="'anonymizer.Csv.File' | translate"
-				[buttonText]="'anonymizer.Csv.SelectFile' | translate"
-				[filters]="filters"
-				[mode]="'file'"
-				[disabled]="disabled"
-				[selectedPath]="file"
-				(fileSelected)="onFileSelected($event)"
-			>
-			</app-file-picker>
-
-			<!-- Loading Spinner -->
-			@if (isValidating) {
-				<div class="validation-spinner">
-					<ob-spinner></ob-spinner>
-					<span>Validating CSV file...</span>
-				</div>
-			}
-
-			<!-- Error Message -->
-			@if (error && !isValidating) {
-				<ob-alert type="error">{{ error }}</ob-alert>
-			}
-
-			<!-- CSV Info -->
-			@if (isValidFile && !isValidating) {
-				<div class="csv-info">
-					<div class="info-row">
-						<label>{{ "anonymizer.Csv.Rows" | translate }}</label>
-						<span class="badge bg-success">{{ formatRowCount() }}</span>
-					</div>
-				</div>
-			}
-			<!-- Validation Status Icon -->
-			@if (!isValidating) {
-				<div class="validation-status">
-					@if (isValidFile) {
-						<mat-icon svgIcon="checkmark_circle" class="text-success"> </mat-icon>
-					}
-					@if (!isValidFile && file) {
-						<mat-icon svgIcon="exclamation_circle" class="text-danger"> </mat-icon>
-					}
-				</div>
-			}
-		</mat-card-content>
-	</mat-card>
-</div>
+<mat-card [class.card-valid]="isValidFile && !isValidating"
+	[class.card-error]="!!error && !isValidating"
+	[class.card-validating]="isValidating"
+	>
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Csv.Step" | translate }}</span>
+			{{ "anonymizer.Csv.Title" | translate }}
+		</mat-card-title>
+		<span class="header-spacer"></span>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Csv.File' | translate"
+			[buttonText]="'anonymizer.Csv.SelectFile' | translate"
+			[filters]="filters"
+			[mode]="'file'"
+			[disabled]="disabled"
+			[selectedPath]="file"
+			(fileSelected)="onFileSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

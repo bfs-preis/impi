@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {TranslateModule} from '@ngx-translate/core';
-import {ObSpinnerModule} from '@oblique/oblique';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ElectronService} from '../../services/electron.service';
 import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 
@@ -15,7 +15,7 @@ import {FilePickerComponent} from '../shared/file-picker/file-picker.component';
 	templateUrl: './output-selector.component.html',
 	styleUrls: ['./output-selector.component.scss'],
 	standalone: true,
-	imports: [MatIconModule, TranslateModule, ObSpinnerModule, FilePickerComponent, MatCardModule]
+	imports: [MatIconModule, MatTooltipModule, TranslateModule, FilePickerComponent, MatCardModule]
 })
 export class OutputSelectorComponent implements OnInit {
 	@Input() disabled = false;
@@ -64,6 +64,20 @@ export class OutputSelectorComponent implements OnInit {
 				this.isValid.emit(false);
 			}
 		});
+	}
+
+	getCardClass(): string {
+		if (this.isValidating) return 'card-validating';
+		if (this.isValidPath) return 'card-valid';
+		if (this.path && !this.isValidPath) return 'card-error';
+		return '';
+	}
+
+	getCardTooltip(): string {
+		if (this.isValidating) return 'Validating...';
+		if (this.isValidPath) return this.path || '';
+		if (this.path && !this.isValidPath) return 'Invalid directory';
+		return '';
 	}
 
 	getShortPath(): string {
