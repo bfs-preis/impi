@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {of} from 'rxjs';
+import {of, Observable} from 'rxjs';
 import {CsvSelectorComponent} from './csv-selector.component';
 import {ElectronService} from '../../services/electron.service';
 
@@ -61,5 +61,55 @@ describe('CsvSelectorComponent', () => {
 	it('should format row count', () => {
 		component.rowCount = 1234;
 		expect(component.formatRowCount()).toBe((1234).toLocaleString());
+	});
+
+	it('should set isValidFile on successful verification', () => {
+		component.file = '/mock/test.csv';
+		component.verifyFile();
+		expect(component.isValidFile).toBeTrue();
+		expect(component.rowCount).toBe(10);
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should handle verification error', () => {
+		electronServiceSpy.verifyCsv.and.returnValue(new Observable(obs => obs.error({message: 'bad csv'})));
+		component.file = '/mock/bad.csv';
+		component.verifyFile();
+		expect(component.isValidFile).toBeFalse();
+		expect(component.error).toBe('bad csv');
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should emit rowCountChange on successful verification', () => {
+		spyOn(component.rowCountChange, 'emit');
+		component.file = '/mock/test.csv';
+		component.verifyFile();
+		expect(component.rowCountChange.emit).toHaveBeenCalledWith(10);
+	});
+
+	it('should return card-valid class when valid', () => {
+		component.isValidFile = true;
+		component.isValidating = false;
+		component.error = null;
+		expect(component.getCardClass()).toBe('card-valid');
+	});
+
+	it('should return card-validating class when validating', () => {
+		component.isValidating = true;
+		expect(component.getCardClass()).toBe('card-validating');
+	});
+
+	it('should return card-error class when error', () => {
+		component.isValidating = false;
+		component.isValidFile = false;
+		component.error = 'some error';
+		expect(component.getCardClass()).toBe('card-error');
+	});
+
+	it('should return empty class by default', () => {
+		component.isValidating = false;
+		component.isValidFile = false;
+		component.error = null;
+		expect(component.getCardClass()).toBe('');
 	});
 });

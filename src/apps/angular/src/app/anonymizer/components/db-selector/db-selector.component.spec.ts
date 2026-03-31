@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MatDialog} from '@angular/material/dialog';
-import {of} from 'rxjs';
+import {of, Observable} from 'rxjs';
 import {DbSelectorComponent} from './db-selector.component';
 import {ElectronService} from '../../services/electron.service';
 import {IDbInfo} from '../../models';
@@ -102,5 +102,57 @@ describe('DbSelectorComponent', () => {
 		component.file = '/mock/test.db';
 		component.openKFactorDialog();
 		expect(dialogSpy.open).toHaveBeenCalled();
+	});
+
+	it('should set dbInfo on successful verification', () => {
+		component.file = '/mock/test.db';
+		component.verifyFile();
+		expect(component.isValidFile).toBeTrue();
+		expect(component.dbInfo).toBeTruthy();
+		expect(component.dbInfo!.Version).toBe('1.5.2');
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should handle verification error', () => {
+		electronServiceSpy.verifyDatabase.and.returnValue(new Observable(obs => obs.error({message: 'corrupt db'})));
+		component.file = '/mock/bad.db';
+		component.verifyFile();
+		expect(component.isValidFile).toBeFalse();
+		expect(component.dbInfo).toBeNull();
+		expect(component.error).toBe('corrupt db');
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should emit valid true on successful verification', () => {
+		spyOn(component.isValid, 'emit');
+		component.file = '/mock/test.db';
+		component.verifyFile();
+		expect(component.isValid.emit).toHaveBeenCalledWith(true);
+	});
+
+	it('should return card-valid class when valid', () => {
+		component.isValidFile = true;
+		component.isValidating = false;
+		component.error = null;
+		expect(component.getCardClass()).toBe('card-valid');
+	});
+
+	it('should return card-validating class when validating', () => {
+		component.isValidating = true;
+		expect(component.getCardClass()).toBe('card-validating');
+	});
+
+	it('should return card-error class when error', () => {
+		component.isValidating = false;
+		component.isValidFile = false;
+		component.error = 'some error';
+		expect(component.getCardClass()).toBe('card-error');
+	});
+
+	it('should return formatted period when dbInfo set', () => {
+		component.dbInfo = mockDbInfo;
+		const period = component.getPeriod();
+		expect(period).toContain('-');
+		expect(period.length).toBeGreaterThan(0);
 	});
 });

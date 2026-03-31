@@ -23,7 +23,10 @@ function isNumeric(val: any): boolean {
 describe('default validation tests (' + csvTestfileValidation + ')', function() {
 
     if (!fs.existsSync(csvTestfileValidation)) {
-        it('SKIPPED: test data file not found (' + csvTestfileValidation + ')');
+        it('SKIPPED — test data not found (' + csvTestfileValidation + ')', function() {
+            console.warn('\x1b[33m⚠ Place test data in Data/ directory to run validation integration tests\x1b[0m');
+            this.skip();
+        });
         return;
     }
 

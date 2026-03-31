@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {of} from 'rxjs';
+import {of, Observable} from 'rxjs';
 import {OutputSelectorComponent} from './output-selector.component';
 import {ElectronService} from '../../services/electron.service';
 
@@ -72,5 +72,52 @@ describe('OutputSelectorComponent', () => {
 		const result = component.getShortPath();
 		expect(result.startsWith('...')).toBeTrue();
 		expect(result.length).toBeLessThanOrEqual(50);
+	});
+
+	it('should set isValidPath on successful verification', () => {
+		component.path = '/mock/output';
+		component.verifyPath();
+		expect(component.isValidPath).toBeTrue();
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should handle verification returning false', () => {
+		electronServiceSpy.verifyPath.and.returnValue(of(false));
+		component.path = '/nonexistent';
+		component.verifyPath();
+		expect(component.isValidPath).toBeFalse();
+	});
+
+	it('should handle verification error', () => {
+		electronServiceSpy.verifyPath.and.returnValue(new Observable(obs => obs.error('fail')));
+		component.path = '/bad/path';
+		component.verifyPath();
+		expect(component.isValidPath).toBeFalse();
+		expect(component.isValidating).toBeFalse();
+	});
+
+	it('should return card-valid class when valid', () => {
+		component.isValidPath = true;
+		component.isValidating = false;
+		expect(component.getCardClass()).toBe('card-valid');
+	});
+
+	it('should return card-validating class when validating', () => {
+		component.isValidating = true;
+		expect(component.getCardClass()).toBe('card-validating');
+	});
+
+	it('should return card-error when path set but invalid', () => {
+		component.path = '/bad';
+		component.isValidPath = false;
+		component.isValidating = false;
+		expect(component.getCardClass()).toBe('card-error');
+	});
+
+	it('should return tooltip with path when valid', () => {
+		component.isValidPath = true;
+		component.path = '/my/output';
+		component.isValidating = false;
+		expect(component.getCardTooltip()).toBe('/my/output');
 	});
 });

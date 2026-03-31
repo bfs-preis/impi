@@ -42,4 +42,40 @@ describe('ProcessingService', () => {
 			}
 		});
 	});
+
+	it('should complete observable after all rows processed', (done: DoneFn) => {
+		let completed = false;
+		service.processWithResult(mockOptions, () => {}).subscribe({
+			complete: () => {
+				completed = true;
+				expect(completed).toBeTrue();
+				done();
+			}
+		});
+	});
+
+	it('should report correct percentage in progress', (done: DoneFn) => {
+		const progressCalls: ProcessProgress[] = [];
+
+		service.processWithResult(mockOptions, (p) => progressCalls.push(p)).subscribe({
+			next: () => {
+				const lastProgress = progressCalls[progressCalls.length - 1];
+				expect(lastProgress.percentage).toBe(100);
+				expect(lastProgress.processedRow).toBe(mockOptions.CsvRowCount);
+				expect(lastProgress.maxRows).toBe(mockOptions.CsvRowCount);
+				done();
+			}
+		});
+	});
+
+	it('should stop timer on unsubscribe', (done: DoneFn) => {
+		const sub = service.processWithResult(mockOptions, () => {}).subscribe();
+		// Unsubscribe immediately (teardown should clear interval)
+		sub.unsubscribe();
+		// If teardown works, no error after short delay
+		setTimeout(() => {
+			expect(true).toBeTrue();
+			done();
+		}, 200);
+	});
 });

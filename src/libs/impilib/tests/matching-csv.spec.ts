@@ -12,7 +12,10 @@ import { parse } from 'csv-parse/sync';
 describe('default matching tests (' + csvTestfileMatching +')', function() {
 
     if (!fs.existsSync(csvTestfileMatching) || !fs.existsSync(testDatabase)) {
-        it('SKIPPED: test data files not found (' + csvTestfileMatching + ', ' + testDatabase + ')');
+        it('SKIPPED — test data not found (' + csvTestfileMatching + ', ' + testDatabase + ')', function() {
+            console.warn('\x1b[33m⚠ Place test data in Data/ directory to run matching integration tests\x1b[0m');
+            this.skip();
+        });
         return;
     }
 

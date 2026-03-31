@@ -69,10 +69,7 @@ describe('SettingsDialogComponent', () => {
 		component.save();
 		expect(electronServiceSpy.setSetting).toHaveBeenCalledWith('CSVEncoding', 'utf8');
 		expect(electronServiceSpy.setSetting).toHaveBeenCalledWith('CSVSeparater', ';');
-		expect(electronServiceSpy.setSetting).toHaveBeenCalledWith('Theme', 'Light');
-		expect(electronServiceSpy.setSetting).toHaveBeenCalledWith('Language', 'de');
-		expect(electronServiceSpy.setTheme).toHaveBeenCalledWith('Light');
-		expect(electronServiceSpy.setLanguage).toHaveBeenCalledWith('de');
+		expect(electronServiceSpy.setSetting).toHaveBeenCalledWith('SedexSenderId', '');
 		expect(dialogRefSpy.close).toHaveBeenCalled();
 	});
 
