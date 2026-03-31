@@ -152,8 +152,12 @@ function createAdditionalCommunities(db: any, csvFile: string | null, encoding: 
     genericCreateTableAndInserts(db, definitions.AdditionalCommunitiesTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
+function createYearGroupsTable(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    genericCreateTableAndInserts(db, definitions.YearGroupsTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
+}
+
 export function generate(database: string, version: string, periodFrom: string, periodTo: string,
-    csvStreet: string | null, csvCommunities: string | null, csvBuildings: string | null, additionalCommunitiesCsv: string | null, encoding: string, rowCallback: (task: string, rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+    csvStreet: string | null, csvCommunities: string | null, csvBuildings: string | null, additionalCommunitiesCsv: string | null, csvYearGroups: string | null, encoding: string, rowCallback: (task: string, rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
 
     const errorHandling = function (err: Error) {
         db.close();
@@ -174,9 +178,13 @@ export function generate(database: string, version: string, periodFrom: string, 
                 }, () => {
                     createAdditionalCommunities(db, additionalCommunitiesCsv, encoding, (count) => {
                         rowCallback("AdditionalCommunities", count);
-                    }, (count) => {
-                        finishCallback(count);
-                        db.close();
+                    }, () => {
+                        createYearGroupsTable(db, csvYearGroups, encoding, (count) => {
+                            rowCallback("YearGroups", count);
+                        }, (count) => {
+                            finishCallback(count);
+                            db.close();
+                        }, errorHandling);
                     }, errorHandling);
                 }, errorHandling);
             }, errorHandling);
@@ -234,45 +242,65 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
     return { Buildings: buildingsCount, CenterCommunities: centerCommunitiesCount, CenterStreets: centerStreetsCount };
 }
 
+function buildYearCaseExpression(yearGroups: Array<{max_year: number, code: number}>): string {
+    if (yearGroups.length === 0) {
+        return 'year_of_construction';
+    }
+    let sql = "CASE WHEN year_of_construction = '' THEN ''";
+    for (const g of yearGroups) {
+        sql += ` WHEN CAST(year_of_construction AS INTEGER) <= ${g.max_year} THEN '${g.code}'`;
+    }
+    const lastCode = yearGroups[yearGroups.length - 1].code + 1;
+    sql += ` ELSE '${lastCode}' END`;
+    return sql;
+}
+
+const DEFAULT_YEAR_GROUPS = [
+    {max_year: 1918, code: 1}, {max_year: 1945, code: 2},
+    {max_year: 1970, code: 3}, {max_year: 1990, code: 4},
+    {max_year: 2005, code: 5}, {max_year: 2015, code: 6},
+];
+
 export function checkKFactor(database: string): boolean {
 
-    const sqlQuery = `SELECT 
-                    (SELECT COUNT(CAT_BAU) FROM (
-                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
-                    FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+    const db = new Database(database);
+
+    let yearGroups: Array<{max_year: number, code: number}>;
+    try {
+        yearGroups = db.prepare("SELECT max_year, code FROM YEAR_GROUPS ORDER BY max_year ASC").all();
+        if (!yearGroups || yearGroups.length === 0) yearGroups = DEFAULT_YEAR_GROUPS;
+    } catch {
+        yearGroups = DEFAULT_YEAR_GROUPS;
+    }
+
+    const yearExpr = buildYearCaseExpression(yearGroups);
+    const locationAttrs = `canton || ' ' ||major_statistical_region||' '||
                     second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
                     ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
                     ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    ||distance_to_highvoltage_powerlines`;
+
+    const sqlQuery = `SELECT
+                    (SELECT COUNT(CAT_BAU) FROM (
+                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
+                    FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
                     FROM BUILDINGS WHERE year_of_construction !="")
                     GROUP BY CAT_BAU
                     HAVING (COUNT(CAT_BAU) < 3))) a,
-                    
+
                     (SELECT COUNT(CAT_LAGE) FROM (
                     SELECT  CAT_LAGE ,COUNT(CAT_LAGE)
-                    FROM ( SELECT  (canton || ' ' ||major_statistical_region||' '||
-                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines) AS CAT_LAGE
-                    FROM BUILDINGS WHERE year_of_construction ="" OR (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
-                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines IN (SELECT  CAT_BAU 
-                        FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
-                        second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                        ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                        ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                        ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    FROM ( SELECT  (${locationAttrs}) AS CAT_LAGE
+                    FROM BUILDINGS WHERE year_of_construction ="" OR (${yearExpr} || ' ' || ${locationAttrs} IN (SELECT  CAT_BAU
+                        FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
                         FROM BUILDINGS WHERE year_of_construction !="")
                         GROUP BY CAT_BAU
                         HAVING (COUNT(CAT_BAU) > 2)))  )
                     GROUP BY CAT_LAGE
                     HAVING (COUNT(CAT_LAGE) < 3))) b;`;
 
-    const db = new Database(database);
     const row = db.prepare(sqlQuery).get();
+    db.close();
 
     return ((row.a + row.b) === 0);
 

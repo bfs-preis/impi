@@ -84,6 +84,15 @@ export const BuildingsTable: ITableDefinition = {
     Indexes: [{ Name: "I_BUILDINGS", Fields: ["street", "street_number", "zip_code", "community"] }]
 }
 
+export const YearGroupsTable: ITableDefinition = {
+    TableName: "YEAR_GROUPS",
+    Fields: [
+        { Name: "max_year", Type: "INTEGER" },
+        { Name: "code", Type: "INTEGER" }
+    ],
+    Indexes: null
+}
+
 
 
 

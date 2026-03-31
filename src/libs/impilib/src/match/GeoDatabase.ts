@@ -27,9 +27,21 @@ interface CenterRow {
     community: string;
 }
 
+export interface IYearGroup {
+    max_year: number;
+    code: number;
+}
+
+export type YearCategories = ReadonlyArray<[number, number]>;
+
 export class GeoDatabase {
     private _db: DatabaseType;
     private _file: string;
+    private _yearGroups: YearCategories | null = null;
+
+    get yearGroups(): YearCategories | null {
+        return this._yearGroups;
+    }
 
     constructor(file: string, errorCallback: (err: Error) => void) {
         verbose();
@@ -60,6 +72,22 @@ export class GeoDatabase {
         });
     }
 
+    loadYearGroups(callback: (groups: YearCategories | null, err: Error | null) => void): void {
+        this._db.all("SELECT max_year, code FROM YEAR_GROUPS ORDER BY max_year ASC", [], (err: Error, rows: IYearGroup[]) => {
+            if (err) {
+                // Table doesn't exist (old DB) — return null to signal fallback
+                this._yearGroups = null;
+                return callback(null, null);
+            }
+            if (!rows || rows.length === 0) {
+                this._yearGroups = null;
+                return callback(null, null);
+            }
+            this._yearGroups = rows.map(r => [r.max_year, r.code] as [number, number]);
+            return callback(this._yearGroups, null);
+        });
+    }
+
     kFactorCheckAsync(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             this.kFactorCheck((check, error) => {
@@ -72,36 +100,39 @@ export class GeoDatabase {
         });
     }
 
+    private buildYearCaseExpr(): string {
+        const DEFAULT_GROUPS: YearCategories = [[1918, 1], [1945, 2], [1970, 3], [1990, 4], [2005, 5], [2015, 6]];
+        const groups = this._yearGroups ?? DEFAULT_GROUPS;
+        if (groups.length === 0) return 'year_of_construction';
+        let sql = "CASE WHEN year_of_construction = '' THEN ''";
+        for (const [maxYear, code] of groups) {
+            sql += ` WHEN CAST(year_of_construction AS INTEGER) <= ${maxYear} THEN '${code}'`;
+        }
+        sql += ` ELSE '${groups[groups.length - 1][1] + 1}' END`;
+        return sql;
+    }
+
     kFactorCheck(callback: (check: boolean | null, err: Error | null) => void): void {
-        const sqlQuery = `SELECT 
-                    (SELECT COUNT(CAT_BAU) FROM (
-                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
-                    FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
+        const yearExpr = this.buildYearCaseExpr();
+        const locationAttrs = `canton || ' ' ||major_statistical_region||' '||
                     second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
                     ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
                     ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    ||distance_to_highvoltage_powerlines`;
+
+        const sqlQuery = `SELECT
+                    (SELECT COUNT(CAT_BAU) FROM (
+                    SELECT  CAT_BAU ,COUNT(CAT_BAU)
+                    FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
                     FROM BUILDINGS WHERE year_of_construction !="")
                     GROUP BY CAT_BAU
                     HAVING (COUNT(CAT_BAU) < 3))) a,
-                    
+
                     (SELECT COUNT(CAT_LAGE) FROM (
                     SELECT  CAT_LAGE ,COUNT(CAT_LAGE)
-                    FROM ( SELECT  (canton || ' ' ||major_statistical_region||' '||
-                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines) AS CAT_LAGE
-                    FROM BUILDINGS WHERE year_of_construction ="" OR (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
-                    second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                    ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                    ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                    ||distance_to_highvoltage_powerlines IN (SELECT  CAT_BAU 
-                        FROM ( SELECT  (year_of_construction || ' ' || canton || ' ' ||major_statistical_region||' '||
-                        second_appartement_quota||' '||community_type||' '||tax_burden||' '||travel_time_to_centers||
-                        ' '||public_transport_quality||' '||noise_exposure||' '||slope||' '||exposure||' '
-                        ||lake_view||' '||mountain_view||' '||distance_to_lakes||' '||distance_to_rivers||' '
-                        ||distance_to_highvoltage_powerlines) AS CAT_BAU
+                    FROM ( SELECT  (${locationAttrs}) AS CAT_LAGE
+                    FROM BUILDINGS WHERE year_of_construction ="" OR (${yearExpr} || ' ' || ${locationAttrs} IN (SELECT  CAT_BAU
+                        FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
                         FROM BUILDINGS WHERE year_of_construction !="")
                         GROUP BY CAT_BAU
                         HAVING (COUNT(CAT_BAU) > 2)))  )

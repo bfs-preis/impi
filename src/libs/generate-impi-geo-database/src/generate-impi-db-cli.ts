@@ -20,6 +20,7 @@ program
     .option('-c, --communitiesCsv <file>', 'CSV Filename to Communities InputFile')
     .option('-b, --buildingsCsv <file>', 'CSV Filename to Buildings InputFile')
     .option('-a, --additionalCommunitiesCsv <file>', 'CSV Filename to the additional Communities InputFile')
+    .option('-y, --yeargroupsCsv <file>', 'CSV Filename to Year Groups InputFile (optional)')
     .option('-C, --config [file]', 'JSON Config File')
     .option('-l, --LogLevel <level>', 'LogLevel', /^(error|warn|info|verbose|debug|silly)$/i, 'info')
     .option('-e, --encoding <enc>', 'the encoding used in the input csv file /^("utf8","windows1252","iso88591","macintosh")$/i', "windows1252");
@@ -41,6 +42,7 @@ const streetCsv = (program.streetCsv === undefined || program.streetCsv.toString
 const communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().length === 0) ? null : program.communitiesCsv.toString().trim();
 const buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().length === 0) ? null : program.buildingsCsv.toString().trim();
 const additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().length === 0) ? null : program.additionalCommunitiesCsv.toString().trim();
+const yeargroupsCsv = (program.yeargroupsCsv === undefined || program.yeargroupsCsv.toString().trim().length === 0) ? null : program.yeargroupsCsv.toString().trim();
 const encoding = (program.encoding === undefined || program.encoding.toString().trim().length === 0) ? "windows1252" : program.encoding.toString().trim();
 
 const config = {
@@ -49,6 +51,7 @@ const config = {
         communities: communitiesCsv,
         buildings: buildingsCsv,
         additional: additionalCsv,
+        yeargroups: yeargroupsCsv,
         encoding: encoding
     },
     db: {
@@ -67,6 +70,7 @@ if (program.config != null) {
         config.csv.communities = configFile.csv.communities || config.csv.communities;
         config.csv.buildings = configFile.csv.buildings || config.csv.buildings;
         config.csv.additional = configFile.csv.additional || config.csv.additional;
+        config.csv.yeargroups = configFile.csv.yeargroups || config.csv.yeargroups;
         config.csv.encoding = configFile.csv.encoding || config.csv.encoding;
     }
 
@@ -141,7 +145,7 @@ const succeedText = (index: number, rows: number, start: number):void => {
     spinners[index].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + colors.yellow(rows.toString()) + " | Time --> " + colors.yellow(nicetime((Date.now() - start))));
 };
 
-generate(config.output, config.db.version, config.db.from, config.db.to, config.csv.street, config.csv.communities, config.csv.buildings, config.csv.additional, config.csv.encoding, (txt, count) => {
+generate(config.output, config.db.version, config.db.from, config.db.to, config.csv.street, config.csv.communities, config.csv.buildings, config.csv.additional, config.csv.yeargroups, config.csv.encoding, (txt, count) => {
     rows = count;
 
     spinningText(currentSpinnerIndex, rows, start);

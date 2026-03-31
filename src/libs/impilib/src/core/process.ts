@@ -13,7 +13,7 @@ import { ResultDataCsv } from '../types/ResultDataCsv.js';
 import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules.js';
 import { PeriodeDefinition } from '../validation/ValidationRules.js';
 import { match } from '../match/match.js';
-import { GeoDatabase } from '../match/GeoDatabase.js';
+import { GeoDatabase, type YearCategories } from '../match/GeoDatabase.js';
 
 import { ILogRow, ILogResult, ILogViolation, ILogMeta, IMapping } from '../index.js';
 import { LogAsXmlString, createEmptyLogMatchingTypeArray } from './log-file-xml.js';
@@ -146,54 +146,59 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
     //Create GeoDatabase
     const geodb = new GeoDatabase(options.DatabaseFile.toString(), handlingError);
 
-    //Transformer
-    let rowNumber = 1;
-    const transformer = transform({ parallel: 1 } as TransformOption, (record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void) => {
-        myTransform(record, callback, result, rowNumber, geodb, mappingObj);
-        rowNumber++;
+    //Load year groups from database, then start pipeline
+    geodb.loadYearGroups((groups) => {
+        const yearCategories = groups ?? DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES;
+
+        //Transformer
+        let rowNumber = 1;
+        const transformer = transform({ parallel: 1 } as TransformOption, (record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void) => {
+            myTransform(record, callback, result, rowNumber, geodb, mappingObj, yearCategories);
+            rowNumber++;
+        });
+
+        transformer.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        //Stringifier
+        const stringfier = stringify({ header: true, delimiter: ";" });
+
+        stringfier.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        let rowNumberStringifier = 0;
+        stringfier.on('data', () => {
+            rowCallback(rowNumberStringifier, options.CsvRowCount - 1);
+            rowNumberStringifier++;
+        });
+
+        //Output
+        const outputStream = fs.createWriteStream(path.join(options.OutputPath, fileName + ".csv"), { encoding: "utf8" });
+
+        outputStream.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        outputStream.on('finish', function () {
+            geodb.close();
+            result.Meta.EndTime = +new Date();
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
+                .then(() => {
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                    callback(result);
+                });
+        });
+
+        //Process
+        inputStream
+            .pipe(iconv.decodeStream(options.CsvEncoding))
+            .pipe(parser)
+            .pipe(transformer)
+            .pipe(stringfier)
+            .pipe(outputStream);
     });
-
-    transformer.on('error', function (err: Error) {
-        handlingError(err);
-    });
-
-    //Stringifier
-    const stringfier = stringify({ header: true, delimiter: ";" });
-
-    stringfier.on('error', function (err: Error) {
-        handlingError(err);
-    });
-
-    let rowNumberStringifier = 0;
-    stringfier.on('data', () => {
-        rowCallback(rowNumberStringifier, options.CsvRowCount - 1);
-        rowNumberStringifier++;
-    });
-
-    //Output
-    const outputStream = fs.createWriteStream(path.join(options.OutputPath, fileName + ".csv"), { encoding: "utf8" });
-
-    outputStream.on('error', function (err: Error) {
-        handlingError(err);
-    });
-
-    outputStream.on('finish', function () {
-        geodb.close();
-        result.Meta.EndTime = +new Date();
-        writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
-            .then(() => {
-                writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
-                callback(result);
-            });
-    });
-
-    //Process
-    inputStream
-        .pipe(iconv.decodeStream(options.CsvEncoding))
-        .pipe(parser)
-        .pipe(transformer)
-        .pipe(stringfier)
-        .pipe(outputStream);
 
 }
 
@@ -202,7 +207,7 @@ interface MappingObject {
     Mappings: Record<string, Record<string, string>>;
 }
 
-function myTransform(record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: MappingObject) {
+function myTransform(record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: MappingObject, yearCategories: YearCategories) {
 
     //Check headers
     if (rowNumber === 1) {
@@ -251,7 +256,7 @@ function myTransform(record: Record<string, string>, callback: (err: Error | nul
         }
         //Translate yearofconstruction to nomenclatur
         if (k === 'yearofconstruction') {
-            outRecord[k] = categorizeYearOfConstruction(record[k]).toString();
+            outRecord[k] = categorizeYearOfConstruction(record[k], yearCategories).toString();
         }
     }
 
@@ -344,10 +349,11 @@ function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: stri
 }
 
 /**
- * Year-of-construction category boundaries for IMPI nomenclature.
+ * Default year-of-construction category boundaries for IMPI nomenclature.
+ * Used as fallback when the geodatabase has no YEAR_GROUPS table.
  * Each entry: [maxYear, categoryCode]. Applied in order; first match wins.
  */
-const YEAR_OF_CONSTRUCTION_CATEGORIES: ReadonlyArray<[number, number]> = [
+export const DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES: YearCategories = [
     [1918, 1],
     [1945, 2],
     [1970, 3],
@@ -356,12 +362,12 @@ const YEAR_OF_CONSTRUCTION_CATEGORIES: ReadonlyArray<[number, number]> = [
     [2015, 6],
 ];
 
-function categorizeYearOfConstruction(value: string): number {
+export function categorizeYearOfConstruction(value: string, categories: YearCategories = DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES): number {
     const year = isNaN(+value) ? 0 : +value;
     if (year <= 0) return 0;
 
-    for (const [maxYear, code] of YEAR_OF_CONSTRUCTION_CATEGORIES) {
+    for (const [maxYear, code] of categories) {
         if (year <= maxYear) return code;
     }
-    return 7; // After 2015
+    return categories.length > 0 ? categories[categories.length - 1][1] + 1 : 7;
 }
