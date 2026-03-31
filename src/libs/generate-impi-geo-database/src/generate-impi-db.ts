@@ -1,13 +1,13 @@
-const Database = require('better-sqlite3');
-const parse = require('csv-parse');
-const winston = require('winston');
-import fs = require('fs');
-import * as iconv from 'iconv-lite';
+import Database from 'better-sqlite3';
+import { parse } from 'csv-parse';
+import winston from 'winston';
+import * as fs from 'fs';
+import iconv from 'iconv-lite';
 import { normalizeStreet, normalizeStreetNumber } from "normalize-street";
 import { normalizeCity } from "normalize-city";
-import * as definitions from "./table-definitions";
+import * as definitions from "./table-definitions.js";
 
-function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition, csvFile: string | null, encoding: string,
+function genericCreateTableAndInserts(db: Database.Database, def: definitions.ITableDefinition, csvFile: string | null, encoding: string,
     rowCallback: (rowCount: number) => void | null, finishCallback: (rowCount: number) => void | null, errorCallback: (err: Error) => void | null): void {
 
     let rowCount = 0;
@@ -32,7 +32,6 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     const stmt = db.prepare("INSERT INTO " + def.TableName + " VALUES (" + def.Fields.map(() => "?").join(",") + ")");
 
     const input = fs.createReadStream(csvFile);
-    //let inputEncoded = iconv.decodeStream('win1251');
 
     // Create the parser
     const parser = parse({
@@ -80,7 +79,7 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     });
 
     parser.on('readable', function () {
-        let record: any;
+        let record: Record<string, string>;
         while (record = parser.read()) {
             if (stmt === null) throw new Error("Statement null!");
 
@@ -129,30 +128,30 @@ function genericCreateTableAndInserts(db: any, def: definitions.ITableDefinition
     input.pipe(iconv.decodeStream(encoding)).pipe(parser);
 }
 
-function createVersionTable(db: any, version: string, periodFrom: string, periodTo: string, encoding: string, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createVersionTable(db: Database.Database, version: string, periodFrom: string, periodTo: string, encoding: string, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.VersionTable, null, encoding, () => { }, () => {
         db.prepare("INSERT INTO VERSION VALUES (?,?,?)").run([version, periodFrom, periodTo]);
         finishCallback(1);
     }, errorCallback);
 }
 
-function createCenterStreetsTable(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createCenterStreetsTable(db: Database.Database, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.CenterStreetsTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createCenterCommunitiesTable(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createCenterCommunitiesTable(db: Database.Database, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.CenterCommunitiesTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createBuildingsTable(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createBuildingsTable(db: Database.Database, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.BuildingsTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createAdditionalCommunities(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createAdditionalCommunities(db: Database.Database, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.AdditionalCommunitiesTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
-function createYearGroupsTable(db: any, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
+function createYearGroupsTable(db: Database.Database, csvFile: string | null, encoding: string, rowCallback: (rowCount: number) => void, finishCallback: (rowCount: number) => void, errorCallback: (err: Error) => void) {
     genericCreateTableAndInserts(db, definitions.YearGroupsTable, csvFile, encoding, rowCallback, finishCallback, errorCallback);
 }
 
@@ -215,25 +214,25 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
 
     const db = new Database(database);
 
-    let rows = db.prepare(sqlBuildings).all();
+    let rows = db.prepare(sqlBuildings).all() as Array<{count: number}>;
     if (rows) {
-        rows.forEach((element: any) => {
+        rows.forEach((element) => {
             winston.warn("Double Buildings:" + JSON.stringify(element));
             buildingsCount += element.count;
         });
     }
 
-    rows = db.prepare(sqlCenterStreets).all();
+    rows = db.prepare(sqlCenterStreets).all() as Array<{count: number}>;
     if (rows) {
-        rows.forEach((element: any) => {
+        rows.forEach((element) => {
             winston.warn("Double CenterStreets:" + JSON.stringify(element));
             centerStreetsCount += element.count;
         });
     }
 
-    rows = db.prepare(sqlCenterCommunities).all();
+    rows = db.prepare(sqlCenterCommunities).all() as Array<{count: number}>;
     if (rows) {
-        rows.forEach((element: any) => {
+        rows.forEach((element) => {
             winston.warn("Double CenterCommunities:" + JSON.stringify(element));
             centerCommunitiesCount += element.count;
         });
@@ -267,7 +266,7 @@ export function checkKFactor(database: string): boolean {
 
     let yearGroups: Array<{max_year: number, code: number}>;
     try {
-        yearGroups = db.prepare("SELECT max_year, code FROM YEAR_GROUPS ORDER BY max_year ASC").all();
+        yearGroups = db.prepare("SELECT max_year, code FROM YEAR_GROUPS ORDER BY max_year ASC").all() as Array<{max_year: number, code: number}>;
         if (!yearGroups || yearGroups.length === 0) yearGroups = DEFAULT_YEAR_GROUPS;
     } catch {
         yearGroups = DEFAULT_YEAR_GROUPS;
@@ -299,10 +298,9 @@ export function checkKFactor(database: string): boolean {
                     GROUP BY CAT_LAGE
                     HAVING (COUNT(CAT_LAGE) < 3))) b;`;
 
-    const row = db.prepare(sqlQuery).get();
+    const row = db.prepare(sqlQuery).get() as {a: number, b: number};
     db.close();
 
     return ((row.a + row.b) === 0);
 
 }
-

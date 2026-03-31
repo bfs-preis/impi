@@ -22,21 +22,18 @@
     "author": "adi",
     "license": "MIT",
     "dependencies": {
-        "colors": "^1.4.0",
         "electron-log": "^5.4.3",
         "electron-settings": "^4.0.4",
         "impilib": "workspace:*",
         "ora": "^9.0.0",
-        "yargs": "^11.0.0"
+        "picocolors": "^1.1.0",
+        "yargs": "^17.7.0"
     },
     "devDependencies": {
-        "@types/electron": "^1.6.12",
-        "@types/electron-settings": "^4.0.2",
         "@types/yargs": "^17.0.34",
         "cpr": "^3.0.1",
         "electron": "^39.1.0",
         "electron-builder": "^26.0.12",
-        "electron-rebuild": "^3.2.9",
         "rimraf": "^6.1.0",
         "typescript": "^5.9.3"
     }

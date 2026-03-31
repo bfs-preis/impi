@@ -4,7 +4,7 @@ import { ICommandLine, CommandEnum } from './command-line.js';
 import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from '../validation/input-validation.js';
 import { app } from 'electron';
 import ora from 'ora';
-import colors from 'colors';
+import pc from 'picocolors';
 
 export async function CliProcess(commandLine: ICommandLine): Promise<number> {
 
@@ -36,7 +36,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
     };
 
     let spinningText = (rows: number, maxRows: number, start: number) => {
-        spinners[currentSpinnerIndex].spinner.text = colors.magenta(spinners[currentSpinnerIndex].name) + " | Processed Rows --> " + colors.yellow(rows.toString()) + "/" + colors.yellow(maxRows.toString()) + " | " + "Time --> " + colors.yellow(nicetime((Date.now() - start))) + " | " + colors.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
+        spinners[currentSpinnerIndex].spinner.text = pc.magenta(spinners[currentSpinnerIndex].name) + " | Processed Rows --> " + pc.yellow(rows.toString()) + "/" + pc.yellow(maxRows.toString()) + " | " + "Time --> " + pc.yellow(nicetime((Date.now() - start))) + " | " + pc.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
     };
 
     let currentSpinnerIndex = 0;
@@ -99,7 +99,7 @@ export async function CliProcess(commandLine: ICommandLine): Promise<number> {
                         return resolve(1);
                     }
                     spinners[currentSpinnerIndex].spinner.succeed();
-                    console.log("Overall Time: " + colors.yellow(nicetime((Date.now() - top_start))));
+                    console.log("Overall Time: " + pc.yellow(nicetime((Date.now() - top_start))));
                     return resolve(0);
                 }, (processedRow: number, maxRows: number) => {
                     //do nothing in cli

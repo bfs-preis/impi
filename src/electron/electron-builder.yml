@@ -40,9 +40,6 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 
-appImage:
-  systemIntegration: doNotAsk
-
 publish:
   provider: github
   owner: bfs-preis

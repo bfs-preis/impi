@@ -28,7 +28,7 @@ normalize-common          ← foundation: string utils, base normalizer
 
 ## Tooling Requirements
 
-- Node.js ≥20 (22.19.0 LTS recommended, pinned in `.nvmrc`/`.node-version`/Volta)
+- Node.js ≥20 (22.19.0 LTS recommended, pinned in `.nvmrc`/`.node-version`)
 - pnpm 10+ (enforced via `only-allow` preinstall hook)
 - All packages (libs, Angular, Electron, CLI) use pnpm via a unified workspace at `src/`
 - Nix users: `nix develop` for full environment

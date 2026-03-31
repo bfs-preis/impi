@@ -29,9 +29,5 @@
     "@types/node": "^22.10.0",
     "eslint-formatter-compact": "^8.40.0",
     "typescript": "^5.3.3"
-  },
-  "volta": {
-    "node": "22.19.0",
-    "pnpm": "8.15.1"
   }
 }

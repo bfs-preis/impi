@@ -1,6 +1,7 @@
 {
   "name": "generate-impi-geo-database",
   "version": "1.5.2",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://git.softrain.ch/impi.git"
@@ -11,7 +12,6 @@
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.15.1",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -36,6 +36,7 @@
     "sqlite3": "catalog:",
     "commander": "catalog:",
     "ora": "catalog:",
+    "picocolors": "^1.1.0",
     "winston": "catalog:",
     "normalize-city": "workspace:*",
     "normalize-street": "workspace:*"

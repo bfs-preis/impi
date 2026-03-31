@@ -1,17 +1,20 @@
 #!/usr/bin/env node
-import { generate, checkDoubles, checkKFactor } from './generate-impi-db';
-
-const ora = require('ora');
-const colors = require('colors/safe');
-const winston = require('winston');
-
+import { generate, checkDoubles, checkKFactor } from './generate-impi-db.js';
+import ora from 'ora';
+import pc from 'picocolors';
+import winston from 'winston';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Command } from 'commander';
+import { createRequire } from 'module';
 
-const { program } = require('commander');
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
+
+const program = new Command();
 
 program
-    .version(require('../package.json').version)
+    .version(pkg.version)
     .option('-g, --geodb <file>', 'Database filename')
     .option('-q, --dbversion <version>', 'Database Version')
     .option('-f, --from <date>', 'Database Period From [dd.MM.YYYY]')
@@ -22,8 +25,8 @@ program
     .option('-a, --additionalCommunitiesCsv <file>', 'CSV Filename to the additional Communities InputFile')
     .option('-y, --yeargroupsCsv <file>', 'CSV Filename to Year Groups InputFile (optional)')
     .option('-C, --config [file]', 'JSON Config File')
-    .option('-l, --LogLevel <level>', 'LogLevel', /^(error|warn|info|verbose|debug|silly)$/i, 'info')
-    .option('-e, --encoding <enc>', 'the encoding used in the input csv file /^("utf8","windows1252","iso88591","macintosh")$/i', "windows1252");
+    .option('-l, --LogLevel <level>', 'LogLevel', 'info')
+    .option('-e, --encoding <enc>', 'the encoding used in the input csv file', "windows1252");
 
 
 program.on('--help', function () {
@@ -37,15 +40,20 @@ program.on('--help', function () {
 
 
 program.parse(process.argv);
+const opts = program.opts();
 
-const streetCsv = (program.streetCsv === undefined || program.streetCsv.toString().trim().length === 0) ? null : program.streetCsv.toString().trim();
-const communitiesCsv = (program.communitiesCsv === undefined || program.communitiesCsv.toString().trim().length === 0) ? null : program.communitiesCsv.toString().trim();
-const buildingsCsv = (program.buildingsCsv === undefined || program.buildingsCsv.toString().trim().length === 0) ? null : program.buildingsCsv.toString().trim();
-const additionalCsv = (program.additionalCommunitiesCsv === undefined || program.additionalCommunitiesCsv.toString().trim().length === 0) ? null : program.additionalCommunitiesCsv.toString().trim();
-const yeargroupsCsv = (program.yeargroupsCsv === undefined || program.yeargroupsCsv.toString().trim().length === 0) ? null : program.yeargroupsCsv.toString().trim();
-const encoding = (program.encoding === undefined || program.encoding.toString().trim().length === 0) ? "windows1252" : program.encoding.toString().trim();
+const streetCsv = (opts.streetCsv === undefined || opts.streetCsv.toString().trim().length === 0) ? null : opts.streetCsv.toString().trim();
+const communitiesCsv = (opts.communitiesCsv === undefined || opts.communitiesCsv.toString().trim().length === 0) ? null : opts.communitiesCsv.toString().trim();
+const buildingsCsv = (opts.buildingsCsv === undefined || opts.buildingsCsv.toString().trim().length === 0) ? null : opts.buildingsCsv.toString().trim();
+const additionalCsv = (opts.additionalCommunitiesCsv === undefined || opts.additionalCommunitiesCsv.toString().trim().length === 0) ? null : opts.additionalCommunitiesCsv.toString().trim();
+const yeargroupsCsv = (opts.yeargroupsCsv === undefined || opts.yeargroupsCsv.toString().trim().length === 0) ? null : opts.yeargroupsCsv.toString().trim();
+const encoding = (opts.encoding === undefined || opts.encoding.toString().trim().length === 0) ? "windows1252" : opts.encoding.toString().trim();
 
-const config = {
+const config: {
+    csv: { street: string | null; communities: string | null; buildings: string | null; additional: string | null; yeargroups: string | null; encoding: string };
+    db: { version: string; from: string; to: string };
+    output: string;
+} = {
     csv: {
         street: streetCsv,
         communities: communitiesCsv,
@@ -55,15 +63,15 @@ const config = {
         encoding: encoding
     },
     db: {
-        version: program.dbversion,
-        from: program.from,
-        to: program.to
+        version: opts.dbversion,
+        from: opts.from,
+        to: opts.to
     },
-    output: program.geodb
+    output: opts.geodb
 };
 
-if (program.config != null) {
-    const configFile = require(path.resolve(process.cwd(), program.config));
+if (opts.config != null) {
+    const configFile = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), opts.config), 'utf8'));
 
     if (configFile.csv) {
         config.csv.street = configFile.csv.street || config.csv.street;
@@ -96,11 +104,11 @@ if (!config.csv.street ||
     process.exit(1);
 }
 
-console.log(colors.green('Options:'));
+console.log(pc.green('Options:'));
 console.log(JSON.stringify(config, undefined, 2));
 
 if (fs.existsSync(config.output + '.log')) {
-    console.log(colors.red("Deleting existing Log File:" + config.output + '.log'));
+    console.log(pc.red("Deleting existing Log File:" + config.output + '.log'));
     fs.unlinkSync(config.output + '.log');
 }
 
@@ -108,7 +116,7 @@ winston.configure({
     transports: [
         new winston.transports.File({ filename: config.output + '.log' })
     ],
-    level: program.LogLevel
+    level: opts.LogLevel
 });
 
 let rows = 0;
@@ -138,11 +146,11 @@ const spinners = [
 let currentSpinnerIndex = 0;
 
 const spinningText = (index: number, rows: number, start: number):void => {
-    spinners[index].spinner.text = colors.magenta(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + colors.yellow(rows.toString()) + " | " + "Time --> " + colors.yellow(nicetime((Date.now() - start))) + " | " + colors.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
+    spinners[index].spinner.text = pc.magenta(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + pc.yellow(rows.toString()) + " | " + "Time --> " + pc.yellow(nicetime((Date.now() - start))) + " | " + pc.yellow(rows > 0 ? (rows / ((Date.now() - start) / 1000)).toFixed().toString() : "0") + " rows/s";
 };
 
 const succeedText = (index: number, rows: number, start: number):void => {
-    spinners[index].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + colors.yellow(rows.toString()) + " | Time --> " + colors.yellow(nicetime((Date.now() - start))));
+    spinners[index].spinner.succeed(pc.blue(spinners[currentSpinnerIndex].name) + " | Imported Rows --> " + pc.yellow(rows.toString()) + " | Time --> " + pc.yellow(nicetime((Date.now() - start))));
 };
 
 generate(config.output, config.db.version, config.db.from, config.db.to, config.csv.street, config.csv.communities, config.csv.buildings, config.csv.additional, config.csv.yeargroups, config.csv.encoding, (txt, count) => {
@@ -185,10 +193,10 @@ generate(config.output, config.db.version, config.db.from, config.db.to, config.
 
     currentSpinnerIndex++;
     const counts = checkDoubles(config.output);
-    spinners[currentSpinnerIndex].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name) + " | Buildings --> " + colors.yellow(counts.Buildings.toString()) + " | CenterStreets --> " + colors.yellow(counts.CenterStreets.toString()) + " | CenterCommunities --> " + colors.yellow(counts.CenterCommunities.toString()));
+    spinners[currentSpinnerIndex].spinner.succeed(pc.blue(spinners[currentSpinnerIndex].name) + " | Buildings --> " + pc.yellow(counts.Buildings.toString()) + " | CenterStreets --> " + pc.yellow(counts.CenterStreets.toString()) + " | CenterCommunities --> " + pc.yellow(counts.CenterCommunities.toString()));
     currentSpinnerIndex++;
     if (checkKFactor(config.output)) {
-        spinners[currentSpinnerIndex].spinner.succeed(colors.blue(spinners[currentSpinnerIndex].name));
+        spinners[currentSpinnerIndex].spinner.succeed(pc.blue(spinners[currentSpinnerIndex].name));
         winston.info('K-Factor Test succeed!');
     }
     else {
@@ -196,7 +204,7 @@ generate(config.output, config.db.version, config.db.from, config.db.to, config.
         winston.warn('K-Factor Test failed!');
     }
 
-    console.log("Overall Time: " + colors.yellow(nicetime((Date.now() - top_start))));
+    console.log("Overall Time: " + pc.yellow(nicetime((Date.now() - top_start))));
 }, (err) => {
     spinners[currentSpinnerIndex].spinner.fail();
     console.log(err);

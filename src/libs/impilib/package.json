@@ -12,7 +12,7 @@
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.15.1",
+
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -37,7 +37,6 @@
     "csv-stringify": "catalog:",
     "iconv-lite": "catalog:",
     "stream-transform": "catalog:",
-    "better-sqlite3": "catalog:",
     "sqlite3": "catalog:",
     "archiver": "catalog:",
     "big-integer": "catalog:",
@@ -56,7 +55,6 @@
     "rimraf": "catalog:",
     "ts-node": "catalog:",
     "typescript": "catalog:lang",
-    "@types/archiver": "catalog:",
-    "@types/better-sqlite3": "catalog:"
+    "@types/archiver": "catalog:"
   }
 }
