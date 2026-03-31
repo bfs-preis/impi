@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://git.softrain.ch/impi.git"
   },
-  "author": "",
+  "author": "BFS <impi@bfs.admin.ch>",
   "license": "ISC",
   "description": "IMPI command-line interface for batch processing",
   "engines": {

@@ -19,8 +19,9 @@
         "build": "pnpm run clean && pnpm run tsc && pnpm run copyPreload && pnpm run copyAnonHtml && pnpm run createBuildPackageJson"
     },
     "keywords": [],
-    "author": "adi",
+    "author": "BFS <impi@bfs.admin.ch>",
     "license": "MIT",
+    "homepage": "https://github.com/bfs-preis/impi",
     "dependencies": {
         "electron-log": "^5.4.3",
         "electron-settings": "^4.0.4",
