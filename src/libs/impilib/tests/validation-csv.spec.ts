@@ -61,6 +61,7 @@ describe('default validation tests (' + csvTestfileValidation + ')', function() 
             transactiondate: row.TransactionDate,
             volumeofbuilding: row.VolumeOfBuilding,
             yearofconstruction: row.YearOfConstruction,
+            egid: "",
         };
 
         it('should have ' + row.Fehlertyp + " Case:" + index + " Desc:" + row.Bemerkung, (done) => {

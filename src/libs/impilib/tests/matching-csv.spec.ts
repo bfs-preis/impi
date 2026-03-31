@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { GeoDatabase } from '../src/match/GeoDatabase.js';
-import { match, MatchingTypeEnum } from '../src/match/match.js';
+import { match, MatchingTypeEnum, MatchResult } from '../src/match/match.js';
 import { IBankDataCsv } from '../src/types/IBankDataCsv.js';
 import { IBuildingRecord } from '../src/types/IBuildingRecord.js';
 import { testDatabase, csvTestfileMatching } from './Constants.js';
@@ -50,16 +50,17 @@ describe('default matching tests (' + csvTestfileMatching +')', function() {
             transactiondate: "",
             volumeofbuilding: "",
             yearofconstruction: "",
+            egid: "",
         };
 
         it('should have ' + MatchingTypeEnum[row.match] + " Case:" + index + " Desc:" + row.matchingtype, (done) => {
             const myPromise: Promise<{ record: IBuildingRecord | null, matchingType: MatchingTypeEnum }> = new Promise((resolve, reject) => {
                 
-                match(input, geoDatabase, (record, err, matchingType) => {
+                match(input, geoDatabase, (result: MatchResult, err: Error | null) => {
                     if (err)
                         return reject(err);
                     else
-                        return resolve({ record: record, matchingType: matchingType });
+                        return resolve({ record: result.record, matchingType: result.matchingType });
                 });
             });
 

@@ -61,7 +61,8 @@ describe('check single validation errors', () => {
     volumeofbuilding: "1",
     yearofconstruction: "1999",
     zipcode: "3000",
-    standardofvolume:"2"
+    standardofvolume:"2",
+    egid: ""
   };
 
   it('should have no validation error', () => {

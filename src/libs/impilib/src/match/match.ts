@@ -9,20 +9,72 @@ export enum MatchingTypeEnum {
     CenterStreetMatching = 1,
     CenterCommunitiesMatching = 2,
     NoMatching = 3,
-    NoMatchingWithError = 4
+    NoMatchingWithError = 4,
+    EGIDMatching = 5
+}
+
+export interface MatchResult {
+    record: IBuildingRecord | null;
+    matchingType: MatchingTypeEnum;
+    egidProvided: boolean;
+    egidMatched: boolean;
+    addressMatched: boolean;
 }
 
 export function match(
     record: IBankDataCsv,
     geoDatabase: GeoDatabase,
-    callback: (record: IBuildingRecord | null, err: Error | null, matchingType: MatchingTypeEnum) => void): void {
+    callback: (result: MatchResult, err: Error | null) => void): void {
 
     _matchAsync(record, geoDatabase)
-        .then(([row, matchingType]) => callback(row, null, matchingType))
-        .catch((error) => callback(null, error, MatchingTypeEnum.NoMatchingWithError));
+        .then((result) => callback(result, null))
+        .catch((error) => callback({
+            record: null,
+            matchingType: MatchingTypeEnum.NoMatchingWithError,
+            egidProvided: !!record.egid?.length,
+            egidMatched: false,
+            addressMatched: false
+        }, error));
 }
 
 async function _matchAsync(
+    record: IBankDataCsv,
+    geoDatabase: GeoDatabase
+): Promise<MatchResult> {
+
+    const hasEgid = !!record.egid?.length && !isNaN(+record.egid);
+
+    // Run EGID lookup and address cascade in parallel
+    const [egidRow, addressResult] = await Promise.all([
+        hasEgid ? _searchEGID(geoDatabase, +record.egid) : Promise.resolve(null),
+        _addressCascade(record, geoDatabase)
+    ]);
+
+    const egidMatched = egidRow !== null;
+    const addressMatched = addressResult[0] !== null;
+
+    // EGID wins if it matched
+    if (egidMatched) {
+        return {
+            record: egidRow,
+            matchingType: MatchingTypeEnum.EGIDMatching,
+            egidProvided: hasEgid,
+            egidMatched: true,
+            addressMatched
+        };
+    }
+
+    // Fall back to address result
+    return {
+        record: addressResult[0],
+        matchingType: addressResult[1],
+        egidProvided: hasEgid,
+        egidMatched: false,
+        addressMatched
+    };
+}
+
+async function _addressCascade(
     record: IBankDataCsv,
     geoDatabase: GeoDatabase
 ): Promise<[IBuildingRecord | null, MatchingTypeEnum]> {
@@ -79,6 +131,18 @@ async function _matchAsync(
     return centerRow
         ? [centerRow, MatchingTypeEnum.CenterCommunitiesMatching]
         : [null, MatchingTypeEnum.NoMatching];
+}
+
+function _searchEGID(geoDatabase: GeoDatabase, egid: number): Promise<IBuildingRecord | null> {
+    return new Promise((resolve, reject) => {
+        geoDatabase.searchByEGID(egid, (err: Error | null, row: IBuildingRecord | null) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(row);
+        });
+    });
 }
 
 function _searchAddress(geoDatabase: GeoDatabase, street: string, streetnumber: string, zipcode: number, communitiy: string | null): Promise<IBuildingRecord | null> {

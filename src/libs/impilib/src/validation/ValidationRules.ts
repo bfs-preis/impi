@@ -318,4 +318,10 @@ export const ValidationRules: IValidationRule[] = [
             return !(Number(row.objecttype) ===1 && (!isNumeric(row.standardofvolume) || Number(row.standardofvolume) > 3 || Number(row.standardofvolume) < 1));
         }, RedFlag: false
     },
+    {
+        Id: 51, Message: "EGID Format ≠ Number", ValCode: (row: IBankDataCsv): boolean => {
+            if (!row.egid || row.egid.length === 0) return true;
+            return isNumeric(row.egid);
+        }, RedFlag: false
+    },
 ];

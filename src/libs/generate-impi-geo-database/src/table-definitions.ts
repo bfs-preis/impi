@@ -81,7 +81,10 @@ export const BuildingsTable: ITableDefinition = {
         { Name: "distance_to_highvoltage_powerlines", Type: "INTEGER" },
         { Name: "year_of_construction", Type: "INTEGER" },
     ],
-    Indexes: [{ Name: "I_BUILDINGS", Fields: ["street", "street_number", "zip_code", "community"] }]
+    Indexes: [
+        { Name: "I_BUILDINGS", Fields: ["street", "street_number", "zip_code", "community"] },
+        { Name: "I_BUILDINGS_EGID", Fields: ["egid"] }
+    ]
 }
 
 export const YearGroupsTable: ITableDefinition = {

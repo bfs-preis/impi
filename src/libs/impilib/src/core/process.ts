@@ -12,7 +12,7 @@ import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv.js';
 import { ResultDataCsv } from '../types/ResultDataCsv.js';
 import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules.js';
 import { PeriodeDefinition } from '../validation/ValidationRules.js';
-import { match } from '../match/match.js';
+import { match, type MatchResult } from '../match/match.js';
 import { GeoDatabase, type YearCategories } from '../match/GeoDatabase.js';
 
 import { ILogRow, ILogResult, ILogViolation, ILogMeta, IMapping } from '../index.js';
@@ -264,29 +264,32 @@ function myTransform(record: Record<string, string>, callback: (err: Error | nul
     outRecord.validationflags = result.Flags.toString();
 
     //GWR & Geodata
-    return match((record as unknown as IBankDataCsv), geodb, (record, err, matchingType) => {
-        outRecord.matchingtype = (+matchingType).toString();
+    return match((record as unknown as IBankDataCsv), geodb, (matchResult: MatchResult, err: Error | null) => {
+        outRecord.matchingtype = (+matchResult.matchingType).toString();
+        outRecord.egidprovided = matchResult.egidProvided ? "1" : "0";
+        outRecord.egidmatched = matchResult.egidMatched ? "1" : "0";
+        outRecord.addressmatched = matchResult.addressMatched ? "1" : "0";
 
         //MatchingType Summary
-        const logMatchigType = processResult.MatchSummary.find((m) => m.Id === +(matchingType));
+        const logMatchigType = processResult.MatchSummary.find((m) => m.Id === +(matchResult.matchingType));
         if (logMatchigType) {
             logMatchigType.Count++;
         } else {
             throw new Error("MatchingType not found in Summary!");
         }
 
-        processResult.Rows.push({ Index: rowNumber, MatchingType: matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
+        processResult.Rows.push({ Index: rowNumber, MatchingType: matchResult.matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
         if (err) {
             return callback(err, outRecord);
         }
-        if (record) {
+        if (matchResult.record) {
             //Copy Values
-            for (const k in record) {
+            for (const k in matchResult.record) {
 
                 if (k.replace(/_/g, "") === 'yearofconstruction') continue; // dont copy yearofconstruction from gwr, always take bank data
 
                 if (outRecord.hasOwnProperty(k.replace(/_/g, ""))) {
-                    outRecord[k.replace(/_/g, "")] = record[k];
+                    outRecord[k.replace(/_/g, "")] = matchResult.record[k];
                 }
             }
             return callback(null, outRecord);

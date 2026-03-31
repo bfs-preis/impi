@@ -293,17 +293,17 @@ export class GeoDatabase {
         });
     }
 
-    private _searchEGID(egid: number, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
+    searchByEGID(egid: number, callback: (err: Error | null, row: IBuildingRecord | null) => void): void {
         this._db.get("SELECT * FROM BUILDINGS WHERE EGID=@egid", [egid], (err: Error, row: IBuildingRecord) => {
             if (err) {
                 return callback(err, null);
             } else {
-                return callback(null, row);
+                return callback(null, row ?? null);
             }
         });
     }
 
-
-
-
+    private _searchEGID(egid: number, callback: (err: Error | null, row: IBuildingRecord | null) => void) {
+        this.searchByEGID(egid, callback);
+    }
 }

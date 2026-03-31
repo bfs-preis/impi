@@ -20,6 +20,7 @@ export interface IBankDataCsv {
     numberofparkings: string;
     constructionquality: string;
     propertycondition: string;
+    egid: string;
 }
 
 export class BankDataCsv implements IBankDataCsv{
@@ -44,4 +45,5 @@ export class BankDataCsv implements IBankDataCsv{
     numberofparkings: string="";
     constructionquality: string="";
     propertycondition: string="";
+    egid: string="";
 }
