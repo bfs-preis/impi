@@ -13,10 +13,10 @@
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
-        "start": "npm run copyPreload && npm run tsc && electron ./app -l debug --inspect --no-sandbox",
-        "release": "npm run build && electron-builder",
+        "start": "pnpm run copyPreload && pnpm run tsc && electron ./app -l debug --inspect --no-sandbox",
+        "release": "pnpm run build && electron-builder",
         "rebuildNative": "electron-builder install-app-deps",
-        "build": "npm run clean && npm run tsc && npm run copyPreload && npm run copyAnonHtml && npm run createBuildPackageJson"
+        "build": "pnpm run clean && pnpm run tsc && pnpm run copyPreload && pnpm run copyAnonHtml && pnpm run createBuildPackageJson"
     },
     "keywords": [],
     "author": "adi",
@@ -25,7 +25,7 @@
         "colors": "^1.4.0",
         "electron-log": "^5.4.3",
         "electron-settings": "^4.0.4",
-        "impilib": "file:../libs/impilib/",
+        "impilib": "workspace:*",
         "ora": "^9.0.0",
         "yargs": "^11.0.0"
     },

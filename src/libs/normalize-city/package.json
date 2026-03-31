@@ -30,7 +30,7 @@
   },
   "description": "Function for normalizing city names",
   "dependencies": {
-    "normalize-common": "file:../normalize-common"
+    "normalize-common": "workspace:*"
   },
   "devDependencies": {
     "@types/chai": "catalog:testing",

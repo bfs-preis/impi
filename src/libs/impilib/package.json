@@ -30,7 +30,7 @@
   },
   "description": "Transforms bank data to IMPI output",
   "dependencies": {
-    "normalize-common": "file:../normalize-common",
+    "normalize-common": "workspace:*",
     "csv-parse": "^5.6.0",
     "moment": "catalog:",
     "node-stream-zip": "catalog:",
@@ -43,8 +43,8 @@
     "big-integer": "catalog:",
     "sax": "catalog:",
     "xmlbuilder2": "catalog:",
-    "normalize-city": "file:../normalize-city",
-    "normalize-street": "file:../normalize-street"
+    "normalize-city": "workspace:*",
+    "normalize-street": "workspace:*"
   },
   "devDependencies": {
     "@types/chai": "catalog:testing",

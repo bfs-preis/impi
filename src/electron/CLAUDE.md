@@ -1,24 +1,24 @@
 # CLAUDE.md — src/electron/
 
-Electron desktop app shell for IMPI. Depends on `impilib` (linked via `file:../libs/impilib/`).
+Electron desktop app shell for IMPI. Depends on `impilib` (linked via pnpm workspace protocol).
 
 ## Commands
 
 ```bash
-npm run start     # build + launch in debug mode
-npm run build     # clean + tsc + copy assets + create build package.json
-npm run release   # build + electron-builder (produces AppImage)
-npm run tsc       # compile TypeScript only
+pnpm run start     # build + launch in debug mode
+pnpm run build     # clean + tsc + copy assets + create build package.json
+pnpm run release   # build + electron-builder (produces AppImage)
+pnpm run tsc       # compile TypeScript only
 ```
 
-Uses npm (not pnpm) — standalone project, not part of the pnpm workspace.
+Part of the root pnpm workspace at `src/`.
 
 ## Development Workflow
 
 Start Angular dev server first (`cd src/apps/angular && pnpm run start`), then:
 
 ```bash
-npm run tsc && npm run copyPreload && npm run copyBackground
+pnpm run tsc && pnpm run copyPreload && pnpm run copyBackground
 IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 ```
 

@@ -5,8 +5,8 @@ Standalone CLI for IMPI batch processing. No Electron dependency.
 ## Commands
 
 ```bash
-npm install
-npm run build             # tsc → dist/
+pnpm install
+pnpm run build            # tsc → dist/
 node dist/index.js --help # show usage
 ```
 

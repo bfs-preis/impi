@@ -30,5 +30,6 @@ normalize-common          ← foundation: string utils, base normalizer
 
 - Node.js ≥20 (22.19.0 LTS recommended, pinned in `.nvmrc`/`.node-version`/Volta)
 - pnpm 10+ (enforced via `only-allow` preinstall hook)
+- All packages (libs, Angular, Electron, CLI) use pnpm via a unified workspace at `src/`
 - Nix users: `nix develop` for full environment
 - `ELECTRON_OZONE_PLATFORM_HINT=x11` needed on Nix/Wayland for native file dialogs

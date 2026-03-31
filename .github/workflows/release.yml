@@ -29,21 +29,23 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: |
-            src/libs/pnpm-lock.yaml
-            src/apps/angular/pnpm-lock.yaml
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install all dependencies
+        run: pnpm install
+        working-directory: src
 
       - name: Build libraries
-        run: pnpm install && pnpm build
-        working-directory: src/libs
+        run: pnpm run build
+        working-directory: src
 
       - name: Build Angular frontend
-        run: pnpm install && pnpm run build
-        working-directory: src/apps/angular
+        run: pnpm --filter angular run build
+        working-directory: src
 
       - name: Build Electron app
-        run: npm ci && npm run build
-        working-directory: src/electron
+        run: pnpm --filter impi run build
+        working-directory: src
 
       - name: Build & publish — Linux
         if: runner.os == 'Linux'
