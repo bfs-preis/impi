@@ -65,6 +65,7 @@ registerLocaleData(localeITCH);
 			useFactory: () => {
 				const config = new ObMasterLayoutConfig();
 				config.locale.disabled = false;
+				config.locale.locales = ['de-CH', 'fr-CH', 'it-CH', 'en'];
 				config.layout.hasMainNavigation = true;
 				config.showAccessibilityTitle = false;
 				config.homePageRoute = '/anonymizer';

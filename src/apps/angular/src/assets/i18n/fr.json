@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "processing": "Traitement",
+    "results": "Résultats"
+  },
   "anonymizer": {
     "Main": {
       "Title": "IMPI Enrichissement des Données",
@@ -60,7 +64,7 @@
       "ButtonCancel": "Annuler"
     },
     "KFactor": {
-      "Description": "Démarrer le test pour verifier le factor k",
+      "Description": "Démarrer le test pour vérifier le facteur k",
       "ButtonStart": "Démarrage",
       "ButtonCancel": "Annuler",
       "ButtonClose": "Fermer",

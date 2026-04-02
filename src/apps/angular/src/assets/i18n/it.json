@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "processing": "Elaborazione",
+    "results": "Risultati"
+  },
   "anonymizer": {
     "Main": {
       "Title": "IMPI Arricchimento Dati",
@@ -29,7 +33,7 @@
       "Step": "Passo 2"
     },
     "Out": {
-      "Title": "Output directory",
+      "Title": "Cartella di output",
       "Directory": "Directory:",
       "SelectFile": "Scelta output-directory",
       "Step": "Passo 3"
@@ -54,7 +58,7 @@
     "Help": {
       "Title": "Aiuto",
       "Documentation": "Documentazione",
-      "SourceCode": "Codice sourceCode",
+      "SourceCode": "Codice sorgente",
       "DevelopedBy": "Sviluppato da",
       "ButtonClose": "Chiudi",
       "ButtonCancel": "Annulla"

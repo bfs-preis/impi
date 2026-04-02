@@ -1,4 +1,4 @@
-<ob-master-layout [navigation]="[{ url: 'anonymizer', label: 'Anonymizer' }, { url: 'result-viewer', label: 'Result Viewer' }]">
+<ob-master-layout [navigation]="[{ url: 'anonymizer', label: 'nav.processing' }, { url: 'result-viewer', label: 'nav.results' }]">
 	<ng-container obHeaderTitle>{{ "anonymizer.Main.Title" | translate }}</ng-container>
 	<ng-template #obHeaderControl>
 		<button type="button" mat-icon-button obButton="tertiary" (click)="openHelpDialog()" class="icon-button">

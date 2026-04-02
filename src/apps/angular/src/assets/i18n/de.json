@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "processing": "Verarbeitung",
+    "results": "Ergebnisse"
+  },
   "anonymizer": {
     "Main": {
       "Title": "IMPI Datenanreicherung",

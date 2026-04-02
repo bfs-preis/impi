@@ -48,10 +48,11 @@ export class ProcessingService {
 			ipc.once('background-response', resultHandler);
 			ipc.send('background-start', options);
 
-			// Teardown: clean up listeners on unsubscribe (cancel)
+			// Teardown: clean up listeners and kill background process on unsubscribe (cancel)
 			return () => {
 				ipc.removeListener?.('background-response-row', progressHandler);
 				ipc.removeListener?.('background-response', resultHandler);
+				ipc.send('background-cancel');
 			};
 		});
 	}

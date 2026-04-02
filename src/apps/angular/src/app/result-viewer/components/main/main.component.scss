@@ -1,5 +1,5 @@
 .dashboard {
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .kpi-row {
@@ -72,12 +72,12 @@
 
 .chart-section {
   h3 {
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.25rem;
     font-size: 0.9rem;
   }
 
   app-charts {
     display: block;
-    max-height: 200px;
+    max-height: 160px;
   }
 }

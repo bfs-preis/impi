@@ -30,6 +30,7 @@ export interface ILogMeta {
 	StartTime: number;
 	EndTime: number;
 	OutZipFile: string;
+	OutSedexFile: string;
 	ClientVersion: string;
 }
 

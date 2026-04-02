@@ -101,9 +101,13 @@ export class Main {
 
     // Forward renderer console to stdout
     this.mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
-      const levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
-      const src = sourceId ? sourceId.replace(/.*\//, '') : '';
-      console.log(`[RENDERER:${levels[level] || level}] ${message}${src ? ` (${src}:${line})` : ''}`);
+      try {
+        const levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+        const src = sourceId ? sourceId.replace(/.*\//, '') : '';
+        console.log(`[RENDERER:${levels[level] || level}] ${message}${src ? ` (${src}:${line})` : ''}`);
+      } catch {
+        // Ignore EPIPE errors when stdout is unavailable
+      }
     });
 
     // Open the DevTools.
@@ -228,5 +232,9 @@ export class Main {
     }
   }
 }
+
+// Suppress EPIPE errors from broken stdout/stderr pipes (e.g. when launched from a task runner)
+process.stdout?.on('error', (err) => { if ((err as NodeJS.ErrnoException).code !== 'EPIPE') throw err; });
+process.stderr?.on('error', (err) => { if ((err as NodeJS.ErrnoException).code !== 'EPIPE') throw err; });
 
 Main.Start();

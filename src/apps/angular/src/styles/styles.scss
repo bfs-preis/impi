@@ -4,6 +4,11 @@ html, body {
   padding: 0;
 }
 
+// Bold app title in Oblique header
+.ob-master-layout-brand-link {
+  font-weight: 700 !important;
+}
+
 // Hide Oblique's hardcoded accessibility link in footer
 .ob-footer-item-links li:last-child {
   display: none;

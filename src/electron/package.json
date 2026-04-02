@@ -8,8 +8,7 @@
     "scripts": {
         "copyAnonHtml": "cpr ../apps/angular/dist/ ./app/anonymizer -o",
         "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
-        "copyBackground": "cpr ./src/background/index-background.html ./app/background/index-background.html -o",
-        "copyPreload": "cpr ./src/preload.cjs ./app/preload.cjs -o",
+"copyPreload": "cpr ./src/preload.cjs ./app/preload.cjs -o",
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",

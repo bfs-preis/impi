@@ -1,5 +1,26 @@
 @if (processResult) {
 <div class="dashboard">
+    @if (outZipFile) {
+    <div class="output-row">
+        <mat-card class="output-card">
+            <mat-card-content>
+                <div class="output-links">
+                    <a class="output-link" (click)="openOutputFile()" title="{{ outZipFile }}">
+                        <mat-icon svgIcon="file"></mat-icon>
+                        <span>{{ fileName(outZipFile) }}</span>
+                    </a>
+                    @if (outSedexFile) {
+                    <a class="output-link" (click)="openSedexFile()" title="{{ outSedexFile }}">
+                        <mat-icon svgIcon="file"></mat-icon>
+                        <span>{{ fileName(outSedexFile) }}</span>
+                    </a>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    }
+
     <div class="kpi-row">
         <mat-card class="kpi-card">
             <mat-card-content>
@@ -20,25 +41,6 @@
             </mat-card-content>
         </mat-card>
     </div>
-
-    @if (outZipFile) {
-    <div class="output-row">
-        <mat-card class="output-card">
-            <mat-card-content>
-                <div class="output-links">
-                    <a class="output-link" (click)="openOutputFile()" title="{{ outZipFile }}">
-                        <mat-icon svgIcon="file"></mat-icon>
-                        <span>{{ outZipFile | slice:-40 }}</span>
-                    </a>
-                    <a class="output-link" (click)="openOutputDirectory()" title="{{ outDirectory }}">
-                        <mat-icon svgIcon="folder"></mat-icon>
-                        <span>{{ outDirectory | slice:-40 }}</span>
-                    </a>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    }
 
     <div class="charts-row">
         <div class="chart-section">

@@ -64,8 +64,17 @@ describe('CheckInputFileFormat', () => {
         expect(missing).to.be.an('array').that.is.empty;
     });
 
-    it('should return all columns as missing for empty header', () => {
+    it('should return all required columns as missing for empty header', () => {
         const missing = CheckInputFileFormat('', ';');
-        expect(missing.length).to.equal(ALL_COLUMNS.length);
+        // egid is optional, so missing count is ALL_COLUMNS minus optional ones
+        expect(missing.length).to.equal(ALL_COLUMNS.length - 1);
+        expect(missing).to.not.include('egid');
+    });
+
+    it('should pass when optional egid column is missing', () => {
+        const columnsWithoutEgid = ALL_COLUMNS.filter(c => c !== 'egid');
+        const header = columnsWithoutEgid.join(';');
+        const missing = CheckInputFileFormat(header, ';');
+        expect(missing).to.be.an('array').that.is.empty;
     });
 });

@@ -14,6 +14,7 @@ export class AppComponent {
 	constructor(private dialog: MatDialog, private translate: TranslateService) {
 		translate.setDefaultLang('de');
 		translate.use('de');
+		localStorage.removeItem('impi_lastResult');
 	}
 
 	openHelpDialog(): void {

@@ -28,10 +28,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let isProcessing: boolean = false;
+let activeChild: Electron.UtilityProcess | null = null;
 
 export function registerAnonMessages() {
 
+    ipcMain.on('background-cancel', () => {
+        if (activeChild) {
+            console.log('[MAIN] killing background process');
+            activeChild.kill();
+            activeChild = null;
+            isProcessing = false;
+        }
+    });
+
     ipcMain.on('background-start', (_event: IpcMainEvent, processOptions: IProcessOption) => {
+        // Kill any existing background process
+        if (activeChild) {
+            activeChild.kill();
+            activeChild = null;
+        }
         // Use options from renderer, fall back to AppSettings for missing values
         const appSettings = ((settings.getSync("AppSettings") || {}) as unknown as AppSettings);
         processOptions.CsvEncoding = processOptions.CsvEncoding || appSettings.CSVEncoding || 'utf8';
@@ -69,9 +84,11 @@ export function registerAnonMessages() {
 
         child.on('exit', (code: number) => {
             console.log(`[BACKGROUND] process exited with code ${code}`);
+            activeChild = null;
             isProcessing = false;
         });
 
+        activeChild = child;
         child.postMessage(processOptions);
         isProcessing = true;
     });

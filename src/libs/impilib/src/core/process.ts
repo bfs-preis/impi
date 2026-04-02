@@ -44,10 +44,14 @@ function IsBankDataCsvRow(row: Record<string, unknown>): string[] {
     return missingColumns;
 }
 
+/** Columns that are not required in input CSV (backward compatibility) */
+const OPTIONAL_CSV_COLUMNS = new Set(['egid']);
+
 export function CheckInputFileFormat(headerLine: string, delimiter: string) {
     const missingColumns: string[] = [];
     const headerFields = headerLine.split(delimiter).map(c => c.toLowerCase());
     for (const p of Object.getOwnPropertyNames(new BankDataCsv())) {
+        if (OPTIONAL_CSV_COLUMNS.has(p)) continue;
         if (!headerFields.find((e) => e === p)) {
             missingColumns.push(p);
         }
@@ -71,6 +75,7 @@ export function processFile(options: IProcessOption, callback: (result: ILogResu
             StartTime: +new Date(),
             EndTime: 0,
             OutZipFile: path.join(options.OutputPath, fileName + ".zip"),
+            OutSedexFile: path.join(options.OutputPath, fileName.replace("data_", "envl_") + ".xml"),
             CsvEncoding: options.CsvEncoding,
             CsvSeparator: options.CsvSeparator,
             DbPeriodFrom: options.DbPeriodFrom,

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SlicePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -15,7 +14,7 @@ import { ChartViolationsComponent } from '../chart-violations/chart-violations.c
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
   standalone: true,
-  imports: [SlicePipe, MatCardModule, MatIconModule, TranslateModule, ChartCorrectComponent, ChartMatchesComponent, ChartViolationsComponent]
+  imports: [MatCardModule, MatIconModule, TranslateModule, ChartCorrectComponent, ChartMatchesComponent, ChartViolationsComponent]
 })
 export class MainComponent implements OnInit {
 
@@ -26,7 +25,7 @@ export class MainComponent implements OnInit {
   successRate = '0.0';
   violationCount = 0;
   outZipFile = '';
-  outDirectory = '';
+  outSedexFile = '';
 
   constructor(private processResultService: ProcessResultService) { }
 
@@ -59,23 +58,16 @@ export class MainComponent implements OnInit {
     const durationMs = this.processResult.Meta.EndTime - this.processResult.Meta.StartTime;
     this.duration = moment.utc(durationMs).format('HH:mm:ss');
 
-    this.violationCount = this.processResult.Violations
-      ? this.processResult.Violations.reduce((sum, v) => sum + v.Count, 0)
+    const rowsWithViolations = this.processResult.Rows
+      ? new Set(this.processResult.Rows.filter(r => r.Violations.length > 0).map(r => r.Index)).size
       : 0;
 
     if (this.totalRows > 0) {
-      this.successRate = ((this.totalRows - this.violationCount) / this.totalRows * 100).toFixed(1);
+      this.successRate = ((this.totalRows - rowsWithViolations) / this.totalRows * 100).toFixed(1);
     }
 
     this.outZipFile = this.processResult.Meta.OutZipFile || '';
-    this.outDirectory = this.outZipFile ? this.outZipFile.substring(0, this.outZipFile.lastIndexOf('/') + 1) : '';
-  }
-
-  openOutputDirectory(): void {
-    const ipc = (window as any).electron?.ipcRenderer;
-    if (ipc && this.outDirectory) {
-      ipc.send('open-path', this.outDirectory);
-    }
+    this.outSedexFile = this.processResult.Meta.OutSedexFile || '';
   }
 
   openOutputFile(): void {
@@ -83,5 +75,16 @@ export class MainComponent implements OnInit {
     if (ipc && this.outZipFile) {
       ipc.send('open-path', this.outZipFile);
     }
+  }
+
+  openSedexFile(): void {
+    const ipc = (window as any).electron?.ipcRenderer;
+    if (ipc && this.outSedexFile) {
+      ipc.send('open-path', this.outSedexFile);
+    }
+  }
+
+  fileName(fullPath: string): string {
+    return fullPath.substring(fullPath.lastIndexOf('/') + 1);
   }
 }

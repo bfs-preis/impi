@@ -7,7 +7,13 @@ contextBridge.exposeInMainWorld('electron', {
             ipcRenderer.once(channel, (_event, ...args) => listener(...args));
         },
         on: (channel, listener) => {
-            ipcRenderer.on(channel, (_event, ...args) => listener(...args));
+            const wrapped = (_event, ...args) => listener(...args);
+            ipcRenderer.on(channel, wrapped);
+            // Store reference for removeListener
+            listener._wrapped = wrapped;
+        },
+        removeListener: (channel, listener) => {
+            ipcRenderer.removeListener(channel, listener._wrapped || listener);
         }
     }
 });
