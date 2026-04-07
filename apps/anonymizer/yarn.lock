@@ -1746,9 +1746,9 @@ decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 deep-equal@^1.0.1:
   version "1.0.1"
@@ -3217,7 +3217,7 @@ img-stats@^0.5.2:
     xmldom "^0.1.19"
 
 "impilib@file:../../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -3225,9 +3225,10 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-street"
+    normalize-city "file:../../libs/normalize-city"
+    normalize-street "file:../../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -4633,7 +4634,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -4656,7 +4657,7 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
 "normalize-street@file:../../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-url@^1.4.0:
   version "1.9.1"
