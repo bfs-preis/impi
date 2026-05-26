@@ -151,9 +151,6 @@ importers:
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
-      moment:
-        specifier: ^2.30.1
-        version: 2.30.1
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
