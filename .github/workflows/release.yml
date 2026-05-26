@@ -77,7 +77,7 @@ jobs:
         run: pnpm install --ignore-scripts
         working-directory: src
 
-      - name: Rebuild required native modules
+      - name: Rebuild native modules
         run: pnpm rebuild sqlite3 electron esbuild @parcel/watcher
         working-directory: src
 
@@ -92,6 +92,10 @@ jobs:
       - name: Build Electron app
         run: pnpm run build:electron
         working-directory: src
+
+      - name: Install Electron app dependencies
+        run: npm install --production
+        working-directory: src/electron/app
 
       - name: Package & publish Electron
         run: npx electron-builder --${{ matrix.platform }} --publish onTagOrDraft
