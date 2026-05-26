@@ -73,12 +73,12 @@ jobs:
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
 
-      - name: Setup MSVC (Windows)
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --ignore-scripts
+        working-directory: src
+
+      - name: Rebuild required native modules
+        run: pnpm rebuild sqlite3 electron esbuild @parcel/watcher
         working-directory: src
 
       - name: Build libraries
@@ -128,12 +128,12 @@ jobs:
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
 
-      - name: Setup MSVC (Windows)
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --ignore-scripts
+        working-directory: src
+
+      - name: Rebuild native modules
+        run: pnpm rebuild sqlite3
         working-directory: src
 
       - name: Build libraries
