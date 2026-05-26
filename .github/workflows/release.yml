@@ -41,6 +41,11 @@ jobs:
         run: pnpm run test
         working-directory: src
 
+      - name: Create draft release
+        run: gh release create "${{ github.ref_name }}" --draft --title "${{ github.ref_name }}" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release-electron:
     needs: test
     strategy:
@@ -67,6 +72,10 @@ jobs:
           node-version: 22
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install dependencies
         run: pnpm install
@@ -118,6 +127,10 @@ jobs:
           node-version: 22
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install dependencies
         run: pnpm install
