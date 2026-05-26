@@ -46,16 +46,51 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  release-electron:
+  release-electron-linux:
     needs: test
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux
-          - os: windows-latest
-            platform: win
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter impilib run build
+        working-directory: src
+
+      - name: Build Angular frontend
+        run: pnpm run build:angular
+        working-directory: src
+
+      - name: Build Electron app
+        run: pnpm run build:electron
+        working-directory: src
+
+      - name: Package & publish Electron
+        run: npx electron-builder --linux --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-electron-windows:
+    needs: test
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
@@ -98,7 +133,7 @@ jobs:
         working-directory: src/electron/app
 
       - name: Package & publish Electron
-        run: npx electron-builder --${{ matrix.platform }} --publish onTagOrDraft
+        run: npx electron-builder --win --publish onTagOrDraft
         working-directory: src/electron
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
