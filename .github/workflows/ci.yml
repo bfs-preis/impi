@@ -31,7 +31,7 @@ jobs:
         working-directory: src
 
       - name: Build libraries
-        run: pnpm run build
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter impilib run build
         working-directory: src
 
       - name: Run tests
