@@ -2,12 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import moment from 'moment';
 import { ProcessResultService } from '../../services/process-result.service';
 import { ILogResult } from '../../models';
 import { ChartCorrectComponent } from '../chart-correct/chart-correct.component';
 import { ChartMatchesComponent } from '../chart-matches/chart-matches.component';
 import { ChartViolationsComponent } from '../chart-violations/chart-violations.component';
+
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+  const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+  const s = String(totalSeconds % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
 
 @Component({
   selector: 'app-result-viewer-main',
@@ -56,7 +63,7 @@ export class MainComponent implements OnInit {
     this.totalRows = this.processResult.Meta.CsvRowCount;
 
     const durationMs = this.processResult.Meta.EndTime - this.processResult.Meta.StartTime;
-    this.duration = moment.utc(durationMs).format('HH:mm:ss');
+    this.duration = formatDuration(durationMs);
 
     const rowsWithViolations = this.processResult.Rows
       ? new Set(this.processResult.Rows.filter(r => r.Violations.length > 0).map(r => r.Index)).size

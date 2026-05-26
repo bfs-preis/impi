@@ -7,9 +7,16 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObAlertModule, ObButtonModule, ObSpinnerModule, ObSpinnerService} from '@oblique/oblique';
 import {Subscription} from 'rxjs';
-import moment from 'moment';
 
 import {ProcessingService} from '../../services/processing.service';
+
+function formatDuration(ms: number): string {
+	const totalSeconds = Math.floor(ms / 1000);
+	const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+	const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+	const s = String(totalSeconds % 60).padStart(2, '0');
+	return `${h}:${m}:${s}`;
+}
 import {ILogResult, IProcessOption} from '../../models';
 
 type DialogState = 'processing' | 'success' | 'error';
@@ -81,11 +88,11 @@ export class ProcessingDialogComponent implements OnInit, OnDestroy {
 	}
 
 	get formattedTime(): string {
-		return moment.utc(this.processingTime).format('HH:mm:ss');
+		return formatDuration(this.processingTime);
 	}
 
 	get formattedEta(): string {
-		return moment.utc(this.eta).format('HH:mm:ss');
+		return formatDuration(this.eta);
 	}
 
 	private startProcessing(): void {

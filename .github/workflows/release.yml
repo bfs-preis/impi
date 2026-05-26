@@ -10,10 +10,46 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm run build
+        working-directory: src
+
+      - name: Run tests
+        run: pnpm run test
+        working-directory: src
+
+  release-electron:
+    needs: test
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -32,7 +68,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
 
-      - name: Install all dependencies
+      - name: Install dependencies
         run: pnpm install
         working-directory: src
 
@@ -41,30 +77,83 @@ jobs:
         working-directory: src
 
       - name: Build Angular frontend
-        run: pnpm --filter angular run build
+        run: pnpm run build:angular
         working-directory: src
 
       - name: Build Electron app
-        run: pnpm --filter impi run build
+        run: pnpm run build:electron
         working-directory: src
 
-      - name: Build & publish — Linux
+      - name: Package & publish Electron
+        run: npx electron-builder --${{ matrix.platform }} --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-cli:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: node22-linux-x64
+            artifact: impi-cli-linux-x64
+          - os: windows-latest
+            target: node22-win-x64
+            artifact: impi-cli-win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm run build
+        working-directory: src
+
+      - name: Build CLI
+        run: pnpm run build:cli
+        working-directory: src
+
+      - name: Package CLI binary
+        run: npx @yao-pkg/pkg . --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
+        working-directory: src/cli
+
+      - name: Compress CLI (Linux)
         if: runner.os == 'Linux'
-        run: npx electron-builder --linux --publish onTagOrDraft
-        working-directory: src/electron
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
+        working-directory: src/cli
 
-      - name: Build & publish — Windows
+      - name: Compress CLI (Windows)
         if: runner.os == 'Windows'
-        run: npx electron-builder --win --publish onTagOrDraft
-        working-directory: src/electron
+        run: Compress-Archive -Path ${{ matrix.artifact }}.exe -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src/cli
+        shell: pwsh
+
+      - name: Upload CLI to release (Linux)
+        if: runner.os == 'Linux'
+        run: gh release upload "${{ github.ref_name }}" src/cli/${{ matrix.artifact }}.tar.gz --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & publish — macOS
-        if: runner.os == 'macOS'
-        run: npx electron-builder --mac --publish onTagOrDraft
-        working-directory: src/electron
+      - name: Upload CLI to release (Windows)
+        if: runner.os == 'Windows'
+        run: gh release upload "${{ github.ref_name }}" src/cli/${{ matrix.artifact }}.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

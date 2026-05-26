@@ -33,3 +33,20 @@ normalize-common          ← foundation: string utils, base normalizer
 - All packages (libs, Angular, Electron, CLI) use pnpm via a unified workspace at `src/`
 - Nix users: `nix develop` for full environment
 - `ELECTRON_OZONE_PLATFORM_HINT=x11` needed on Nix/Wayland for native file dialogs
+
+## CI/CD
+
+GitHub Actions workflows in `.github/workflows/`:
+
+- **`ci.yml`** — runs on push/PR to `develop` and `master`. Builds all libs, runs tests, builds Angular, Electron, and CLI.
+- **`release.yml`** — runs on `v*` tags or manual dispatch. Tests first, then builds in parallel:
+  - **Electron** (Linux + Windows) — published as draft GitHub Release via electron-builder
+  - **CLI** binaries (Linux + Windows) — packaged with `@yao-pkg/pkg`, uploaded to the same release
+
+### Release Process
+
+1. Bump `version` in `src/package.json`, `src/electron/package.json`, and `src/cli/package.json`
+2. Commit and tag: `git tag v<version>`
+3. Push tag: `git push origin v<version>`
+4. CI runs tests → builds Electron installers (AppImage, deb, rpm, pacman, tar.gz, NSIS exe) + CLI binaries
+5. Review and publish the draft release on GitHub

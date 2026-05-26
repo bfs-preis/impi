@@ -438,7 +438,6 @@ To enable Electron functionality:
 - `@angular/material`: ^19.2.19
 - `@oblique/oblique`: ^13.3.3
 - `@ngx-translate/core`: ^16.0.0
-- `moment`: ^2.x.x
 - `rxjs`: ~7.8.0
 
 ### Development

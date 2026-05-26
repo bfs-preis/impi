@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm run build
+        working-directory: src
+
+      - name: Run tests
+        run: pnpm run test
+        working-directory: src
+
+      - name: Build Angular frontend
+        run: pnpm run build:angular
+        working-directory: src
+
+      - name: Build Electron app
+        run: pnpm run build:electron
+        working-directory: src
+
+      - name: Build CLI
+        run: pnpm run build:cli
+        working-directory: src

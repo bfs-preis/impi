@@ -25,7 +25,6 @@ pnpm run lint     # ng lint (ESLint + Prettier)
 - `angular-oauth2-oidc` — OAuth2/OIDC authentication
 - `@ngx-translate/core` — i18n (translations in `src/assets/i18n/{de,en,fr,it}.json`)
 - `chart.js` — pie/bar charts in result-viewer
-- `moment` — date formatting
 
 ## Oblique Configuration (AppModule)
 

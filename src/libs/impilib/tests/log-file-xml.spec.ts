@@ -45,6 +45,7 @@ describe('LogAsXmlString', () => {
       CsvSeparator: ';',
       CsvRowCount: 100,
       OutZipFile: 'output.zip',
+      OutSedexFile: 'envl_output.xml',
       MappingFile: 'mapping.xml',
       ClientVersion: '1.5.2',
       SedexSenderId: 'T4-123456-1',
