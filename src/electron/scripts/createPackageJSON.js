@@ -13,7 +13,7 @@ newPackage.main = "index.js";
 newPackage.scripts = undefined;
 newPackage.build = undefined;
 newPackage.devDependencies = undefined;
-newPackage.dependencies.impilib = "file:../../libs/impilib/";
+newPackage.dependencies.impilib = newPackage.version;
 
 let json = JSON.stringify(newPackage, null, 4);
 writeFileSync('./app/package.json', json);

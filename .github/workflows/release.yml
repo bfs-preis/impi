@@ -88,24 +88,20 @@ jobs:
 
       - name: Install Electron app dependencies
         run: |
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
-            for (const [k,v] of Object.entries(pkg.dependencies || {})) {
-              if (v.startsWith('file:')) {
-                const depPkg = JSON.parse(fs.readFileSync(path.join(v.slice(5), 'package.json'), 'utf8'));
-                for (const [dk,dv] of Object.entries(depPkg.dependencies || {})) {
-                  if (dv.startsWith('workspace:')) {
-                    depPkg.dependencies[dk] = 'file:' + path.relative('.', path.join(v.slice(5), '..', dk)) + '/';
-                  }
-                }
-                fs.writeFileSync(path.join(v.slice(5), 'package.json'), JSON.stringify(depPkg, null, 2));
-              }
-            }
-          "
-          npm install --omit=dev --install-links
-        working-directory: src/electron/app
+          mkdir -p electron/app/node_modules
+          cp -rL node_modules/impilib electron/app/node_modules/
+          cp -rL node_modules/normalize-common electron/app/node_modules/
+          cp -rL node_modules/normalize-street electron/app/node_modules/
+          cp -rL node_modules/normalize-city electron/app/node_modules/
+          for dep in $(node -e "const p=require('./electron/app/package.json'); for(const d of Object.keys(p.dependencies||{})) if(d!=='impilib') console.log(d)"); do
+            [ -d "node_modules/.pnpm/node_modules/$dep" ] && cp -rL "node_modules/.pnpm/node_modules/$dep" "electron/app/node_modules/" || true
+            [ -d "node_modules/$dep" ] && cp -rL "node_modules/$dep" "electron/app/node_modules/" || true
+          done
+          for dep in $(node -e "const p=require('./libs/impilib/package.json'); for(const [k,v] of Object.entries(p.dependencies||{})) if(!v.startsWith('workspace:')) console.log(k)"); do
+            [ -d "node_modules/.pnpm/node_modules/$dep" ] && cp -rL "node_modules/.pnpm/node_modules/$dep" "electron/app/node_modules/" || true
+            [ -d "node_modules/$dep" ] && cp -rL "node_modules/$dep" "electron/app/node_modules/" || true
+          done
+        working-directory: src
 
       - name: Package & publish Electron
         run: npx electron-builder --linux --publish onTagOrDraft
