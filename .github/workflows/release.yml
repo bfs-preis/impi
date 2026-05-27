@@ -83,7 +83,7 @@ jobs:
         working-directory: src
 
       - name: Install Electron app dependencies
-        run: pnpm --filter impi deploy --prod electron/app-deploy && cp -r electron/app-deploy/node_modules electron/app/node_modules
+        run: pnpm --filter impi deploy --prod --legacy electron/app-deploy && cp -r electron/app-deploy/node_modules electron/app/node_modules
         working-directory: src
 
       - name: Package & publish Electron
