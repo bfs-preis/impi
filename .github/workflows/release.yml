@@ -83,7 +83,7 @@ jobs:
         working-directory: src
 
       - name: Install Electron app dependencies
-        run: npm install --production
+        run: npm install --production --install-links
         working-directory: src/electron/app
 
       - name: Package & publish Electron
