@@ -83,8 +83,8 @@ jobs:
         working-directory: src
 
       - name: Install Electron app dependencies
-        run: npm install --production --install-links
-        working-directory: src/electron/app
+        run: pnpm --filter impi deploy --prod electron/app-deploy && cp -r electron/app-deploy/node_modules electron/app/node_modules
+        working-directory: src
 
       - name: Package & publish Electron
         run: npx electron-builder --linux --publish onTagOrDraft
