@@ -82,6 +82,10 @@ jobs:
         run: pnpm run build:electron
         working-directory: src
 
+      - name: Install Electron app dependencies
+        run: npm install --production
+        working-directory: src/electron/app
+
       - name: Package & publish Electron
         run: npx electron-builder --linux --publish onTagOrDraft
         working-directory: src/electron
