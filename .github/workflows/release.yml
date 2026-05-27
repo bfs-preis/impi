@@ -67,11 +67,7 @@ jobs:
           cache-dependency-path: src/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --ignore-scripts
-        working-directory: src
-
-      - name: Rebuild native modules
-        run: pnpm rebuild sqlite3 electron esbuild @parcel/watcher
+        run: pnpm install
         working-directory: src
 
       - name: Build libraries
@@ -150,8 +146,22 @@ jobs:
         working-directory: src
 
       - name: Install Electron app dependencies
-        run: npm install --production
-        working-directory: src/electron/app
+        run: |
+          mkdir -p electron/app/node_modules
+          cp -r node_modules/impilib electron/app/node_modules/
+          cp -r node_modules/normalize-common electron/app/node_modules/
+          cp -r node_modules/normalize-street electron/app/node_modules/
+          cp -r node_modules/normalize-city electron/app/node_modules/
+          for dep in $(node -e "const p=require('./electron/app/package.json'); for(const d of Object.keys(p.dependencies||{})) if(d!=='impilib') console.log(d)"); do
+            if [ -d "node_modules/.pnpm/node_modules/$dep" ]; then cp -r "node_modules/.pnpm/node_modules/$dep" "electron/app/node_modules/"; fi
+            if [ -d "node_modules/$dep" ]; then cp -r "node_modules/$dep" "electron/app/node_modules/"; fi
+          done
+          for dep in $(node -e "const p=require('./libs/impilib/package.json'); for(const [k,v] of Object.entries(p.dependencies||{})) if(!v.startsWith('workspace:')) console.log(k)"); do
+            if [ -d "node_modules/.pnpm/node_modules/$dep" ]; then cp -r "node_modules/.pnpm/node_modules/$dep" "electron/app/node_modules/"; fi
+            if [ -d "node_modules/$dep" ]; then cp -r "node_modules/$dep" "electron/app/node_modules/"; fi
+          done
+        shell: bash
+        working-directory: src
 
       - name: Package & publish Electron
         run: npx electron-builder --win --publish onTagOrDraft
