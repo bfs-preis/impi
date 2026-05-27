@@ -119,7 +119,8 @@ jobs:
               for (const [k, v] of Object.entries(deps)) {
                 if (typeof v !== 'string') continue;
                 if (v.startsWith('workspace:')) {
-                  deps[k] = 'file:' + path.join(libsDir, k).split(path.sep).join('/');
+                  const p = path.join(libsDir, k).split(path.sep).join('/');
+                  deps[k] = process.platform === 'win32' ? 'file:///' + p : 'file:' + p;
                   changed = true;
                 } else if (v.startsWith('catalog:')) {
                   const catalogName = v.slice(8) || '';
@@ -142,10 +143,11 @@ jobs:
 
             // Update app/package.json to use absolute path for impilib
             const appPkg = JSON.parse(fs.readFileSync('electron/app/package.json', 'utf8'));
-            appPkg.dependencies.impilib = 'file:' + path.join(libsDir, 'impilib').split(path.sep).join('/');
+            const impilibPath = path.join(libsDir, 'impilib').split(path.sep).join('/');
+            appPkg.dependencies.impilib = process.platform === 'win32' ? 'file:///' + impilibPath : 'file:' + impilibPath;
             fs.writeFileSync('electron/app/package.json', JSON.stringify(appPkg, null, 4));
           "
-          cd electron/app && npm install --omit=dev --install-links --ignore-scripts --loglevel silly 2>&1 | tail -100 || (cat $USERPROFILE/.npm/_logs/*-debug-0.log 2>/dev/null || cat $HOME/.npm/_logs/*-debug-0.log 2>/dev/null; exit 1)
+          cd electron/app && npm install --omit=dev --install-links --ignore-scripts
         shell: bash
         working-directory: src
 
