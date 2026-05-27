@@ -67,7 +67,11 @@ jobs:
           cache-dependency-path: src/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --ignore-scripts
+        working-directory: src
+
+      - name: Rebuild native modules
+        run: pnpm rebuild sqlite3 electron esbuild @parcel/watcher
         working-directory: src
 
       - name: Build libraries
@@ -83,8 +87,25 @@ jobs:
         working-directory: src
 
       - name: Install Electron app dependencies
-        run: pnpm --filter impi deploy --prod --legacy electron/app-deploy && cp -r electron/app-deploy/node_modules electron/app/node_modules
-        working-directory: src
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+            for (const [k,v] of Object.entries(pkg.dependencies || {})) {
+              if (v.startsWith('file:')) {
+                const depPkg = JSON.parse(fs.readFileSync(path.join(v.slice(5), 'package.json'), 'utf8'));
+                for (const [dk,dv] of Object.entries(depPkg.dependencies || {})) {
+                  if (dv.startsWith('workspace:')) {
+                    depPkg.dependencies[dk] = 'file:' + path.relative('.', path.join(v.slice(5), '..', dk)) + '/';
+                  }
+                }
+                fs.writeFileSync(path.join(v.slice(5), 'package.json'), JSON.stringify(depPkg, null, 2));
+              }
+            }
+          "
+          npm install --omit=dev --install-links
+        working-directory: src/electron/app
 
       - name: Package & publish Electron
         run: npx electron-builder --linux --publish onTagOrDraft
