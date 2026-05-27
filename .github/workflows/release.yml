@@ -90,72 +90,8 @@ jobs:
         run: pnpm run build:electron
         working-directory: src
 
-      - name: Resolve workspace refs and install Electron app dependencies
-        run: |
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const libsDir = path.resolve('libs');
-
-            // Parse catalog versions from pnpm-workspace.yaml
-            const catalogs = { '': {} };
-            const yaml = fs.readFileSync('pnpm-workspace.yaml', 'utf8');
-            let currentCatalog = '';
-            let inCatalog = false;
-            for (const line of yaml.split('\n')) {
-              if (line.match(/^catalog:/)) { currentCatalog = ''; inCatalog = true; continue; }
-              if (line.match(/^catalogs:/)) { inCatalog = true; continue; }
-              if (line.match(/^[a-z]/) && !line.startsWith(' ')) { inCatalog = false; continue; }
-              if (!inCatalog) continue;
-              const namedCat = line.match(/^  ([a-z]+):$/);
-              if (namedCat) { currentCatalog = namedCat[1]; catalogs[currentCatalog] = catalogs[currentCatalog] || {}; continue; }
-              const entry = line.match(/^\s+['\"]?([^'\"]+)['\"]?:\s+(.+)$/);
-              if (entry) { catalogs[currentCatalog] = catalogs[currentCatalog] || {}; catalogs[currentCatalog][entry[1].trim().replace(/[\"']/g,'')] = entry[2].trim(); }
-            }
-
-            function resolveDeps(deps) {
-              if (!deps) return false;
-              let changed = false;
-              for (const [k, v] of Object.entries(deps)) {
-                if (typeof v !== 'string') continue;
-                if (v.startsWith('workspace:')) {
-                  const p = path.join(libsDir, k).split(path.sep).join('/');
-                  deps[k] = process.platform === 'win32' ? 'file:///' + p : 'file:' + p;
-                  changed = true;
-                } else if (v.startsWith('catalog:')) {
-                  const catalogName = v.slice(8) || '';
-                  const resolved = (catalogs[catalogName] || {})[k];
-                  if (resolved) { deps[k] = resolved; changed = true; }
-                }
-              }
-              return changed;
-            }
-
-            // Resolve refs in workspace packages
-            for (const lib of ['impilib', 'normalize-common', 'normalize-street', 'normalize-city']) {
-              const p = path.join(libsDir, lib, 'package.json');
-              if (!fs.existsSync(p)) continue;
-              const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
-              const c1 = resolveDeps(pkg.dependencies);
-              const c2 = resolveDeps(pkg.devDependencies);
-              if (c1 || c2) fs.writeFileSync(p, JSON.stringify(pkg, null, 2));
-            }
-
-            // Update app/package.json to use absolute path for impilib
-            const appPkg = JSON.parse(fs.readFileSync('electron/app/package.json', 'utf8'));
-            const impilibPath = path.join(libsDir, 'impilib').split(path.sep).join('/');
-            appPkg.dependencies.impilib = process.platform === 'win32' ? 'file:///' + impilibPath : 'file:' + impilibPath;
-            fs.writeFileSync('electron/app/package.json', JSON.stringify(appPkg, null, 4));
-          "
-          cd electron/app
-          npm install --omit=dev --install-links --ignore-scripts 2>&1
-          NPM_EXIT=$?
-          if [ $NPM_EXIT -ne 0 ]; then
-            echo "=== npm debug log ==="
-            cat C:/npm/cache/_logs/*-debug-0.log 2>/dev/null || cat ~/.npm/_logs/*-debug-0.log 2>/dev/null || echo "No log found"
-            exit $NPM_EXIT
-          fi
-        shell: bash
+      - name: Install Electron app dependencies
+        run: node electron/scripts/installAppDeps.js
         working-directory: src
 
       - name: Package & publish Electron
