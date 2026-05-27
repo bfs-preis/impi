@@ -147,7 +147,14 @@ jobs:
             appPkg.dependencies.impilib = process.platform === 'win32' ? 'file:///' + impilibPath : 'file:' + impilibPath;
             fs.writeFileSync('electron/app/package.json', JSON.stringify(appPkg, null, 4));
           "
-          cd electron/app && npm install --omit=dev --install-links --ignore-scripts
+          cd electron/app
+          npm install --omit=dev --install-links --ignore-scripts 2>&1
+          NPM_EXIT=$?
+          if [ $NPM_EXIT -ne 0 ]; then
+            echo "=== npm debug log ==="
+            cat C:/npm/cache/_logs/*-debug-0.log 2>/dev/null || cat ~/.npm/_logs/*-debug-0.log 2>/dev/null || echo "No log found"
+            exit $NPM_EXIT
+          fi
         shell: bash
         working-directory: src
 
