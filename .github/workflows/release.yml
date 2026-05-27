@@ -119,7 +119,7 @@ jobs:
               for (const [k, v] of Object.entries(deps)) {
                 if (typeof v !== 'string') continue;
                 if (v.startsWith('workspace:')) {
-                  deps[k] = 'file:' + path.join(libsDir, k);
+                  deps[k] = 'file:' + path.join(libsDir, k).split(path.sep).join('/');
                   changed = true;
                 } else if (v.startsWith('catalog:')) {
                   const catalogName = v.slice(8) || '';
@@ -142,7 +142,7 @@ jobs:
 
             // Update app/package.json to use absolute path for impilib
             const appPkg = JSON.parse(fs.readFileSync('electron/app/package.json', 'utf8'));
-            appPkg.dependencies.impilib = 'file:' + path.join(libsDir, 'impilib');
+            appPkg.dependencies.impilib = 'file:' + path.join(libsDir, 'impilib').split(path.sep).join('/');
             fs.writeFileSync('electron/app/package.json', JSON.stringify(appPkg, null, 4));
           "
           cd electron/app && npm install --omit=dev --install-links
