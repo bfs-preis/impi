@@ -13,7 +13,6 @@ linux:
     - AppImage
     - deb
     - rpm
-    - pacman
     - tar.gz
   category: Office
 
