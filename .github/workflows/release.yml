@@ -49,6 +49,7 @@ jobs:
   release-electron:
     needs: test
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -145,6 +146,7 @@ jobs:
             fs.writeFileSync('electron/app/package.json', JSON.stringify(appPkg, null, 4));
           "
           cd electron/app && npm install --omit=dev --install-links
+        shell: bash
         working-directory: src
 
       - name: Package & publish Electron
