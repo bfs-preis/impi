@@ -139,11 +139,11 @@ jobs:
 
       - name: Package CLI
         run: |
-          mkdir -p ${{ matrix.artifact }}
+          mkdir -p ${{ matrix.artifact }}/node_modules
           cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
-          cp -r node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/
-          echo '#!/usr/bin/env node' > ${{ matrix.artifact }}/impi-cli.js
-          echo 'process.env.NODE_PATH = __dirname; require("module")._initPaths(); require("./impi-cli.cjs");' >> ${{ matrix.artifact }}/impi-cli.js
+          cp -rL node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/node_modules/ || cp -r node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/node_modules/
+          printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > ${{ matrix.artifact }}/impi-cli.js
+          chmod +x ${{ matrix.artifact }}/impi-cli.js
         shell: bash
         working-directory: src
 
@@ -209,11 +209,11 @@ jobs:
 
       - name: Package generate-impi-geo-database
         run: |
-          mkdir -p ${{ matrix.artifact }}
+          mkdir -p ${{ matrix.artifact }}/node_modules
           cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
-          cp -r node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/
-          echo '#!/usr/bin/env node' > ${{ matrix.artifact }}/generate-impi-db.js
-          echo 'process.env.NODE_PATH = __dirname; require("module")._initPaths(); require("./generate-impi-db.cjs");' >> ${{ matrix.artifact }}/generate-impi-db.js
+          cp -rL node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/node_modules/ || cp -r node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/node_modules/
+          printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > ${{ matrix.artifact }}/generate-impi-db.js
+          chmod +x ${{ matrix.artifact }}/generate-impi-db.js
         shell: bash
         working-directory: src
 

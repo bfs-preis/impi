@@ -110,8 +110,8 @@ generate_database() {
     local gen_bin=""
     if [ -f generate-impi-geo-database-linux-x64 ]; then
         gen_bin="./generate-impi-geo-database-linux-x64"
-    elif [ -f generate-impi-geo-database-linux-x64/generate-impi-db.js ]; then
-        gen_bin="node generate-impi-geo-database-linux-x64/generate-impi-db.js"
+    elif [ -f generate-impi-geo-database-linux-x64/generate-impi-db.cjs ]; then
+        gen_bin="node generate-impi-geo-database-linux-x64/generate-impi-db.cjs"
     fi
 
     if [ -n "$gen_bin" ]; then
@@ -160,8 +160,8 @@ test_cli() {
     local cli_bin=""
     if [ -f impi-cli-linux-x64 ]; then
         cli_bin="./impi-cli-linux-x64"
-    elif [ -f impi-cli-linux-x64/impi-cli.js ]; then
-        cli_bin="node impi-cli-linux-x64/impi-cli.js"
+    elif [ -f impi-cli-linux-x64/impi-cli.cjs ]; then
+        cli_bin="node impi-cli-linux-x64/impi-cli.cjs"
     fi
 
     if [ -n "$cli_bin" ]; then
