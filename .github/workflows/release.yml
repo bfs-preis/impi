@@ -167,3 +167,67 @@ jobs:
         run: gh release upload "${{ github.ref_name }}" src/cli/${{ matrix.artifact }}.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-generate-db:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: node22-linux-x64
+            artifact: generate-impi-geo-database-linux-x64
+          - os: windows-latest
+            target: node22-win-x64
+            artifact: generate-impi-geo-database-win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter generate-impi-geo-database run build
+        working-directory: src
+
+      - name: Package generate-impi-geo-database binary
+        run: npx @yao-pkg/pkg . --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
+        working-directory: src/libs/generate-impi-geo-database
+
+      - name: Compress (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
+        working-directory: src/libs/generate-impi-geo-database
+
+      - name: Compress (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ${{ matrix.artifact }}.exe -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src/libs/generate-impi-geo-database
+        shell: pwsh
+
+      - name: Upload to release (Linux)
+        if: runner.os == 'Linux'
+        run: gh release upload "${{ github.ref_name }}" src/libs/generate-impi-geo-database/${{ matrix.artifact }}.tar.gz --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to release (Windows)
+        if: runner.os == 'Windows'
+        run: gh release upload "${{ github.ref_name }}" src/libs/generate-impi-geo-database/${{ matrix.artifact }}.zip --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
