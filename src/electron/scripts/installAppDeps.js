@@ -6,7 +6,7 @@
  * the pnpm-managed node_modules, copies them as flat directories
  * (no symlinks) so electron-builder can bundle them.
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync } from 'fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync, readdirSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,37 +14,55 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const srcDir = resolve(__dirname, '..', '..');
 const appNodeModules = resolve(__dirname, '..', 'app', 'node_modules');
 const appPkgPath = resolve(__dirname, '..', 'app', 'package.json');
+const pnpmDir = join(srcDir, 'node_modules', '.pnpm');
+const pnpmNodeModules = join(pnpmDir, 'node_modules');
 
 mkdirSync(appNodeModules, { recursive: true });
 
 const copied = new Set();
 
+function findInPnpmStore(name) {
+    // 1. Check .pnpm/node_modules/<name> (hoisted/linked packages)
+    const hoisted = join(pnpmNodeModules, name);
+    if (existsSync(hoisted)) return realpathSync(hoisted);
+
+    // 2. Check node_modules/<name> (root hoisted)
+    const root = join(srcDir, 'node_modules', name);
+    if (existsSync(root)) return realpathSync(root);
+
+    // 3. Search .pnpm/<name>@*/node_modules/<name> (versioned store)
+    if (existsSync(pnpmDir)) {
+        const prefix = name.startsWith('@') ? name.replace('/', '+') : name;
+        for (const entry of readdirSync(pnpmDir)) {
+            if (entry.startsWith(prefix + '@')) {
+                const candidate = join(pnpmDir, entry, 'node_modules', name);
+                if (existsSync(candidate)) return realpathSync(candidate);
+            }
+        }
+    }
+
+    return null;
+}
+
 function copyDep(name) {
     if (copied.has(name)) return;
     copied.add(name);
 
-    // Try multiple locations where pnpm might place packages
-    const candidates = [
-        join(srcDir, 'node_modules', '.pnpm', 'node_modules', name),
-        join(srcDir, 'node_modules', name),
-    ];
-
-    for (const src of candidates) {
-        if (existsSync(src)) {
-            const realSrc = realpathSync(src);
-            const dest = join(appNodeModules, name);
-            console.log(`  ${name} <- ${realSrc}`);
-            cpSync(realSrc, dest, {
-                recursive: true,
-                filter: (s) => {
-                    const rel = s.slice(realSrc.length);
-                    return !rel.includes('node_modules') && !rel.endsWith('.tsbuildinfo');
-                }
-            });
-            return;
-        }
+    const realSrc = findInPnpmStore(name);
+    if (!realSrc) {
+        console.warn(`  WARNING: ${name} not found`);
+        return;
     }
-    console.warn(`  WARNING: ${name} not found`);
+
+    const dest = join(appNodeModules, name);
+    console.log(`  ${name}`);
+    cpSync(realSrc, dest, {
+        recursive: true,
+        filter: (s) => {
+            const rel = s.slice(realSrc.length);
+            return !rel.includes('node_modules') && !rel.endsWith('.tsbuildinfo');
+        }
+    });
 }
 
 function readPkg(pkgPath) {
@@ -76,11 +94,10 @@ for (const [dep, version] of Object.entries(impilibPkg.dependencies || {})) {
 }
 
 // 4. Recursively copy transitive dependencies
-// Read each copied package's deps and copy those too
 console.log('Copying transitive dependencies...');
 let iterations = 0;
 let newDeps = true;
-while (newDeps && iterations < 10) {
+while (newDeps && iterations < 15) {
     newDeps = false;
     iterations++;
     for (const name of [...copied]) {
