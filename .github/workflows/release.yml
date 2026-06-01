@@ -94,6 +94,10 @@ jobs:
         run: node electron/scripts/installAppDeps.js
         working-directory: src
 
+      - name: Rebuild native modules for Electron
+        run: npx @electron/rebuild -m electron/app -v $(node -e "console.log(require('electron/package.json').version)")
+        working-directory: src
+
       - name: Package & publish Electron
         run: npx electron-builder --${{ matrix.platform }} --publish onTagOrDraft
         working-directory: src/electron

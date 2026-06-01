@@ -8,6 +8,9 @@ files:
   - "**/*"
   - "!src/"
 
+npmRebuild: false
+buildDependenciesFromSource: false
+
 linux:
   target:
     - AppImage
