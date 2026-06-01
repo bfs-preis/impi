@@ -4,6 +4,8 @@ directories:
   output: package
   app: app
 
+asar: false
+
 files:
   - "**/*"
   - "!src/"
