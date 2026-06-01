@@ -73,7 +73,7 @@ download_artifacts() {
     if [ -n "$version" ]; then
         echo "  Electron release: $version"
         gh release download --repo "$GH_REPO" "$version" \
-            --pattern "*x86_64.AppImage" \
+            --pattern "*.AppImage" \
             --clobber 2>/dev/null || true
     fi
 
@@ -198,11 +198,12 @@ test_cli() {
 
 test_electron() {
     info "[4/5] Testing Electron AppImage..."
+    set +e
 
     cd "$WORK_DIR"
 
     local appimage
-    appimage=$(ls *mpi*.AppImage *MPI*.AppImage 2>/dev/null | head -1)
+    appimage=$(find . -maxdepth 1 -name "*.AppImage" -print -quit)
 
     if [ -z "$appimage" ] || [ ! -f "$appimage" ]; then
         echo "  No AppImage found, skipping Electron tests"
@@ -211,7 +212,7 @@ test_electron() {
 
     # Extract AppImage (avoids FUSE requirement)
     chmod +x "$appimage"
-    DISPLAY= timeout 60 ./"$appimage" --appimage-extract > /dev/null 2>&1 || true
+    ./"$appimage" --appimage-extract > /tmp/appimage-extract.log 2>&1 || true
 
     check '[ -d squashfs-root ]' "AppImage extracted"
 
@@ -223,11 +224,13 @@ test_electron() {
     mkdir -p electron-output
 
     # Find the electron binary inside the extracted AppImage
-    local electron_bin
-    electron_bin=$(ls squashfs-root/impi squashfs-root/IMPI 2>/dev/null | head -1)
-    if [ -z "$electron_bin" ]; then
-        electron_bin=$(find squashfs-root -maxdepth 1 -name "*mpi*" -type f -executable | head -1)
-    fi
+    local electron_bin=""
+    for name in impi IMPI; do
+        if [ -x "squashfs-root/$name" ]; then
+            electron_bin="squashfs-root/$name"
+            break
+        fi
+    done
 
     if [ -z "$electron_bin" ]; then
         fail "Cannot find Electron binary in extracted AppImage"
@@ -235,7 +238,7 @@ test_electron() {
     fi
 
     # Run Electron in headless CLI mode
-    "$electron_bin" cli \
+    setsid env -u DISPLAY -u WAYLAND_DISPLAY "$electron_bin" cli \
         --db "$WORK_DIR/test-geo.db" \
         --csv "$FIXTURES_DIR/test-input.csv" \
         --out "$WORK_DIR/electron-output" \
@@ -243,7 +246,15 @@ test_electron() {
         --sep ";" \
         -l info \
         --no-sandbox \
-        2>&1 | tail -10
+        --disable-gpu \
+        >"$WORK_DIR/electron.log" 2>&1 &
+    local epid=$!
+    sleep 20
+    kill -- -"$epid" 2>/dev/null
+    sleep 1
+    kill -9 -- -"$epid" 2>/dev/null
+    wait 2>/dev/null
+    tail -3 "$WORK_DIR/electron.log" 2>/dev/null
 
     local zip
     zip=$(ls electron-output/data_*.zip 2>/dev/null | head -1)
@@ -264,6 +275,7 @@ test_electron() {
             check '[ "$match_count" -gt 0 ]' "log.xml contains PointMatching entries"
         fi
     fi
+    set -e
 }
 
 _run_cli_from_source() {

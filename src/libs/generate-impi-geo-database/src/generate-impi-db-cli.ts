@@ -1,7 +1,17 @@
 #!/usr/bin/env node
 import { generate, checkDoubles, checkKFactor } from './generate-impi-db.js';
-import ora from 'ora';
 import pc from 'picocolors';
+
+function ora(text: string) {
+    return {
+        text,
+        isSpinning: false,
+        start() { this.isSpinning = true; process.stdout.write(`- ${this.text}\n`); return this; },
+        succeed(t?: string) { this.isSpinning = false; process.stdout.write(`${pc.green('✔')} ${t ?? this.text}\n`); return this; },
+        fail(t?: string) { this.isSpinning = false; process.stdout.write(`${pc.red('✖')} ${t ?? this.text}\n`); return this; },
+        stop() { this.isSpinning = false; return this; }
+    };
+}
 import winston from 'winston';
 import * as fs from 'fs';
 import * as path from 'path';

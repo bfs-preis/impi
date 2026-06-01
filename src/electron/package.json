@@ -8,7 +8,7 @@
     "scripts": {
         "copyAnonHtml": "cpr ../apps/angular/dist/ ./app/anonymizer -o",
         "copyResultHtml": "cpr ../apps/result-viewer/dist/ ./app/result-viewer -o",
-"copyPreload": "cpr ./src/preload.cjs ./app/preload.cjs -o",
+        "copyPreload": "cpr ./src/preload.cjs ./app/preload.cjs -o",
         "createBuildPackageJson": "node ./scripts/createPackageJSON.js",
         "clean": "rimraf app",
         "tsc": "tsc",
@@ -25,7 +25,6 @@
         "electron-log": "^5.4.3",
         "electron-settings": "^4.0.4",
         "impilib": "workspace:*",
-        "ora": "^9.0.0",
         "picocolors": "^1.1.0",
         "yargs": "^17.7.0"
     },

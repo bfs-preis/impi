@@ -3,8 +3,17 @@ import log from 'electron-log';
 import { ICommandLine, CommandEnum } from './command-line.js';
 import { ValidateDatabase, ValidateInputCsv, ValidateOutputDir } from '../validation/input-validation.js';
 import { app } from 'electron';
-import ora from 'ora';
 import pc from 'picocolors';
+
+function ora(text: string) {
+    return {
+        text,
+        start() { process.stdout.write(`- ${this.text}\n`); return this; },
+        succeed(t?: string) { process.stdout.write(`${pc.green('✔')} ${t ?? this.text}\n`); return this; },
+        fail(t?: string) { process.stdout.write(`${pc.red('✖')} ${t ?? this.text}\n`); return this; },
+        stop() { return this; }
+    };
+}
 
 export async function CliProcess(commandLine: ICommandLine): Promise<number> {
 

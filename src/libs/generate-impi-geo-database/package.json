@@ -27,33 +27,32 @@
   },
   "description": "Generate the IMPI sqlite3 db from csv files",
   "dependencies": {
-    "normalize-common": "workspace:*",
+    "better-sqlite3": "catalog:",
+    "commander": "catalog:",
     "csv-parse": "^5.5.2",
     "csv-stringify": "catalog:",
     "iconv-lite": "catalog:",
-    "stream-transform": "catalog:",
-    "better-sqlite3": "catalog:",
-    "sqlite3": "catalog:",
-    "commander": "catalog:",
-    "ora": "catalog:",
-    "picocolors": "^1.1.0",
-    "winston": "catalog:",
     "normalize-city": "workspace:*",
-    "normalize-street": "workspace:*"
+    "normalize-common": "workspace:*",
+    "normalize-street": "workspace:*",
+    "picocolors": "^1.1.0",
+    "sqlite3": "catalog:",
+    "stream-transform": "catalog:",
+    "winston": "catalog:"
   },
   "devDependencies": {
+    "@types/archiver": "catalog:",
+    "@types/better-sqlite3": "catalog:",
     "@types/chai": "catalog:testing",
     "@types/mocha": "catalog:testing",
     "@types/node": "catalog:",
+    "@types/uuid": "catalog:",
     "chai": "catalog:testing",
     "mocha": "catalog:testing",
     "nyc": "catalog:testing",
     "rimraf": "catalog:",
     "ts-node": "catalog:",
-    "typescript": "catalog:lang",
-    "@types/uuid": "catalog:",
-    "@types/archiver": "catalog:",
-    "@types/better-sqlite3": "catalog:"
+    "typescript": "catalog:lang"
   },
   "bin": {
     "generate-impi-db": "dist/generate-impi-db-cli.js"
