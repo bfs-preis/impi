@@ -137,30 +137,36 @@ jobs:
         run: pnpm --filter impi-cli run bundle
         working-directory: src
 
-      - name: Package CLI binary
-        run: npx @yao-pkg/pkg dist/bundle.cjs --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
-        working-directory: src/cli
+      - name: Package CLI
+        run: |
+          mkdir -p ${{ matrix.artifact }}
+          cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
+          cp -r node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/
+          echo '#!/usr/bin/env node' > ${{ matrix.artifact }}/impi-cli.js
+          echo 'process.env.NODE_PATH = __dirname; require("module")._initPaths(); require("./impi-cli.cjs");' >> ${{ matrix.artifact }}/impi-cli.js
+        shell: bash
+        working-directory: src
 
       - name: Compress CLI (Linux)
         if: runner.os == 'Linux'
         run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
-        working-directory: src/cli
+        working-directory: src
 
       - name: Compress CLI (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path ${{ matrix.artifact }}.exe -DestinationPath ${{ matrix.artifact }}.zip
-        working-directory: src/cli
+        run: Compress-Archive -Path ${{ matrix.artifact }} -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src
         shell: pwsh
 
       - name: Upload CLI to release (Linux)
         if: runner.os == 'Linux'
-        run: gh release upload "${{ github.ref_name }}" src/cli/${{ matrix.artifact }}.tar.gz --clobber
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.tar.gz --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload CLI to release (Windows)
         if: runner.os == 'Windows'
-        run: gh release upload "${{ github.ref_name }}" src/cli/${{ matrix.artifact }}.zip --clobber
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -201,29 +207,35 @@ jobs:
         run: pnpm --filter generate-impi-geo-database run bundle
         working-directory: src
 
-      - name: Package generate-impi-geo-database binary
-        run: npx @yao-pkg/pkg dist/bundle.cjs --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
-        working-directory: src/libs/generate-impi-geo-database
+      - name: Package generate-impi-geo-database
+        run: |
+          mkdir -p ${{ matrix.artifact }}
+          cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
+          cp -r node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/
+          echo '#!/usr/bin/env node' > ${{ matrix.artifact }}/generate-impi-db.js
+          echo 'process.env.NODE_PATH = __dirname; require("module")._initPaths(); require("./generate-impi-db.cjs");' >> ${{ matrix.artifact }}/generate-impi-db.js
+        shell: bash
+        working-directory: src
 
       - name: Compress (Linux)
         if: runner.os == 'Linux'
         run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
-        working-directory: src/libs/generate-impi-geo-database
+        working-directory: src
 
       - name: Compress (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path ${{ matrix.artifact }}.exe -DestinationPath ${{ matrix.artifact }}.zip
-        working-directory: src/libs/generate-impi-geo-database
+        run: Compress-Archive -Path ${{ matrix.artifact }} -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src
         shell: pwsh
 
       - name: Upload to release (Linux)
         if: runner.os == 'Linux'
-        run: gh release upload "${{ github.ref_name }}" src/libs/generate-impi-geo-database/${{ matrix.artifact }}.tar.gz --clobber
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.tar.gz --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to release (Windows)
         if: runner.os == 'Windows'
-        run: gh release upload "${{ github.ref_name }}" src/libs/generate-impi-geo-database/${{ matrix.artifact }}.zip --clobber
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

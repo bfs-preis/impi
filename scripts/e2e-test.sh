@@ -82,13 +82,8 @@ download_artifacts() {
         [ -f "$f" ] && tar -xzf "$f" && rm "$f"
     done
 
-    # Make binaries executable
-    chmod +x generate-impi-geo-database-linux-x64 2>/dev/null || true
-    chmod +x impi-cli-linux-x64 2>/dev/null || true
-    chmod +x IMPI-*.AppImage 2>/dev/null || true
-
-    check '[ -f generate-impi-geo-database-linux-x64 ]' "Downloaded generate-impi-geo-database"
-    check '[ -f impi-cli-linux-x64 ]' "Downloaded impi-cli"
+    check '[ -d generate-impi-geo-database-linux-x64 ] || [ -f generate-impi-geo-database-linux-x64 ]' "Downloaded generate-impi-geo-database"
+    check '[ -d impi-cli-linux-x64 ] || [ -f impi-cli-linux-x64 ]' "Downloaded impi-cli"
     check 'ls *mpi*.AppImage >/dev/null 2>&1 || ls *MPI*.AppImage >/dev/null 2>&1' "Downloaded Electron AppImage"
 }
 
@@ -112,17 +107,24 @@ generate_database() {
         --encoding utf8
     )
 
+    local gen_bin=""
     if [ -f generate-impi-geo-database-linux-x64 ]; then
-        ./generate-impi-geo-database-linux-x64 "${gen_args[@]}" 2>&1 | tail -5 || true
+        gen_bin="./generate-impi-geo-database-linux-x64"
+    elif [ -f generate-impi-geo-database-linux-x64/generate-impi-db.js ]; then
+        gen_bin="node generate-impi-geo-database-linux-x64/generate-impi-db.js"
+    fi
+
+    if [ -n "$gen_bin" ]; then
+        $gen_bin "${gen_args[@]}" 2>&1 | tail -5 || true
         if [ ! -f test-geo.db ] || [ "$(stat -c%s test-geo.db 2>/dev/null || echo 0)" -lt 1000 ]; then
-            fail "generate-impi-geo-database binary failed"
+            fail "generate-impi-geo-database release artifact failed"
             echo "  Falling back to source build..."
             _generate_from_source "${gen_args[@]}"
         else
-            ok "generate-impi-geo-database binary works"
+            ok "generate-impi-geo-database release artifact works"
         fi
     else
-        fail "generate-impi-geo-database binary not found"
+        fail "generate-impi-geo-database artifact not found"
         _generate_from_source "${gen_args[@]}"
     fi
 
@@ -155,16 +157,23 @@ test_cli() {
         -l info
     )
 
+    local cli_bin=""
     if [ -f impi-cli-linux-x64 ]; then
-        if ./impi-cli-linux-x64 "${cli_args[@]}" 2>&1 | tail -10; then
-            ok "impi-cli binary works"
+        cli_bin="./impi-cli-linux-x64"
+    elif [ -f impi-cli-linux-x64/impi-cli.js ]; then
+        cli_bin="node impi-cli-linux-x64/impi-cli.js"
+    fi
+
+    if [ -n "$cli_bin" ]; then
+        if $cli_bin "${cli_args[@]}" 2>&1 | tail -10; then
+            ok "impi-cli release artifact works"
         else
-            fail "impi-cli binary failed"
+            fail "impi-cli release artifact failed"
             echo "  Falling back to source build..."
             _run_cli_from_source "${cli_args[@]}"
         fi
     else
-        fail "impi-cli binary not found"
+        fail "impi-cli artifact not found"
         _run_cli_from_source "${cli_args[@]}"
     fi
 
