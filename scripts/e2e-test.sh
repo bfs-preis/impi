@@ -113,15 +113,16 @@ generate_database() {
     )
 
     if [ -f generate-impi-geo-database-linux-x64 ]; then
-        # Try packaged binary first
         ./generate-impi-geo-database-linux-x64 "${gen_args[@]}" 2>&1 | tail -5 || true
         if [ ! -f test-geo.db ] || [ "$(stat -c%s test-geo.db 2>/dev/null || echo 0)" -lt 1000 ]; then
-            echo "  Packaged binary failed, falling back to source..."
+            fail "generate-impi-geo-database binary failed"
+            echo "  Falling back to source build..."
             _generate_from_source "${gen_args[@]}"
         else
-            echo "  (used packaged binary)"
+            ok "generate-impi-geo-database binary works"
         fi
     else
+        fail "generate-impi-geo-database binary not found"
         _generate_from_source "${gen_args[@]}"
     fi
 
@@ -155,11 +156,15 @@ test_cli() {
     )
 
     if [ -f impi-cli-linux-x64 ]; then
-        ./impi-cli-linux-x64 "${cli_args[@]}" 2>&1 | tail -10 || {
-            echo "  Packaged CLI failed, falling back to source..."
+        if ./impi-cli-linux-x64 "${cli_args[@]}" 2>&1 | tail -10; then
+            ok "impi-cli binary works"
+        else
+            fail "impi-cli binary failed"
+            echo "  Falling back to source build..."
             _run_cli_from_source "${cli_args[@]}"
-        }
+        fi
     else
+        fail "impi-cli binary not found"
         _run_cli_from_source "${cli_args[@]}"
     fi
 

@@ -12,17 +12,19 @@ function ora(text: string) {
         stop() { return this; }
     };
 }
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { readFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 function getVersion(): string {
     try {
-        const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-8'));
-        return pkg.version;
+        // Try multiple locations for package.json (works both from source and bundled)
+        for (const base of [process.cwd(), dirname(process.execPath)]) {
+            const p = join(base, 'package.json');
+            if (existsSync(p)) {
+                return JSON.parse(readFileSync(p, 'utf-8')).version;
+            }
+        }
+        return '2.0.0';
     } catch {
         return 'unknown';
     }

@@ -133,16 +133,12 @@ jobs:
         run: pnpm install
         working-directory: src
 
-      - name: Build libraries
-        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter impilib run build
-        working-directory: src
-
-      - name: Build CLI
-        run: pnpm run build:cli
+      - name: Bundle CLI
+        run: pnpm --filter impi-cli run bundle
         working-directory: src
 
       - name: Package CLI binary
-        run: npx @yao-pkg/pkg . --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
+        run: npx @yao-pkg/pkg dist/bundle.cjs --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
         working-directory: src/cli
 
       - name: Compress CLI (Linux)
@@ -201,12 +197,12 @@ jobs:
         run: pnpm install
         working-directory: src
 
-      - name: Build libraries
-        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter generate-impi-geo-database run build
+      - name: Bundle generate-impi-geo-database
+        run: pnpm --filter generate-impi-geo-database run bundle
         working-directory: src
 
       - name: Package generate-impi-geo-database binary
-        run: npx @yao-pkg/pkg . --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
+        run: npx @yao-pkg/pkg dist/bundle.cjs --targets ${{ matrix.target }} --output ${{ matrix.artifact }}
         working-directory: src/libs/generate-impi-geo-database
 
       - name: Compress (Linux)

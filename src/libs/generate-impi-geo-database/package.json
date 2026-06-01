@@ -18,12 +18,13 @@
     "clean": "rimraf dist",
     "prebuild": "pnpm run clean",
     "build": "tsc",
+    "bundle": "node esbuild.mjs",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
     "bump": "pnpm version patch",
     "tsc": "tsc",
-    "build_win32": "pkg . --targets win-x86"
+    "package": "pnpm run bundle && npx @yao-pkg/pkg dist/bundle.cjs --targets node22-linux-x64,node22-win-x64 --output generate-impi-geo-database"
   },
   "description": "Generate the IMPI sqlite3 db from csv files",
   "dependencies": {
@@ -48,6 +49,7 @@
     "@types/node": "catalog:",
     "@types/uuid": "catalog:",
     "chai": "catalog:testing",
+    "esbuild": "^0.28.0",
     "mocha": "catalog:testing",
     "nyc": "catalog:testing",
     "rimraf": "catalog:",

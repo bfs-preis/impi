@@ -16,15 +16,11 @@ import winston from 'winston';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from 'commander';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const pkg = require('../package.json');
 
 const program = new Command();
 
 program
-    .version(pkg.version)
+    .version('2.0.0')
     .option('-g, --geodb <file>', 'Database filename')
     .option('-q, --dbversion <version>', 'Database Version')
     .option('-f, --from <date>', 'Database Period From [dd.MM.YYYY]')
