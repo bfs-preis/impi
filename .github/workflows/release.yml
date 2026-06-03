@@ -139,13 +139,13 @@ jobs:
 
       - name: Package CLI
         run: |
-          mkdir -p ${{ matrix.artifact }}/node_modules
+          mkdir -p ${{ matrix.artifact }}
           cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
-          for dep in node_modules/.pnpm/sqlite3@*/node_modules/*; do
-            [ -e "$dep" ] && cp -rL "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || cp -r "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || true
-          done
-          printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > ${{ matrix.artifact }}/impi-cli.js
-          chmod +x ${{ matrix.artifact }}/impi-cli.js
+          printf '{"private":true,"dependencies":{"sqlite3":"^5.1.7"}}\n' > ${{ matrix.artifact }}/package.json
+          cd ${{ matrix.artifact }} && npm install --omit=dev
+          rm package.json package-lock.json
+          printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > impi-cli.js
+          chmod +x impi-cli.js
         shell: bash
         working-directory: src
 
@@ -211,13 +211,13 @@ jobs:
 
       - name: Package generate-impi-geo-database
         run: |
-          mkdir -p ${{ matrix.artifact }}/node_modules
+          mkdir -p ${{ matrix.artifact }}
           cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
-          for dep in node_modules/.pnpm/better-sqlite3@*/node_modules/*; do
-            [ -e "$dep" ] && cp -rL "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || cp -r "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || true
-          done
-          printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > ${{ matrix.artifact }}/generate-impi-db.js
-          chmod +x ${{ matrix.artifact }}/generate-impi-db.js
+          printf '{"private":true,"dependencies":{"better-sqlite3":"^9.6.0"}}\n' > ${{ matrix.artifact }}/package.json
+          cd ${{ matrix.artifact }} && npm install --omit=dev
+          rm package.json package-lock.json
+          printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > generate-impi-db.js
+          chmod +x generate-impi-db.js
         shell: bash
         working-directory: src
 
