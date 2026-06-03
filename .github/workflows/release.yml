@@ -141,7 +141,9 @@ jobs:
         run: |
           mkdir -p ${{ matrix.artifact }}/node_modules
           cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
-          cp -rL node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/node_modules/ || cp -r node_modules/.pnpm/sqlite3@*/node_modules/sqlite3 ${{ matrix.artifact }}/node_modules/
+          for dep in node_modules/.pnpm/sqlite3@*/node_modules/*; do
+            [ -e "$dep" ] && cp -rL "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || cp -r "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || true
+          done
           printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > ${{ matrix.artifact }}/impi-cli.js
           chmod +x ${{ matrix.artifact }}/impi-cli.js
         shell: bash
@@ -211,7 +213,9 @@ jobs:
         run: |
           mkdir -p ${{ matrix.artifact }}/node_modules
           cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
-          cp -rL node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/node_modules/ || cp -r node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 ${{ matrix.artifact }}/node_modules/
+          for dep in node_modules/.pnpm/better-sqlite3@*/node_modules/*; do
+            [ -e "$dep" ] && cp -rL "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || cp -r "$dep" ${{ matrix.artifact }}/node_modules/ 2>/dev/null || true
+          done
           printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > ${{ matrix.artifact }}/generate-impi-db.js
           chmod +x ${{ matrix.artifact }}/generate-impi-db.js
         shell: bash
