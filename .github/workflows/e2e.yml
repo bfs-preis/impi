@@ -1,0 +1,195 @@
+name: E2E Tests
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to test (e.g. v2.0.0-rc.1)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-linux:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Determine release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            TAG=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }} --jq '.head_branch // .display_title' | grep -oP 'v[\d.]+-?\S*' || true)
+            if [ -z "$TAG" ]; then
+              TAG=$(gh api repos/${{ github.repository }}/releases --jq '[.[] | select(.draft)] | .[0].tag_name // empty')
+            fi
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Linux artifacts
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          echo "Testing release: $TAG"
+          gh release download "$TAG" \
+            --pattern "generate-impi-geo-database-linux-x64.tar.gz" \
+            --pattern "impi-cli-linux-x64.tar.gz" \
+            --pattern "*.AppImage" \
+            --clobber
+          for f in *.tar.gz; do [ -f "$f" ] && tar -xzf "$f" && rm "$f"; done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate test database
+        run: |
+          node generate-impi-geo-database-linux-x64/generate-impi-db.cjs \
+            --geodb test-geo.db \
+            --dbversion TEST001 \
+            --from "01.01.2025" --to "31.12.2025" \
+            --streetCsv test-data/fixtures/centerstreets.csv \
+            --communitiesCsv test-data/fixtures/centercommunities.csv \
+            --buildingsCsv test-data/fixtures/buildings.csv \
+            --additionalCommunitiesCsv test-data/fixtures/additionalcommunities.csv \
+            --yeargroupsCsv test-data/fixtures/yeargroups.csv \
+            --encoding utf8 || true
+          test -f test-geo.db && echo "Database created" || exit 1
+
+      - name: Test CLI
+        run: |
+          mkdir -p cli-output
+          node impi-cli-linux-x64/impi-cli.cjs \
+            --db test-geo.db \
+            --csv test-data/fixtures/test-input.csv \
+            --out cli-output \
+            --enc utf8 --sep ";" -l info
+          ZIP=$(ls cli-output/data_*.zip | head -1)
+          test -f "$ZIP" || (echo "No output ZIP" && exit 1)
+          unzip -o "$ZIP" -d cli-output/extracted
+          ls cli-output/extracted/data_*.csv || exit 1
+          ls cli-output/extracted/log*.xml || exit 1
+          grep -q 'Name="PointMatching"' cli-output/extracted/log*.xml || exit 1
+          head -1 cli-output/extracted/data_*.csv | grep -qi "canton" || exit 1
+          echo "CLI tests passed"
+
+      - name: Test Electron AppImage
+        run: |
+          APPIMAGE=$(find . -maxdepth 1 -name "*.AppImage" -print -quit)
+          test -n "$APPIMAGE" || (echo "No AppImage found" && exit 1)
+          chmod +x "$APPIMAGE"
+          "$APPIMAGE" --appimage-extract > /dev/null 2>&1
+          ELECTRON_BIN=$(ls squashfs-root/impi squashfs-root/IMPI 2>/dev/null | head -1)
+          test -n "$ELECTRON_BIN" || (echo "No electron binary found" && exit 1)
+          mkdir -p electron-output
+          setsid env -u DISPLAY -u WAYLAND_DISPLAY "$ELECTRON_BIN" cli \
+            --db "$PWD/test-geo.db" \
+            --csv "$PWD/test-data/fixtures/test-input.csv" \
+            --out "$PWD/electron-output" \
+            --enc utf8 --sep ";" -l info \
+            --no-sandbox --disable-gpu \
+            > electron.log 2>&1 &
+          EPID=$!
+          for i in $(seq 1 30); do
+            if ls electron-output/data_*.zip >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          kill -- -"$EPID" 2>/dev/null; sleep 1; kill -9 -- -"$EPID" 2>/dev/null; wait 2>/dev/null || true
+          ZIP=$(ls electron-output/data_*.zip 2>/dev/null | head -1)
+          test -f "$ZIP" || (echo "No Electron output ZIP"; cat electron.log; exit 1)
+          unzip -o "$ZIP" -d electron-output/extracted
+          grep -q 'Name="PointMatching"' electron-output/extracted/log*.xml || exit 1
+          echo "Electron tests passed"
+
+  e2e-windows:
+    runs-on: windows-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Determine release tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            TAG=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }} --jq '.head_branch // .display_title' | grep -oP 'v[\d.]+-?\S*' || true)
+            if [ -z "$TAG" ]; then
+              TAG=$(gh api repos/${{ github.repository }}/releases --jq '[.[] | select(.draft)] | .[0].tag_name // empty')
+            fi
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Windows artifacts
+        shell: bash
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          echo "Testing release: $TAG"
+          gh release download "$TAG" \
+            --pattern "generate-impi-geo-database-win-x64.zip" \
+            --pattern "impi-cli-win-x64.zip" \
+            --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract artifacts
+        shell: pwsh
+        run: |
+          Expand-Archive -Path generate-impi-geo-database-win-x64.zip -DestinationPath . -Force
+          Expand-Archive -Path impi-cli-win-x64.zip -DestinationPath . -Force
+
+      - name: Generate test database
+        shell: bash
+        run: |
+          node generate-impi-geo-database-win-x64/generate-impi-db.cjs \
+            --geodb test-geo.db \
+            --dbversion TEST001 \
+            --from "01.01.2025" --to "31.12.2025" \
+            --streetCsv test-data/fixtures/centerstreets.csv \
+            --communitiesCsv test-data/fixtures/centercommunities.csv \
+            --buildingsCsv test-data/fixtures/buildings.csv \
+            --additionalCommunitiesCsv test-data/fixtures/additionalcommunities.csv \
+            --yeargroupsCsv test-data/fixtures/yeargroups.csv \
+            --encoding utf8 || true
+          test -f test-geo.db && echo "Database created" || exit 1
+
+      - name: Test CLI
+        shell: bash
+        run: |
+          mkdir -p cli-output
+          node impi-cli-win-x64/impi-cli.cjs \
+            --db test-geo.db \
+            --csv test-data/fixtures/test-input.csv \
+            --out cli-output \
+            --enc utf8 --sep ";" -l info
+          ZIP=$(ls cli-output/data_*.zip | head -1)
+          test -f "$ZIP" || (echo "No output ZIP" && exit 1)
+          unzip -o "$ZIP" -d cli-output/extracted
+          ls cli-output/extracted/data_*.csv || exit 1
+          ls cli-output/extracted/log*.xml || exit 1
+          grep -q 'Name="PointMatching"' cli-output/extracted/log*.xml || exit 1
+          head -1 cli-output/extracted/data_*.csv | grep -qi "canton" || exit 1
+          echo "CLI tests passed"
