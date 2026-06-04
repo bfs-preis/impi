@@ -32,7 +32,8 @@ src/electron/package/
 # Data files (not tracked — too large / confidential)
 **/*.db
 **/*.csv
-/test-data
+/test-data/*
+!/test-data/fixtures/
 test-files
 
 # Environment

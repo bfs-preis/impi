@@ -1,0 +1,6 @@
+transactiondate;price;street;streetnumber;zipcode;community;objecttype;singlefamilyhousetype;condominiumtype;primaryorsecondaryhome;owneroccupiedorrented;yearofconstruction;landarea;volumeofbuilding;standardofvolume;netlivingarea;numberofrooms;numberofbathrooms;numberofparkings;constructionquality;propertycondition;egid
+01.01.2025;850000;Bahnhofstrasse;12;8001;Zürich;1;1;;1;1;1985;250;900;1;;4.5;1;1;2;2;
+15.03.2025;620000;Bundesplatz;3;3011;Bern;2;;1;1;2;1975;;;;;3.5;1;0;3;2;
+20.06.2025;1200000;Rue du Rhône;10;1204;Genève;1;2;;1;1;2005;180;750;2;;5.5;2;2;1;1;
+10.09.2025;480000;Piazza della Riforma;1;6900;Lugano;2;;2;2;1;1960;;;;;2.5;1;1;2;3;
+01.12.2025;550000;Marktgasse;5;4500;Solothurn;1;1;;1;1;2015;300;1100;1;;6;2;1;2;1;
