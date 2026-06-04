@@ -97,7 +97,8 @@ jobs:
           ELECTRON_BIN=$(ls squashfs-root/impi squashfs-root/IMPI 2>/dev/null | head -1)
           test -n "$ELECTRON_BIN" || (echo "No electron binary found" && exit 1)
           mkdir -p electron-output
-          setsid env -u DISPLAY -u WAYLAND_DISPLAY "$ELECTRON_BIN" cli \
+          sudo apt-get install -y xvfb > /dev/null 2>&1 || true
+          setsid xvfb-run --auto-servernum "$ELECTRON_BIN" cli \
             --db "$PWD/test-geo.db" \
             --csv "$PWD/test-data/fixtures/test-input.csv" \
             --out "$PWD/electron-output" \
