@@ -98,21 +98,15 @@ jobs:
           test -n "$ELECTRON_BIN" || (echo "No electron binary found" && exit 1)
           mkdir -p electron-output
           sudo apt-get install -y xvfb > /dev/null 2>&1 || true
-          setsid xvfb-run --auto-servernum "$ELECTRON_BIN" cli \
+          timeout 30 xvfb-run --auto-servernum "$ELECTRON_BIN" cli \
             --db "$PWD/test-geo.db" \
             --csv "$PWD/test-data/fixtures/test-input.csv" \
             --out "$PWD/electron-output" \
             --enc utf8 --sep ";" -l info \
             --no-sandbox --disable-gpu \
-            > electron.log 2>&1 &
-          EPID=$!
-          for i in $(seq 1 30); do
-            if ls electron-output/data_*.zip >/dev/null 2>&1; then break; fi
-            sleep 1
-          done
-          kill -- -"$EPID" 2>/dev/null; sleep 1; kill -9 -- -"$EPID" 2>/dev/null; wait 2>/dev/null || true
+            2>&1 || true
           ZIP=$(ls electron-output/data_*.zip 2>/dev/null | head -1)
-          test -f "$ZIP" || (echo "No Electron output ZIP"; cat electron.log; exit 1)
+          test -f "$ZIP" || (echo "No Electron output ZIP" && exit 1)
           unzip -o "$ZIP" -d electron-output/extracted
           grep -q 'Name="PointMatching"' electron-output/extracted/log*.xml || exit 1
           echo "Electron tests passed"
