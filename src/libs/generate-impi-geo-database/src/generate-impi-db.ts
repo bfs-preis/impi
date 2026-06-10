@@ -283,16 +283,16 @@ export function checkKFactor(database: string): boolean {
                     (SELECT COUNT(CAT_BAU) FROM (
                     SELECT  CAT_BAU ,COUNT(CAT_BAU)
                     FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
-                    FROM BUILDINGS WHERE year_of_construction !="")
+                    FROM BUILDINGS WHERE year_of_construction !='')
                     GROUP BY CAT_BAU
                     HAVING (COUNT(CAT_BAU) < 3))) a,
 
                     (SELECT COUNT(CAT_LAGE) FROM (
                     SELECT  CAT_LAGE ,COUNT(CAT_LAGE)
                     FROM ( SELECT  (${locationAttrs}) AS CAT_LAGE
-                    FROM BUILDINGS WHERE year_of_construction ="" OR (${yearExpr} || ' ' || ${locationAttrs} IN (SELECT  CAT_BAU
+                    FROM BUILDINGS WHERE year_of_construction ='' OR (${yearExpr} || ' ' || ${locationAttrs} IN (SELECT  CAT_BAU
                         FROM ( SELECT  (${yearExpr} || ' ' || ${locationAttrs}) AS CAT_BAU
-                        FROM BUILDINGS WHERE year_of_construction !="")
+                        FROM BUILDINGS WHERE year_of_construction !='')
                         GROUP BY CAT_BAU
                         HAVING (COUNT(CAT_BAU) > 2)))  )
                     GROUP BY CAT_LAGE
