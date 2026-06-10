@@ -452,7 +452,6 @@ MIT
 ## Credits
 
 **Original Application**: IMPI Anonymizer (Angular 5)
-**Ported By**: Claude Code
 **Framework**: Oblique (Swiss Federal Administration)
 **Target Platform**: Angular 19 + Oblique 13
 

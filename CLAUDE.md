@@ -6,6 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 IMPI (Immobilienpreisindex) is a data enrichment tool for Swiss real estate price index processing. It consists of TypeScript libraries for data normalization, geographic matching, and validation, an Angular frontend, and an Electron desktop app that ties them together.
 
+## Authoring Conventions
+
+- Never mention Claude, Anthropic, or any AI assistant anywhere — not in source code, comments, commit messages, PR descriptions, or documentation. Do not add `Co-Authored-By` trailers or "Generated with" lines referencing AI tools.
+- If such a mention is found anywhere in the repo, remove it.
+
 ## Repository Layout
 
 - `src/libs/` — pnpm workspace with 5 library packages (the core logic)
