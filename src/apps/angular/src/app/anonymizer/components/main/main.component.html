@@ -1,0 +1,16 @@
+<div class="anonymizer-main-container">
+	<!-- 3-Step Workflow -->
+	<div class="workflow-steps">
+		<app-db-selector (isValid)="setState(0, $event)"></app-db-selector>
+		<app-csv-selector (isValid)="setState(1, $event)"></app-csv-selector>
+		<app-output-selector (isValid)="setState(2, $event)"></app-output-selector>
+	</div>
+
+	<!-- Action Bar -->
+	<div class="action-bar">
+		<button type="button" mat-button obButton="primary" [disabled]="!allValid()" (click)="openProcessingDialog()" class="start-button">
+			<mat-icon svgIcon="play"></mat-icon>
+			<span>{{ "anonymizer.Main.ButtonStart" | translate }}</span>
+		</button>
+	</div>
+</div>

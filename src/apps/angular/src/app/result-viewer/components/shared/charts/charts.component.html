@@ -1,0 +1,26 @@
+<div class="chart-container">
+  <canvas #myChart></canvas>
+</div>
+
+<div *ngIf="ShowLegend && chartType !== 'bar' && legendDataSource">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header collapsedHeight="36px" expandedHeight="36px">
+      <mat-panel-title>
+        {{ 'resultViewer.Charts.Legend' | translate }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-selection-list dense class="legend-list">
+      <mat-list-option *ngFor="let row of legendDataSource; let i = index"
+        checkboxPosition="before"
+        (selectedChange)="onLegendClick(row.index, $event)"
+        [selected]="true"
+        [value]="row.index">
+        <div matLine class="legend-row">
+          <div class="legend-color-box" [style.background-color]="row.color"></div>
+          <span class="legend-count">{{row.data}}</span>
+          <span class="legend-label">{{row.label}}</span>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-expansion-panel>
+</div>

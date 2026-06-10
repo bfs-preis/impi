@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "processing": "Processing",
+    "results": "Results"
+  },
+  "anonymizer": {
+    "Main": {
+      "Title": "IMPI Data Enrichment",
+      "Description": "Using this tool, the bankdata is enriched with geodata and then anonymized.",
+      "Row": "Row:",
+      "Time": "Time:",
+      "ETA": "ETA:",
+      "Error": "Error",
+      "Finished": "Finished",
+      "Duration": "Duration:",
+      "ButtonStart": "Start Processing",
+      "ButtonProcessing": "Processing..."
+    },
+    "Db": {
+      "Title": "Geodata File",
+      "File": "File:",
+      "Period": "Period:",
+      "Version": "Version:",
+      "SelectFile": "Select DB File",
+      "KFactor": "Factor K testing",
+      "Step": "Step 1"
+    },
+    "Csv": {
+      "Title": "Bankdata File",
+      "File": "File:",
+      "Rows": "Rows:",
+      "SelectFile": "Select CSV File",
+      "Step": "Step 2"
+    },
+    "Out": {
+      "Title": "Output Directory",
+      "Directory": "Directory:",
+      "SelectFile": "Select Output Directory",
+      "Step": "Step 3"
+    },
+    "Settings": {
+      "Title": "Settings",
+      "CSVEncoding": "CSV Encoding",
+      "CSVSeparater": "CSV Separater",
+      "SedexSenderId": "Sedex Sender Id",
+      "Theme": "Theme",
+      "ThemeDark": "Dark",
+      "ThemeLight": "Light",
+      "Language": "Language",
+      "LanguageEn": "English",
+      "LanguageDe": "German",
+      "LanguageFr": "French",
+      "LanguageIt": "Italian",
+      "ButtonClose": "Save & Close",
+      "ButtonCancel": "Cancel",
+      "MappingFile": "Mapping File"
+    },
+    "Help": {
+      "Title": "Help",
+      "Documentation": "Documentation",
+      "SourceCode": "SourceCode",
+      "DevelopedBy": "Developed by",
+      "ButtonClose": "Close",
+      "ButtonCancel": "Cancel"
+    },
+    "KFactor": {
+      "Description": "Start the test to verify that the database fulfills the k factor.",
+      "ButtonStart": "Start",
+      "ButtonCancel": "Cancel",
+      "ButtonClose": "Close",
+      "SuccessMessage": "K factor fulfilled.",
+      "FailMessage": "K factor not fulfilled!"
+    },
+    "Processing": {
+      "Title": "Processing",
+      "Rows": "Rows:",
+      "Time": "Time:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Rows/s:",
+      "TotalRows": "Total Rows:",
+      "TotalTime": "Total Time:",
+      "SuccessMessage": "Processing completed successfully.",
+      "ButtonCancel": "Cancel",
+      "ButtonClose": "Close",
+      "ButtonView": "View Results"
+    }
+  },
+  "resultViewer": {
+    "ProcessInfo": {
+      "Title": "Process Info",
+      "StartTime": "Start Time:",
+      "EndTime": "End Time:",
+      "Duration": "Duration:",
+      "File": "File:",
+      "DbPeriodFrom": "DB Period From:",
+      "DbPeriodTo": "DB Period To:",
+      "DbVersion": "DB Version:",
+      "CsvSeparator": "CSV Separator:",
+      "CsvEncoding": "CSV Encoding:",
+      "CsvRowCount": "CSV Row Count:",
+      "ClientVersion": "Client Version:"
+    },
+    "Charts": {
+      "Legend": "Legend",
+      "ValidationErrors": "Validation Errors",
+      "CorrectRows": "Correct Rows",
+      "RowsWithViolations": "Rows with Violations"
+    },
+    "ResultViewer": {
+      "Title": "Result",
+      "Rows": "Rows",
+      "Duration": "Duration",
+      "SuccessRate": "Success Rate",
+      "Matching": "Matching Types",
+      "Violations": "Validation Errors",
+      "NoData": "No results available"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ 'anonymizer.Settings.Title' | translate }}</h2>
+
+<mat-dialog-content>
+  <form class="settings-form">
+    <!-- CSV Section -->
+    <fieldset class="settings-section">
+      <legend>CSV</legend>
+      <div class="settings-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'anonymizer.Settings.CSVEncoding' | translate }}</mat-label>
+          <mat-select [(ngModel)]="selectedEncoding" name="encoding">
+            @for (encoding of encodings; track encoding) {
+              <mat-option [value]="encoding">{{ encoding }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'anonymizer.Settings.CSVSeparater' | translate }}</mat-label>
+          <mat-select [(ngModel)]="selectedSeparator" name="separator">
+            @for (sep of separators; track sep) {
+              <mat-option [value]="sep.value">{{ sep.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </fieldset>
+
+    <!-- Sedex Section -->
+    <fieldset class="settings-section">
+      <legend>Sedex</legend>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'anonymizer.Settings.SedexSenderId' | translate }}</mat-label>
+        <input matInput [(ngModel)]="selectedSedexSenderId" name="sedexSenderId" placeholder="T4-123456-1">
+      </mat-form-field>
+    </fieldset>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-button obButton="secondary" (click)="cancel()">
+    {{ 'anonymizer.Settings.ButtonCancel' | translate }}
+  </button>
+  <button type="button" mat-button obButton="primary" (click)="save()">
+    {{ 'anonymizer.Settings.ButtonClose' | translate }}
+  </button>
+</mat-dialog-actions>

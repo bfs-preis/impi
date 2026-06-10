@@ -1,0 +1,14 @@
+<ob-master-layout [navigation]="[{ url: 'anonymizer', label: 'nav.processing' }, { url: 'result-viewer', label: 'nav.results' }]">
+	<ng-container obHeaderTitle>{{ "anonymizer.Main.Title" | translate }}</ng-container>
+	<ng-template #obHeaderControl>
+		<button type="button" mat-icon-button obButton="tertiary" (click)="openHelpDialog()" class="icon-button">
+			<mat-icon svgIcon="question" />
+		</button>
+		<button type="button" mat-icon-button obButton="tertiary" (click)="openSettingsDialog()" class="icon-button">
+			<mat-icon svgIcon="settings" />
+		</button>
+	</ng-template>
+	<ng-container obFooterInfo>
+		<p>&copy; 2025 BFS</p>
+	</ng-container>
+</ob-master-layout>

@@ -1,0 +1,4 @@
+22.19.0
+package-manager=pnpm
+auto-install-peers=true
+shamefully-hoist=false

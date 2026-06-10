@@ -1,0 +1,33 @@
+.anonymizer-main-container {
+	width: 100%;
+	padding: 1.5rem;
+	box-sizing: border-box;
+}
+
+.workflow-steps {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+
+	> * {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+}
+
+.action-bar {
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
+
+	.start-button {
+		min-width: 220px;
+		padding: 0.75rem 2rem;
+		font-size: 1rem;
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+}

@@ -1,0 +1,51 @@
+import { MatchingTypeEnum } from "../index.js";
+
+export interface IMapping {
+    Mappings: Record<string, Record<string, string>>;
+    Scales?: Record<string, string>;
+}
+
+export interface ILogResult {
+    Meta: ILogMeta;
+    Mapping: IMapping | undefined;
+    Violations: ILogViolation[];
+    MatchSummary: ILogMatchingType[];
+    Rows: ILogRow[];
+    Error: Error | null | undefined;
+}
+
+export interface ILogMeta {
+    CsvEncoding: string;
+    CsvSeparator: string;
+    CsvRowCount: number;
+    DbVersion: string;
+    DbPeriodFrom: number;
+    DbPeriodTo: number;
+    SedexSenderId: string;
+    MappingFile: string;
+    StartTime: number;
+    EndTime: number;
+    OutZipFile: string,
+    OutSedexFile: string,
+    ClientVersion:string,
+}
+
+export interface ILogViolation {
+    Id: number;
+    Text: string;
+    RedFlag: boolean;
+    Count: number;
+    Rows: number[]
+}
+
+export interface ILogRow {
+    Index: number
+    MatchingType: MatchingTypeEnum;
+    Violations: number[];
+}
+
+export interface ILogMatchingType {
+    Id: number;
+    Name: string;
+    Count: number
+}

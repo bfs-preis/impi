@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "processing": "Traitement",
+    "results": "Résultats"
+  },
+  "anonymizer": {
+    "Main": {
+      "Title": "IMPI Enrichissement des Données",
+      "Description": "Par cet outil, les données bancaires sont enrichies avec des données géolocalisées et anonymisées ensuite.",
+      "Row": "Ligne:",
+      "Time": "Heure:",
+      "ETA": "ETA:",
+      "Error": "Erreur",
+      "Finished": "Terminé",
+      "Duration": "Durée:",
+      "ButtonStart": "Démarrer le traitement",
+      "ButtonProcessing": "Traitement..."
+    },
+    "Db": {
+      "Title": "Fichier des géodonnées",
+      "File": "Fichier:",
+      "Period": "Période:",
+      "Version": "Version:",
+      "SelectFile": "Choisir le fichier de base de données",
+      "KFactor": "Tester le facteur K ",
+      "Step": "Étape 1"
+    },
+    "Csv": {
+      "Title": "Fichier données bancaires",
+      "File": "Fichier:",
+      "Rows": "Lignes:",
+      "SelectFile": "Choisir le fichier Csv",
+      "Step": "Étape 2"
+    },
+    "Out": {
+      "Title": "Répertoire de sortie",
+      "Directory": "Répertoire:",
+      "SelectFile": "Choisir le répertoire de sortie",
+      "Step": "Étape 3"
+    },
+    "Settings": {
+      "Title": "Paramètres",
+      "CSVEncoding": "Codage CSV",
+      "CSVSeparater": "Séparateur CSV",
+      "SedexSenderId": "Sedex Sender Id",
+      "Theme": "Thème",
+      "ThemeDark": "Sombre",
+      "ThemeLight": "Brillant",
+      "Language": "Langue",
+      "LanguageEn": "Anglais",
+      "LanguageDe": "Allemand",
+      "LanguageFr": "Français",
+      "LanguageIt": "Italien",
+      "ButtonClose": "Enregistrer et fermer",
+      "ButtonCancel": "Annuler",
+      "MappingFile": "Fichier de mapping"
+    },
+    "Help": {
+      "Title": "Aide",
+      "Documentation": "Documentation",
+      "SourceCode": "SourceCode",
+      "DevelopedBy": "Développé par",
+      "ButtonClose": "Fermer",
+      "ButtonCancel": "Annuler"
+    },
+    "KFactor": {
+      "Description": "Démarrer le test pour vérifier le facteur k",
+      "ButtonStart": "Démarrage",
+      "ButtonCancel": "Annuler",
+      "ButtonClose": "Fermer",
+      "SuccessMessage": "factor k satisfait",
+      "FailMessage": "factor k pas satisfait!"
+    },
+    "Processing": {
+      "Title": "Traitement",
+      "Rows": "Lignes:",
+      "Time": "Temps:",
+      "ETA": "ETA:",
+      "RowsPerSecond": "Lignes/s:",
+      "TotalRows": "Total lignes:",
+      "TotalTime": "Durée totale:",
+      "SuccessMessage": "Le traitement a été effectué avec succès.",
+      "ButtonCancel": "Annuler",
+      "ButtonClose": "Fermer",
+      "ButtonView": "Voir les résultats"
+    }
+  },
+  "resultViewer": {
+    "ProcessInfo": {
+      "Title": "Informations de traitement",
+      "StartTime": "Heure de début:",
+      "EndTime": "Heure de fin:",
+      "Duration": "Durée:",
+      "File": "Fichier:",
+      "DbPeriodFrom": "Période DB de:",
+      "DbPeriodTo": "Période DB à:",
+      "DbVersion": "Version DB:",
+      "CsvSeparator": "Séparateur CSV:",
+      "CsvEncoding": "Codage CSV:",
+      "CsvRowCount": "Nombre de lignes CSV:",
+      "ClientVersion": "Version client:"
+    },
+    "Charts": {
+      "Legend": "Légende",
+      "ValidationErrors": "Erreurs de validation",
+      "CorrectRows": "Lignes correctes",
+      "RowsWithViolations": "Lignes avec erreurs"
+    },
+    "ResultViewer": {
+      "Title": "Résultat",
+      "Rows": "Lignes",
+      "Duration": "Durée",
+      "SuccessRate": "Taux de réussite",
+      "Matching": "Types de matching",
+      "Violations": "Erreurs de validation",
+      "NoData": "Aucun résultat disponible"
+    }
+  }
+}

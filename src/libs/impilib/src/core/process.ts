@@ -1,0 +1,381 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import iconv from 'iconv-lite';
+import {transform,Options as TransformOption} from 'stream-transform';
+import { parse,Options } from 'csv-parse';
+import {stringify} from 'csv-stringify';
+import moment from 'moment';
+import archiver from 'archiver';
+
+import { createSedexEnvelope } from './sedex-envelope.js';
+import { IBankDataCsv, BankDataCsv } from '../types/IBankDataCsv.js';
+import { ResultDataCsv } from '../types/ResultDataCsv.js';
+import { checkValidationRules, ICheckValidationRuleResult } from '../validation/checkValidationRules.js';
+import { PeriodeDefinition } from '../validation/ValidationRules.js';
+import { match, type MatchResult } from '../match/match.js';
+import { GeoDatabase, type YearCategories } from '../match/GeoDatabase.js';
+
+import { ILogRow, ILogResult, ILogViolation, ILogMeta, IMapping } from '../index.js';
+import { LogAsXmlString, createEmptyLogMatchingTypeArray } from './log-file-xml.js';
+
+export interface IProcessOption {
+    InputCsvFile: string;
+    CsvEncoding: string;
+    CsvSeparator: string;
+    DatabaseFile: string;
+    OutputPath: string;
+    DbVersion: string;
+    DbPeriodFrom: number;
+    DbPeriodTo: number;
+    CsvRowCount: number;
+    SedexSenderId: string;
+    MappingFile: string;
+    ClientVersion: string;
+}
+
+function IsBankDataCsvRow(row: Record<string, unknown>): string[] {
+
+    const missingColumns: string[] = [];
+    for (const p of Object.getOwnPropertyNames(new BankDataCsv())) {
+        if (row[p] === undefined) {
+            missingColumns.push(p);
+        }
+    }
+    return missingColumns;
+}
+
+/** Columns that are not required in input CSV (backward compatibility) */
+const OPTIONAL_CSV_COLUMNS = new Set(['egid']);
+
+export function CheckInputFileFormat(headerLine: string, delimiter: string) {
+    const missingColumns: string[] = [];
+    const headerFields = headerLine.split(delimiter).map(c => c.toLowerCase());
+    for (const p of Object.getOwnPropertyNames(new BankDataCsv())) {
+        if (OPTIONAL_CSV_COLUMNS.has(p)) continue;
+        if (!headerFields.find((e) => e === p)) {
+            missingColumns.push(p);
+        }
+    }
+    return missingColumns;
+}
+
+// tslint:disable-next-line:max-line-length
+export function processFile(options: IProcessOption, callback: (result: ILogResult) => void, rowCallback: (processedRow: number, maxRows: number) => void) {
+
+    //Static Data Init
+    PeriodeDefinition.PeriodFrom = new Date(options.DbPeriodFrom);
+    PeriodeDefinition.PeriodTo = new Date(options.DbPeriodTo);
+
+    const fileName = "data_" + moment().format("YYYYMMDDHHmmss");
+
+    const violations: ILogViolation[] = [];
+
+    const result: ILogResult = {
+        Meta: {
+            StartTime: +new Date(),
+            EndTime: 0,
+            OutZipFile: path.join(options.OutputPath, fileName + ".zip"),
+            OutSedexFile: path.join(options.OutputPath, fileName.replace("data_", "envl_") + ".xml"),
+            CsvEncoding: options.CsvEncoding,
+            CsvSeparator: options.CsvSeparator,
+            DbPeriodFrom: options.DbPeriodFrom,
+            DbPeriodTo: options.DbPeriodTo,
+            DbVersion: options.DbVersion,
+            SedexSenderId: options.SedexSenderId,
+            MappingFile: options.MappingFile,
+            CsvRowCount: options.CsvRowCount,
+            ClientVersion: options.ClientVersion || "unknown",
+
+        } as ILogMeta,
+        Mapping: undefined as IMapping | undefined,
+        MatchSummary: createEmptyLogMatchingTypeArray(),
+        Violations: violations,
+        Rows: [] as ILogRow[],
+        Error: undefined
+    };
+
+    //Error Handline
+    const handlingError = (err: Error) => {
+        geodb.close();
+        result.Meta.EndTime = +new Date();
+        result.Error = err;
+        try {
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
+                .then(() => {
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                    return callback(result);
+                });
+        } catch (error) {
+            console.log(error);
+            return callback(result);
+        }
+    };
+
+    //Load Mapping File
+    let mappingObj: MappingObject = { Mappings: {} };
+    if (options.MappingFile && fs.existsSync(options.MappingFile)) {
+        fs.readFile(options.MappingFile, 'utf8', function (err, data) {
+            if (err) {
+                console.log(err);
+                handlingError(err);
+            }
+            try {
+                mappingObj = JSON.parse(data);
+            } catch (parseError) {
+                handlingError(parseError instanceof Error ? parseError : new Error('Invalid JSON in mapping file'));
+                return;
+            }
+            result.Mapping = mappingObj;
+        });
+    }
+
+    const inputStream = fs.createReadStream(options.InputCsvFile);
+    inputStream.on('error', function (err: Error) {
+        handlingError(err);
+    });
+
+    //Csv Parser
+    const parser = parse({
+        delimiter: options.CsvSeparator,
+        columns: (columns: string[]): string[] => {
+            return columns.map((column) => {
+                return column.toLowerCase();
+            });
+        }
+    } as Options);
+
+    parser.on('error', function (err: Error) {
+        handlingError(err);
+    });
+
+    //Create GeoDatabase
+    const geodb = new GeoDatabase(options.DatabaseFile.toString(), handlingError);
+
+    //Load year groups from database, then start pipeline
+    geodb.loadYearGroups((groups) => {
+        const yearCategories = groups ?? DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES;
+
+        //Transformer
+        let rowNumber = 1;
+        const transformer = transform({ parallel: 1 } as TransformOption, (record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void) => {
+            myTransform(record, callback, result, rowNumber, geodb, mappingObj, yearCategories);
+            rowNumber++;
+        });
+
+        transformer.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        //Stringifier
+        const stringfier = stringify({ header: true, delimiter: ";" });
+
+        stringfier.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        let rowNumberStringifier = 0;
+        stringfier.on('data', () => {
+            rowCallback(rowNumberStringifier, options.CsvRowCount - 1);
+            rowNumberStringifier++;
+        });
+
+        //Output
+        const outputStream = fs.createWriteStream(path.join(options.OutputPath, fileName + ".csv"), { encoding: "utf8" });
+
+        outputStream.on('error', function (err: Error) {
+            handlingError(err);
+        });
+
+        outputStream.on('finish', function () {
+            geodb.close();
+            result.Meta.EndTime = +new Date();
+            writeZipFile(options.OutputPath, fileName, LogAsXmlString(result))
+                .then(() => {
+                    writeEnvelope(options.SedexSenderId, options.OutputPath, fileName);
+                    callback(result);
+                });
+        });
+
+        //Process
+        inputStream
+            .pipe(iconv.decodeStream(options.CsvEncoding))
+            .pipe(parser)
+            .pipe(transformer)
+            .pipe(stringfier)
+            .pipe(outputStream);
+    });
+
+}
+
+// tslint:disable-next-line:max-line-length
+interface MappingObject {
+    Mappings: Record<string, Record<string, string>>;
+}
+
+function myTransform(record: Record<string, string>, callback: (err: Error | null, data: ResultDataCsv | null) => void, processResult: ILogResult, rowNumber: number, geodb: GeoDatabase, mappingObject: MappingObject, yearCategories: YearCategories) {
+
+    //Check headers
+    if (rowNumber === 1) {
+        const missingColumns = IsBankDataCsvRow(record);
+        if (missingColumns.length !== 0) {
+            callback(new Error("Missing Columns:" + missingColumns.join(",")), null);
+        }
+    }
+
+    //Mappings
+    if (mappingObject.Mappings) {
+        for (const p of Object.getOwnPropertyNames(mappingObject.Mappings)) {
+            if (record[p]) {
+                for (const pr of Object.getOwnPropertyNames(mappingObject.Mappings[p])) {
+                    if (pr === record[p]) {
+                        record[p] = mappingObject.Mappings[p][pr];
+                    }
+                }
+            }
+        }
+    }
+
+    //Validate
+    const result: ICheckValidationRuleResult = checkValidationRules(record as unknown as IBankDataCsv);
+
+    //Store Validation Results
+    for (const rule of result.ViolatedRules) {
+
+        let violation = processResult.Violations.find((v) => {
+            return v.Id === rule.Id;
+        });
+
+        if (violation === undefined) {
+            violation = { Id: rule.Id, Text: rule.Message, RedFlag: rule.RedFlag, Count: 0, Rows: [] } as ILogViolation;
+            processResult.Violations.push(violation);
+        }
+        violation.Rows.push(rowNumber);
+        violation.Count++;
+    }
+
+    //Copy Data to output object
+    const outRecord: ResultDataCsv = new ResultDataCsv();
+    for (const k in outRecord) {
+        if (record.hasOwnProperty(k)) {
+            outRecord[k] = record[k];
+        }
+        //Translate yearofconstruction to nomenclatur
+        if (k === 'yearofconstruction') {
+            outRecord[k] = categorizeYearOfConstruction(record[k], yearCategories).toString();
+        }
+    }
+
+    //Store ValidationFlags
+    outRecord.validationflags = result.Flags.toString();
+
+    //GWR & Geodata
+    return match((record as unknown as IBankDataCsv), geodb, (matchResult: MatchResult, err: Error | null) => {
+        outRecord.matchingtype = (+matchResult.matchingType).toString();
+        outRecord.egidprovided = matchResult.egidProvided ? "1" : "0";
+        outRecord.egidmatched = matchResult.egidMatched ? "1" : "0";
+        outRecord.addressmatched = matchResult.addressMatched ? "1" : "0";
+
+        //MatchingType Summary
+        const logMatchigType = processResult.MatchSummary.find((m) => m.Id === +(matchResult.matchingType));
+        if (logMatchigType) {
+            logMatchigType.Count++;
+        } else {
+            throw new Error("MatchingType not found in Summary!");
+        }
+
+        processResult.Rows.push({ Index: rowNumber, MatchingType: matchResult.matchingType, Violations: result.ViolatedRules.map((r) => r.Id) } as ILogRow);
+        if (err) {
+            return callback(err, outRecord);
+        }
+        if (matchResult.record) {
+            //Copy Values
+            for (const k in matchResult.record) {
+
+                if (k.replace(/_/g, "") === 'yearofconstruction') continue; // dont copy yearofconstruction from gwr, always take bank data
+
+                if (outRecord.hasOwnProperty(k.replace(/_/g, ""))) {
+                    outRecord[k.replace(/_/g, "")] = matchResult.record[k];
+                }
+            }
+            return callback(null, outRecord);
+        }
+
+        return callback(null, outRecord);
+
+    });
+}
+
+function writeZipFile(outputPath: string, fileName: string, log: string): Promise<void> {
+
+    return new Promise((resolve, reject) => {
+        const zipOutputStream = fs.createWriteStream(path.join(outputPath, fileName + ".zip"), { encoding: "utf8" });
+
+        const archive = archiver('zip', {
+            zlib: { level: 9 } // Sets the compression level.
+        });
+
+        zipOutputStream.on('close', function () {
+
+            if (fs.existsSync(path.join(outputPath, fileName + ".csv")))
+                fs.unlinkSync(path.join(outputPath, fileName + ".csv"));
+            resolve();
+        });
+
+        archive.on('warning', function (err) {
+            if (err.code === 'ENOENT') {
+                // log warning
+                console.log(err);
+            } else {
+                // throw error
+                console.log(err);
+                reject(err);
+            }
+        });
+
+        // good practice to catch this error explicitly
+        archive.on('error', function (err) {
+            console.log(err);
+            reject(err);
+        });
+
+        archive.pipe(zipOutputStream);
+        if (fs.existsSync(path.join(outputPath, fileName + ".csv"))) {
+            archive.append(fs.createReadStream(path.join(outputPath, fileName + ".csv")), { name: (fileName + ".csv") });
+        }
+
+        const logFileName = fileName.replace("data_", "log_");
+        archive.append(log.replace(/\n/g, "\r\n"), { name: (logFileName + ".xml") });
+
+        archive.finalize();
+    });
+}
+
+function writeEnvelope(sedexSenderId: string, outputPath: string, fileName: string): void {
+
+    const xml = createSedexEnvelope(sedexSenderId, fileName.replace("data_", ""));
+    fs.writeFileSync(path.join(outputPath, fileName.replace("data_", "envl_") + ".xml"), xml, { encoding: "utf8" });
+}
+
+/**
+ * Default year-of-construction category boundaries for IMPI nomenclature.
+ * Used as fallback when the geodatabase has no YEAR_GROUPS table.
+ * Each entry: [maxYear, categoryCode]. Applied in order; first match wins.
+ */
+export const DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES: YearCategories = [
+    [1918, 1],
+    [1945, 2],
+    [1970, 3],
+    [1990, 4],
+    [2005, 5],
+    [2015, 6],
+];
+
+export function categorizeYearOfConstruction(value: string, categories: YearCategories = DEFAULT_YEAR_OF_CONSTRUCTION_CATEGORIES): number {
+    const year = isNaN(+value) ? 0 : +value;
+    if (year <= 0) return 0;
+
+    for (const [maxYear, code] of categories) {
+        if (year <= maxYear) return code;
+    }
+    return categories.length > 0 ? categories[categories.length - 1][1] + 1 : 7;
+}

@@ -1,0 +1,240 @@
+import { app, BrowserWindow } from 'electron';
+
+import log from 'electron-log';
+import * as settings from 'electron-settings';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+import { CommandLineCommand, ICommandLine, CommandEnum } from './cmd-line/command-line.js';
+
+import { registerAnonMessages } from './messages/anonymizer-messages.js';
+import { registerResultViewerMessages } from './messages/report-viewer-messages.js';
+import { CliProcess } from './cmd-line/cli-process.js';
+
+export class Main {
+  private static mainWindow: Electron.BrowserWindow | null;
+  private static resultWindow: Electron.BrowserWindow | null;
+
+  static Start() {
+
+    if (CommandLineCommand.Development) {
+      log.transports.file.resolvePathFn = () => __dirname + '/log.txt';
+    }
+    log.transports.file.level = CommandLineCommand.LogLevel as log.LevelOption;
+    log.transports.console.level = CommandLineCommand.Command === CommandEnum.Cli ? false : CommandLineCommand.LogLevel as log.LevelOption;
+
+    log.debug(CommandLineCommand);
+
+    if (CommandLineCommand.Command === CommandEnum.Cli) {
+      CliProcess(CommandLineCommand).then((exitCode: number) => {
+        process.exit(exitCode);
+      }).catch((error) => {
+        log.error('CLI process failed:', error);
+        process.exit(1);
+      })
+    } else {
+      this.startElectron();
+    }
+  }
+
+  private static startElectron() {
+
+    // This method will be called when Electron has finished
+    // initialization and is ready to create browser windows.
+    // Some APIs can only be used after this event occurs.
+    app.on('ready', () => {
+      this.setSettings();
+
+      log.debug(settings.get("AppSettings"));
+      log.debug("Log File:" + log.transports.file.getFile().path);
+
+      this.createWindows();
+    });
+
+    // Quit when all windows are closed.
+    app.on('window-all-closed', () => {
+      // On OS X it is common for applications and their menu bar
+      // to stay active until the user quits explicitly with Cmd + Q
+      if (process.platform !== 'darwin') {
+        app.quit();
+      }
+    });
+
+    app.on('activate', () => {
+      if (this.mainWindow === null) {
+        this.createMainWindow();
+      }
+    });
+  }
+
+  private static createMainWindow() {
+    // Create the browser window.
+    this.mainWindow = new BrowserWindow({
+      width: 1200,
+      height: 600,
+      useContentSize: false,
+      show: false,
+      resizable: true,
+      fullscreen: false,
+      minimizable: true,
+      maximizable: true,
+      title: "IMPI",
+      autoHideMenuBar: true,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.cjs'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    });
+
+    let url: string;
+    if (CommandLineCommand.Development || process.env.IMPI_DEV === '1') {
+      url = "http://localhost:4200";
+    } else {
+      url = `file://${__dirname}/anonymizer/angular/browser/index.html`
+    }
+    this.mainWindow.loadURL(url);
+
+    // Forward renderer console to stdout
+    this.mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+      try {
+        const levels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+        const src = sourceId ? sourceId.replace(/.*\//, '') : '';
+        console.log(`[RENDERER:${levels[level] || level}] ${message}${src ? ` (${src}:${line})` : ''}`);
+      } catch {
+        // Ignore EPIPE errors when stdout is unavailable
+      }
+    });
+
+    // Open the DevTools.
+    if (CommandLineCommand.Debug) {
+      this.mainWindow.webContents.openDevTools();
+    }
+
+    // Emitted when the window is closed.
+    this.mainWindow.on('closed', () => {
+      this.mainWindow = null;
+    });
+
+
+
+
+    this.mainWindow.webContents.on('did-finish-load', () => {
+      const WEBVIEW_LOAD_TIMEOUT_MS = 100;
+
+      // The flash of white is still present for a very short
+      // while after the WebView reports it finished loading
+      setTimeout(() => {
+        if (this.mainWindow)
+          this.mainWindow.show();
+      }, WEBVIEW_LOAD_TIMEOUT_MS);
+
+    });
+
+  };
+
+  public static createResultWindow() {
+    const win = new BrowserWindow({
+      show: false,
+    });
+
+    win.setMenu(null);
+
+    let url: string;
+    if (CommandLineCommand.Development) {
+      url = "http://localhost:42001";
+    } else {
+      url = `file://${__dirname}/result-viewer/index.html`
+    }
+    win.loadURL(url);
+
+    if (CommandLineCommand.Debug) {
+      win.webContents.openDevTools();
+    }
+
+    this.resultWindow = win;
+  }
+
+  private static createWindows() {
+
+    if (CommandLineCommand.Command === CommandEnum.Result) {
+      this.createResultWindow();
+      log.debug("Register Result-Viewer Messages");
+      registerResultViewerMessages(null);
+      this.GetResultWindow().show();
+    }
+    else {
+      this.createMainWindow();
+      log.debug("Register Anonymizer Messages");
+      registerAnonMessages();
+    }
+  }
+
+  public static GetMainWindow(): BrowserWindow {
+    if (!Main.mainWindow) throw Error("MainWindow null");
+    return Main.mainWindow;
+  }
+
+  public static GetResultWindow(): BrowserWindow {
+    if (!Main.resultWindow) throw Error("ResultWindow null");
+    return Main.resultWindow;
+  }
+
+  private static setSettings() {
+    if (!settings.has("AppSettings")) {
+      settings.set("AppSettings", {
+        CSVEncoding: "windows1252",
+        CSVFile: path.join(__dirname, "default.csv"),
+        CSVSeparater: ";",
+        DBFile: path.join(__dirname, "default.db"),
+        OutDirectory: __dirname,
+        Theme: "Light",
+        Language: "en",
+        SedexSenderId: "",
+        ShowRedFlags: false,
+        MappingFile:"mapping.json"
+      });
+      log.debug("Default AppSettings set");
+    }
+
+    if (CommandLineCommand.Command === CommandEnum.Main) {
+      if (CommandLineCommand.CSVEncoding.length > 0) {
+        settings.set("AppSettings.CSVEncoding", CommandLineCommand.CSVEncoding);
+      }
+      if (CommandLineCommand.CSVFile.length > 0) {
+        settings.set("AppSettings.CSVFile", CommandLineCommand.CSVFile);
+      }
+      if (CommandLineCommand.CSVSeparator.length > 0) {
+        settings.set("AppSettings.CSVSeparater", CommandLineCommand.CSVSeparator);
+      }
+      if (CommandLineCommand.DBFile.length > 0) {
+        settings.set("AppSettings.DBFile", CommandLineCommand.DBFile);
+      }
+      if (CommandLineCommand.OutputDir.length > 0) {
+        settings.set("AppSettings.OutDirectory", CommandLineCommand.OutputDir);
+      }
+      if (CommandLineCommand.Theme.length > 0) {
+        settings.set("AppSettings.Theme", CommandLineCommand.Theme);
+      }
+      if (CommandLineCommand.Language.length > 0) {
+        settings.set("AppSettings.Language", CommandLineCommand.Language);
+      }
+      if (CommandLineCommand.SedexSenderId.length > 0) {
+        settings.set("AppSettings.SedexSenderId", CommandLineCommand.SedexSenderId);
+      }
+      if (CommandLineCommand.MappingFile.length > 0) {
+        settings.set("AppSettings.MappingFile", CommandLineCommand.MappingFile);
+      }
+    }
+  }
+}
+
+// Suppress EPIPE errors from broken stdout/stderr pipes (e.g. when launched from a task runner)
+process.stdout?.on('error', (err) => { if ((err as NodeJS.ErrnoException).code !== 'EPIPE') throw err; });
+process.stderr?.on('error', (err) => { if ((err as NodeJS.ErrnoException).code !== 'EPIPE') throw err; });
+
+Main.Start();

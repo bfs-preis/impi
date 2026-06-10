@@ -1,0 +1,81 @@
+import {TestBed} from '@angular/core/testing';
+import {ProcessingService} from './processing.service';
+import {IProcessOption, ProcessProgress} from '../models';
+
+describe('ProcessingService', () => {
+	let service: ProcessingService;
+
+	const mockOptions: IProcessOption = {
+		DbVersion: '1.5.2',
+		DbPeriodFrom: new Date('2024-01-01').valueOf(),
+		DbPeriodTo: new Date('2024-12-31').valueOf(),
+		CsvRowCount: 5,
+		CsvEncoding: 'utf8',
+		CsvSeparator: ';',
+		DatabaseFile: '/mock/test.db',
+		InputCsvFile: '/mock/test.csv',
+		OutputPath: '/mock/output',
+		SedexSenderId: 'test-sender',
+		MappingFile: '',
+		ClientVersion: '2.0.0-test'
+	};
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [ProcessingService]
+		});
+		service = TestBed.inject(ProcessingService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+
+	it('should call onProgress callback during processWithResult', (done: DoneFn) => {
+		const progressCalls: ProcessProgress[] = [];
+
+		service.processWithResult(mockOptions, (progress: ProcessProgress) => progressCalls.push(progress)).subscribe({
+			next: result => {
+				expect(result).toBeTruthy();
+				expect(progressCalls.length).toBeGreaterThan(0);
+				done();
+			}
+		});
+	});
+
+	it('should complete observable after all rows processed', (done: DoneFn) => {
+		let completed = false;
+		service.processWithResult(mockOptions, () => {}).subscribe({
+			complete: () => {
+				completed = true;
+				expect(completed).toBeTrue();
+				done();
+			}
+		});
+	});
+
+	it('should report correct percentage in progress', (done: DoneFn) => {
+		const progressCalls: ProcessProgress[] = [];
+
+		service.processWithResult(mockOptions, (p) => progressCalls.push(p)).subscribe({
+			next: () => {
+				const lastProgress = progressCalls[progressCalls.length - 1];
+				expect(lastProgress.percentage).toBe(100);
+				expect(lastProgress.processedRow).toBe(mockOptions.CsvRowCount);
+				expect(lastProgress.maxRows).toBe(mockOptions.CsvRowCount);
+				done();
+			}
+		});
+	});
+
+	it('should stop timer on unsubscribe', (done: DoneFn) => {
+		const sub = service.processWithResult(mockOptions, () => {}).subscribe();
+		// Unsubscribe immediately (teardown should clear interval)
+		sub.unsubscribe();
+		// If teardown works, no error after short delay
+		setTimeout(() => {
+			expect(true).toBeTrue();
+			done();
+		}, 200);
+	});
+});

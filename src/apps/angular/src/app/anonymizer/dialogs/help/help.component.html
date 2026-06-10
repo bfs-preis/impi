@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>{{ "anonymizer.Help.Title" | translate }}</h2>
+
+<mat-dialog-content>
+  <div class="help-content">
+    <div class="app-info">
+      <mat-icon svgIcon="information" class="app-icon"></mat-icon>
+      <div>
+        <h3>{{ "anonymizer.Main.Title" | translate }}</h3>
+        <span class="version">Version {{ this.appVersion }}</span>
+      </div>
+    </div>
+
+    <div class="help-links">
+      <a class="help-link" href="https://github.com/bfs-preis/impi/wiki" target="_blank">
+        <mat-icon svgIcon="book"></mat-icon>
+        <div>
+          <strong>{{ "anonymizer.Help.Documentation" | translate }}</strong>
+          <span>github.com/bfs-preis/impi/wiki</span>
+        </div>
+      </a>
+      <a class="help-link" href="https://github.com/bfs-preis/impi" target="_blank">
+        <mat-icon svgIcon="github"></mat-icon>
+        <div>
+          <strong>{{ "anonymizer.Help.SourceCode" | translate }}</strong>
+          <span>github.com/bfs-preis/impi</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-button obButton="primary" cdkFocusInitial mat-dialog-close>
+    {{ "anonymizer.Help.ButtonClose" | translate }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,245 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter impilib run build
+        working-directory: src
+
+      - name: Run tests
+        run: pnpm run test
+        working-directory: src
+
+      - name: Create draft release
+        run: gh release create "${{ github.ref_name }}" --draft --title "${{ github.ref_name }}" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-electron:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build libraries
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter impilib run build
+        working-directory: src
+
+      - name: Build Angular frontend
+        run: pnpm run build:angular
+        working-directory: src
+
+      - name: Build Electron app
+        run: pnpm run build:electron
+        working-directory: src
+
+      - name: Install Electron app dependencies
+        run: node electron/scripts/installAppDeps.js
+        working-directory: src
+
+      - name: Package & publish Electron
+        run: npx electron-builder --${{ matrix.platform }} --publish onTagOrDraft
+        working-directory: src/electron
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-cli:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: node22-linux-x64
+            artifact: impi-cli-linux-x64
+          - os: windows-latest
+            target: node22-win-x64
+            artifact: impi-cli-win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Bundle CLI
+        run: pnpm --filter impi-cli run bundle
+        working-directory: src
+
+      - name: Package CLI
+        run: |
+          mkdir -p ${{ matrix.artifact }}
+          cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
+          printf '{"private":true,"dependencies":{"sqlite3":"^5.1.7"}}\n' > ${{ matrix.artifact }}/package.json
+          cd ${{ matrix.artifact }} && npm install --omit=dev
+          rm package.json package-lock.json
+          printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > impi-cli.js
+          chmod +x impi-cli.js
+        shell: bash
+        working-directory: src
+
+      - name: Compress CLI (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
+        working-directory: src
+
+      - name: Compress CLI (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ${{ matrix.artifact }} -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src
+        shell: pwsh
+
+      - name: Upload CLI to release (Linux)
+        if: runner.os == 'Linux'
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.tar.gz --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload CLI to release (Windows)
+        if: runner.os == 'Windows'
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.zip --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-generate-db:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: node22-linux-x64
+            artifact: generate-impi-geo-database-linux-x64
+          - os: windows-latest
+            target: node22-win-x64
+            artifact: generate-impi-geo-database-win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Bundle generate-impi-geo-database
+        run: pnpm --filter generate-impi-geo-database run bundle
+        working-directory: src
+
+      - name: Package generate-impi-geo-database
+        run: |
+          mkdir -p ${{ matrix.artifact }}
+          cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
+          printf '{"private":true,"dependencies":{"better-sqlite3":"^9.6.0"}}\n' > ${{ matrix.artifact }}/package.json
+          cd ${{ matrix.artifact }} && npm install --omit=dev
+          rm package.json package-lock.json
+          printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > generate-impi-db.js
+          chmod +x generate-impi-db.js
+        shell: bash
+        working-directory: src
+
+      - name: Compress (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
+        working-directory: src
+
+      - name: Compress (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ${{ matrix.artifact }} -DestinationPath ${{ matrix.artifact }}.zip
+        working-directory: src
+        shell: pwsh
+
+      - name: Upload to release (Linux)
+        if: runner.os == 'Linux'
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.tar.gz --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to release (Windows)
+        if: runner.os == 'Windows'
+        run: gh release upload "${{ github.ref_name }}" src/${{ matrix.artifact }}.zip --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,23 @@
+<mat-card [class.card-valid]="isValidFile && !isValidating"
+	[class.card-error]="!!error && !isValidating"
+	[class.card-validating]="isValidating"
+	>
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Csv.Step" | translate }}</span>
+			{{ "anonymizer.Csv.Title" | translate }}
+		</mat-card-title>
+		<span class="header-spacer"></span>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Csv.File' | translate"
+			[buttonText]="'anonymizer.Csv.SelectFile' | translate"
+			[filters]="filters"
+			[mode]="'file'"
+			[disabled]="disabled"
+			[selectedPath]="file"
+			(fileSelected)="onFileSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

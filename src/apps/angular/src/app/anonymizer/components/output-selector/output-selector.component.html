@@ -1,0 +1,22 @@
+<mat-card [class.card-valid]="isValidPath && !isValidating"
+	[class.card-error]="!!path && !isValidPath && !isValidating"
+	[class.card-validating]="isValidating"
+	>
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Out.Step" | translate }}</span>
+			{{ "anonymizer.Out.Title" | translate }}
+		</mat-card-title>
+		<span class="header-spacer"></span>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Out.Directory' | translate"
+			[buttonText]="'anonymizer.Out.SelectFile' | translate"
+			[mode]="'directory'"
+			[disabled]="disabled"
+			[selectedPath]="path"
+			(fileSelected)="onPathSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

@@ -1,0 +1,24 @@
+<mat-card [class.card-valid]="isValidFile && !isValidating"
+	[class.card-error]="!!error && !isValidating"
+	[class.card-validating]="isValidating">
+	<mat-card-header>
+		<mat-card-title>
+			<span class="step-badge">{{ "anonymizer.Db.Step" | translate }}</span>
+			{{ "anonymizer.Db.Title" | translate }}
+		</mat-card-title>
+		<button type="button" mat-icon-button [matTooltip]="'anonymizer.Db.KFactor' | translate" [disabled]="!isValidFile" (click)="openKFactorDialog()" class="header-action">
+			<mat-icon svgIcon="key"></mat-icon>
+		</button>
+	</mat-card-header>
+	<mat-card-content [matTooltip]="getCardTooltip()" matTooltipPosition="below">
+		<app-file-picker
+			[label]="'anonymizer.Db.File' | translate"
+			[buttonText]="'anonymizer.Db.SelectFile' | translate"
+			[filters]="filters"
+			[mode]="'file'"
+			[disabled]="disabled"
+			[selectedPath]="file"
+			(fileSelected)="onFileSelected($event)"
+		></app-file-picker>
+	</mat-card-content>
+</mat-card>

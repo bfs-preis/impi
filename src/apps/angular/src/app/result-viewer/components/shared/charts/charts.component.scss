@@ -1,0 +1,36 @@
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-height: 160px;
+}
+
+.legend-list {
+    display: table;
+}
+
+.legend-row {
+    display: table-row;
+}
+
+.legend-color-box {
+    display: table-cell;
+    float: left;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+}
+
+.legend-count {
+    display: table-cell;
+    width: 40px;
+    min-width: 40px;
+    padding-left: 8px;
+    font-size: 0.85rem;
+}
+
+.legend-label {
+    display: table-cell;
+    padding-left: 8px;
+    white-space: pre;
+    font-size: 0.85rem;
+}

@@ -1,0 +1,62 @@
+{
+  "name": "generate-impi-geo-database",
+  "version": "2.0.0-rc.1",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://git.softrain.ch/impi.git"
+  },
+  "author": "BFS <impi@bfs.admin.ch>",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "bundle": "node esbuild.mjs",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "bump": "pnpm version patch",
+    "tsc": "tsc",
+    "package": "pnpm run bundle && npx @yao-pkg/pkg dist/bundle.cjs --targets node22-linux-x64,node22-win-x64 --output generate-impi-geo-database"
+  },
+  "description": "Generate the IMPI sqlite3 db from csv files",
+  "dependencies": {
+    "better-sqlite3": "catalog:",
+    "commander": "catalog:",
+    "csv-parse": "^5.5.2",
+    "csv-stringify": "catalog:",
+    "iconv-lite": "catalog:",
+    "normalize-city": "workspace:*",
+    "normalize-common": "workspace:*",
+    "normalize-street": "workspace:*",
+    "picocolors": "^1.1.0",
+    "sqlite3": "catalog:",
+    "stream-transform": "catalog:",
+    "winston": "catalog:"
+  },
+  "devDependencies": {
+    "@types/archiver": "catalog:",
+    "@types/better-sqlite3": "catalog:",
+    "@types/chai": "catalog:testing",
+    "@types/mocha": "catalog:testing",
+    "@types/node": "catalog:",
+    "@types/uuid": "catalog:",
+    "chai": "catalog:testing",
+    "esbuild": "^0.28.0",
+    "mocha": "catalog:testing",
+    "nyc": "catalog:testing",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:",
+    "typescript": "catalog:lang"
+  },
+  "bin": {
+    "generate-impi-db": "dist/generate-impi-db-cli.js"
+  }
+}
