@@ -217,9 +217,13 @@ jobs:
         run: |
           mkdir -p ${{ matrix.artifact }}
           # Native sidecar: better-sqlite3's compiled .node must sit next to the
-          # executable. Built here on the matching OS/Node 22 runner so its ABI
-          # matches the Node 22 runtime embedded in the pkg binary below.
-          printf '{"private":true,"dependencies":{"better-sqlite3":"^9.6.0"}}\n' > ${{ matrix.artifact }}/package.json
+          # executable, with an ABI matching the Node 22 runtime embedded in the
+          # pkg binary below (ABI 127). 9.x ships no win32-x64 node-v127 prebuild
+          # (only up to Node 21), so on Windows it would fall back to a source
+          # build and fail; 12.x ships node-v127 prebuilds for every platform.
+          # better-sqlite3 is `external` in the bundle, so the exe loads it
+          # entirely from this sidecar — the version is independent of the build.
+          printf '{"private":true,"dependencies":{"better-sqlite3":"^12.10.1"}}\n' > ${{ matrix.artifact }}/package.json
           ( cd ${{ matrix.artifact }} && npm install --omit=dev && rm package.json package-lock.json )
           # Standalone executable with an embedded Node 22 runtime, so it no
           # longer depends on whatever Node the customer has installed.
