@@ -140,12 +140,16 @@ jobs:
       - name: Package CLI
         run: |
           mkdir -p ${{ matrix.artifact }}
-          cp cli/dist/bundle.cjs ${{ matrix.artifact }}/impi-cli.cjs
+          # Native sidecar: sqlite3's compiled .node must sit next to the
+          # executable. Built here on the matching OS/Node 22 runner so its ABI
+          # matches the Node 22 runtime embedded in the pkg binary below.
           printf '{"private":true,"dependencies":{"sqlite3":"^5.1.7"}}\n' > ${{ matrix.artifact }}/package.json
-          cd ${{ matrix.artifact }} && npm install --omit=dev
-          rm package.json package-lock.json
-          printf '#!/usr/bin/env node\nrequire("./impi-cli.cjs");\n' > impi-cli.js
-          chmod +x impi-cli.js
+          ( cd ${{ matrix.artifact }} && npm install --omit=dev && rm package.json package-lock.json )
+          # Standalone executable with an embedded Node 22 runtime, so it no
+          # longer depends on whatever Node the customer has installed.
+          npx @yao-pkg/pkg cli/dist/bundle.cjs \
+            --targets ${{ matrix.target }} \
+            --output ${{ matrix.artifact }}/impi-cli
         shell: bash
         working-directory: src
 
@@ -212,12 +216,16 @@ jobs:
       - name: Package generate-impi-geo-database
         run: |
           mkdir -p ${{ matrix.artifact }}
-          cp libs/generate-impi-geo-database/dist/bundle.cjs ${{ matrix.artifact }}/generate-impi-db.cjs
+          # Native sidecar: better-sqlite3's compiled .node must sit next to the
+          # executable. Built here on the matching OS/Node 22 runner so its ABI
+          # matches the Node 22 runtime embedded in the pkg binary below.
           printf '{"private":true,"dependencies":{"better-sqlite3":"^9.6.0"}}\n' > ${{ matrix.artifact }}/package.json
-          cd ${{ matrix.artifact }} && npm install --omit=dev
-          rm package.json package-lock.json
-          printf '#!/usr/bin/env node\nrequire("./generate-impi-db.cjs");\n' > generate-impi-db.js
-          chmod +x generate-impi-db.js
+          ( cd ${{ matrix.artifact }} && npm install --omit=dev && rm package.json package-lock.json )
+          # Standalone executable with an embedded Node 22 runtime, so it no
+          # longer depends on whatever Node the customer has installed.
+          npx @yao-pkg/pkg libs/generate-impi-geo-database/dist/bundle.cjs \
+            --targets ${{ matrix.target }} \
+            --output ${{ matrix.artifact }}/generate-impi-db
         shell: bash
         working-directory: src
 

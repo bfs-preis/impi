@@ -1,4 +1,5 @@
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
+import { loadNativeModule } from './native-loader.js';
 import { parse } from 'csv-parse';
 import winston from 'winston';
 import * as fs from 'fs';
@@ -6,6 +7,11 @@ import iconv from 'iconv-lite';
 import { normalizeStreet, normalizeStreetNumber } from "normalize-street";
 import { normalizeCity } from "normalize-city";
 import * as definitions from "./table-definitions.js";
+
+// `better-sqlite3` is a native addon, loaded at runtime so it resolves next to
+// the executable when packaged with pkg. The `Database` import above is a
+// type-only import (erased at compile time) used purely for type annotations.
+const DatabaseCtor = loadNativeModule('better-sqlite3') as typeof Database;
 
 function genericCreateTableAndInserts(db: Database.Database, def: definitions.ITableDefinition, csvFile: string | null, encoding: string,
     rowCallback: (rowCount: number) => void | null, finishCallback: (rowCount: number) => void | null, errorCallback: (err: Error) => void | null): void {
@@ -163,7 +169,7 @@ export function generate(database: string, version: string, periodFrom: string, 
         return errorCallback(err);
     }
 
-    const db = new Database(database);
+    const db = new DatabaseCtor(database);
     db.prepare("PRAGMA synchronous=OFF;").run();
     createVersionTable(db, version, periodFrom, periodTo, encoding, () => {
         createCenterStreetsTable(db, csvStreet, encoding, (count) => {
@@ -212,7 +218,7 @@ export function checkDoubles(database: string): ({ Buildings: number, CenterStre
     let centerStreetsCount = 0;
     let centerCommunitiesCount = 0;
 
-    const db = new Database(database);
+    const db = new DatabaseCtor(database);
 
     let rows = db.prepare(sqlBuildings).all() as Array<{count: number}>;
     if (rows) {
@@ -262,7 +268,7 @@ const DEFAULT_YEAR_GROUPS = [
 
 export function checkKFactor(database: string): boolean {
 
-    const db = new Database(database);
+    const db = new DatabaseCtor(database);
 
     let yearGroups: Array<{max_year: number, code: number}>;
     try {

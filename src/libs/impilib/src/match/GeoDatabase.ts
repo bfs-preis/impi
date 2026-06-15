@@ -1,6 +1,11 @@
-import pkg from 'sqlite3';
-const { verbose, Database } = pkg;
+import type sqlite3 from 'sqlite3';
 import type { Database as DatabaseType } from 'sqlite3';
+import { loadNativeModule } from '../native-loader.js';
+
+// `sqlite3` is a native addon, loaded at runtime so it resolves next to the
+// executable when packaged with pkg. The type-only imports above are erased at
+// compile time and only used for type annotations.
+const { verbose, Database } = loadNativeModule('sqlite3') as typeof sqlite3;
 import { IBuildingRecord } from '../types/IBuildingRecord.js';
 import moment from 'moment';
 
