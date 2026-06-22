@@ -1101,10 +1101,10 @@ charenc@~0.0.1:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
 
-chart.js@^2.7.1:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-2.7.3.tgz#cdb61618830bf216dc887e2f7b1b3c228b73c57e"
-  integrity sha512-3+7k/DbR92m6BsMUYP6M0dMsMVZpMnwkUyNSAbqolHKsbIzH2Q4LWVEHHYq7v0fmEV8whXE0DrjANulw9j2K5g==
+chart.js@^2.9.4:
+  version "2.9.4"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-2.9.4.tgz#0827f9563faffb2dc5c06562f8eb10337d5b9684"
+  integrity sha512-B07aAzxcrikjAPyV+01j7BmOpxtQETxTSlQ26BEYJ+3iUkbNKaOJ/nDbT6JjyqYxseM0ON12COHYdU2cTIjC7A==
   dependencies:
     chartjs-color "^2.1.0"
     moment "^2.10.2"
@@ -3171,7 +3171,7 @@ img-stats@^0.5.2:
     xmldom "^0.1.19"
 
 "impilib@file:../../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -3179,9 +3179,10 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-fe387881-eb38-4bdb-8b7d-e46611851ee8-1556631114406/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-fe387881-eb38-4bdb-8b7d-e46611851ee8-1556631114406/node_modules/normalize-street"
+    normalize-city "file:../../libs/normalize-city"
+    normalize-street "file:../../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -4341,14 +4342,10 @@ mkdirp@0.5, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp
   dependencies:
     minimist "0.0.8"
 
-moment@^2.10.2, moment@^2.19.2:
+moment@^2.10.2, moment@^2.18.1, moment@^2.19.2:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
   integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
-
-moment@^2.18.1:
-  version "2.19.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -4575,7 +4572,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -4598,7 +4595,7 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
 "normalize-street@file:../../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-url@^1.4.0:
   version "1.9.1"
