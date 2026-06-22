@@ -2242,9 +2242,10 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-eventemitter3@1.x.x:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+eventemitter3@^4.0.0:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 events@^1.0.0:
   version "1.1.1"
@@ -2562,6 +2563,11 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
+
+follow-redirects@^1.0.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
+  integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
 
 for-in@^0.1.3:
   version "0.1.8"
@@ -3135,11 +3141,13 @@ http-proxy-middleware@~0.17.4:
     micromatch "^2.3.11"
 
 http-proxy@^1.13.0, http-proxy@^1.16.2:
-  version "1.16.2"
-  resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742"
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.18.1.tgz#401541f0534884bbf95260334e72f88ee3976549"
+  integrity sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==
   dependencies:
-    eventemitter3 "1.x.x"
-    requires-port "1.x.x"
+    eventemitter3 "^4.0.0"
+    follow-redirects "^1.0.0"
+    requires-port "^1.0.0"
 
 http-signature@~1.1.0:
   version "1.1.1"
@@ -3217,7 +3225,7 @@ img-stats@^0.5.2:
     xmldom "^0.1.19"
 
 "impilib@file:../../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -3225,9 +3233,10 @@ img-stats@^0.5.2:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-city"
-    normalize-street "file:../../../.cache/yarn/v4/npm-impilib-1.0.4-64d88ab2-e8b1-4913-9e50-9a88780c182b-1557910351034/node_modules/normalize-street"
+    normalize-city "file:../../libs/normalize-city"
+    normalize-street "file:../../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -4633,7 +4642,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -4656,7 +4665,7 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
 "normalize-street@file:../../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-url@^1.4.0:
   version "1.9.1"
@@ -5873,9 +5882,10 @@ require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
 
-requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
+requires-port@1.0.x, requires-port@^1.0.0, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+  integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
