@@ -1195,7 +1195,7 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
 "impilib@file:../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -1203,9 +1203,10 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-city"
-    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-street"
+    normalize-city "file:../libs/normalize-city"
+    normalize-street "file:../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -1466,8 +1467,9 @@ lodash.toarray@^4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.toarray/-/lodash.toarray-4.4.0.tgz#24c4bfcd6b2fba38bfd0594db1179d8e9b656561"
 
 lodash@^4.14.0, lodash@^4.8.0:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^2.1.0, log-symbols@^2.2.0:
   version "2.2.0"
@@ -1676,7 +1678,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.4.0:
   version "2.4.0"
@@ -1694,7 +1696,7 @@ normalize-path@^2.0.0:
     remove-trailing-separator "^1.0.1"
 
 "normalize-street@file:../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
