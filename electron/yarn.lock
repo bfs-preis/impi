@@ -1195,7 +1195,7 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
 "impilib@file:../libs/impilib":
-  version "1.0.4"
+  version "1.5.2"
   dependencies:
     archiver "^2.0.0"
     big-integer "^1.6.23"
@@ -1203,9 +1203,10 @@ iconv-lite@^0.4.18, iconv-lite@^0.4.19:
     csv-stringify "^1.0.4"
     iconv-lite "^0.4.18"
     moment "^2.18.1"
-    normalize-city "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-city"
-    normalize-street "file:../../.cache/yarn/v4/npm-impilib-1.0.4-7278f613-1439-43e3-82ba-73c3d1170b6b-1556631249953/node_modules/normalize-street"
+    normalize-city "file:../libs/normalize-city"
+    normalize-street "file:../libs/normalize-street"
     rxjs "^5.4.2"
+    sax "^1.2.4"
     sqlite3 "^3.1.8"
     stream-transform "^0.1.2"
     unzip "^0.1.11"
@@ -1676,7 +1677,7 @@ nopt@^4.0.1:
     osenv "^0.1.4"
 
 "normalize-city@file:../libs/normalize-city":
-  version "1.0.4"
+  version "1.5.2"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.4.0:
   version "2.4.0"
@@ -1694,7 +1695,7 @@ normalize-path@^2.0.0:
     remove-trailing-separator "^1.0.1"
 
 "normalize-street@file:../libs/normalize-street":
-  version "1.0.4"
+  version "1.5.2"
 
 npm-run-path@^2.0.0:
   version "2.0.2"
@@ -1995,14 +1996,11 @@ punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
 qs@~6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.1.tgz#2bad97710a5b661c366b378b1e3a44a592ff45e6"
+  integrity sha512-LQy1Q1fcva/UsnP/6Iaa4lVeM49WiOitu2T4hZCyA/elLKu37L99qcBJk4VCCk+rdLvnMzfKyiN3SZTqdAZGSQ==
 
-qs@~6.5.1:
-  version "6.5.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
-
-qs@~6.5.2:
+qs@~6.5.1, qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
