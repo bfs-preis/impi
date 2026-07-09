@@ -28,7 +28,7 @@ import sys
 import time
 from functools import lru_cache
 
-VERSION = "2.0.0-rc.1"
+VERSION = "2.0.0-rc.2"
 
 # ---------------------------------------------------------------------------
 # String utilities (port of normalize-common/src/string-utils.ts)

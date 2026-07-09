@@ -20,7 +20,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-    .version('2.0.0-rc.1')
+    .version('2.0.0-rc.2')
     .option('-g, --geodb <file>', 'Database filename')
     .option('-q, --dbversion <version>', 'Database Version')
     .option('-f, --from <date>', 'Database Period From [dd.MM.YYYY]')
