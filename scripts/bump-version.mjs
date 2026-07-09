@@ -48,6 +48,10 @@ function read(path) {
     return readFileSync(join(repoRoot, path), 'utf8');
 }
 
+const git = (...args) => execFileSync('git', args, { cwd: repoRoot, stdio: 'inherit' });
+const gitOut = (...args) =>
+    execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8' }).trim();
+
 function packageVersion(path) {
     return JSON.parse(read(path)).version;
 }
@@ -82,6 +86,13 @@ function bump(version, tag) {
         process.exit(1);
     }
 
+    // Refuse before touching any file, not after
+    if (tag && gitOut('tag', '--list', `v${version}`)) {
+        console.error(`Tag v${version} already exists — delete it first or pick another version:`);
+        console.error(`  git tag -d v${version} && git push origin :refs/tags/v${version}`);
+        process.exit(1);
+    }
+
     const touched = [];
     for (const path of PACKAGE_JSONS) {
         const src = read(path);
@@ -110,14 +121,6 @@ function bump(version, tag) {
 
     if (!tag) return;
 
-    const git = (...args) => execFileSync('git', args, { cwd: repoRoot, stdio: 'inherit' });
-    const gitOut = (...args) =>
-        execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8' }).trim();
-
-    if (gitOut('tag', '--list', `v${version}`)) {
-        console.error(`Tag v${version} already exists`);
-        process.exit(1);
-    }
     const files = [...PACKAGE_JSONS, ...SOURCE_STAMPS.map((s) => s.file)];
     git('add', '--', ...files);
     git('commit', '-m', `release: v${version}`);

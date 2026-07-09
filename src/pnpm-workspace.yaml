@@ -14,7 +14,9 @@ catalog:
   '@types/node': ^22.10.0
   '@types/uuid': ^10.0.0
   archiver: ^7.0.1
-  better-sqlite3: ^9.6.0
+  # 12.x ships prebuilds for Node 22 on all platforms (9.x compiles from
+  # source on Windows, which broke when the runner image lost VS detection)
+  better-sqlite3: ^12.10.1
   big-integer: ^1.6.52
   commander: ^12.1.0
   csv-stringify: ^6.5.2

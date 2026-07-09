@@ -22,8 +22,8 @@ catalogs:
       specifier: ^7.0.1
       version: 7.0.1
     better-sqlite3:
-      specifier: ^9.6.0
-      version: 9.6.0
+      specifier: ^12.10.1
+      version: 12.11.1
     big-integer:
       specifier: ^1.6.52
       version: 1.6.52
@@ -300,7 +300,7 @@ importers:
     dependencies:
       better-sqlite3:
         specifier: 'catalog:'
-        version: 9.6.0
+        version: 12.11.1
       commander:
         specifier: 'catalog:'
         version: 12.1.0
@@ -2505,8 +2505,9 @@ packages:
     resolution: {integrity: sha512-NaWu+f4YrJxEttJSm16AzMIFtVldCvaJ68b1L098KpqXmxt9xOLtKoLkKxb8ekhOrLqEJAbvT6n6SEvB/sac7A==}
     engines: {node: '>=14.0.0'}
 
-  better-sqlite3@9.6.0:
-    resolution: {integrity: sha512-yR5HATnqeYNVnkaUTf4bOP2dJSnyhP4puJN/QPRyx4YkBEEUxib422n2XzPqDEHjQQqazoYoADdAm5vE15+dAQ==}
+  better-sqlite3@12.11.1:
+    resolution: {integrity: sha512-dq9AtApgg5PGFtBzPFSBl3HZQjHok5gaQCM6zh2Yk0aSmDCs1CbnVI8/HgASQkNKsWFpseIO9beg5xxpYhbIfA==}
+    engines: {node: 20.x || 22.x || 23.x || 24.x || 25.x || 26.x}
 
   big-integer@1.6.52:
     resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
@@ -7508,7 +7509,7 @@ snapshots:
       postcss: 8.5.8
       postcss-media-query-parser: 0.2.3
 
-  better-sqlite3@9.6.0:
+  better-sqlite3@12.11.1:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.3

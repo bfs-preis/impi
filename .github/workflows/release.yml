@@ -42,7 +42,10 @@ jobs:
         working-directory: src
 
       - name: Create draft release
-        run: gh release create "${{ github.ref_name }}" --draft --title "${{ github.ref_name }}" --generate-notes
+        # idempotent so a re-pushed tag (e.g. after a failed run) doesn't fail here
+        run: |
+          gh release view "${{ github.ref_name }}" >/dev/null 2>&1 || \
+            gh release create "${{ github.ref_name }}" --draft --title "${{ github.ref_name }}" --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
