@@ -46,6 +46,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload Python geo-database generator
+        # single stdlib-only file — runs on a bare Python 3.11, no install needed
+        run: gh release upload "${{ github.ref_name }}" src/python/generate_impi_db.py --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release-electron:
     needs: test
     strategy:
