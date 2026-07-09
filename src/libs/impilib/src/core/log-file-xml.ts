@@ -37,16 +37,25 @@ export async function readResultZipFile(file: string, callback: (result: ILogRes
                         Mappings: {},
                         Scales: {}
                     };
-                    res.Log.Mapping.at(0).Mappings.at(0).each((_, m) => {
-                        mapping.Mappings[m.attributes().Name] = {};
-                        m.each((_, m2) => {
-                            mapping.Mappings[m.attributes().Name][m2.attributes().Name] = m2.attributes().Value;
-                        });
-                    });
-
-                    res.Log.Mapping.at(0).Scales.at(0).each((_, m) => {
-                        mapping.Scales[m.attributes().Name] = m.attributes().Value;
-                    });
+                    if (res.Log.Mapping) {
+                        const mappingsNode = res.Log.Mapping.at(0).Mappings.at(0);
+                        if (mappingsNode.Property) {
+                            mappingsNode.Property.each((_, m) => {
+                                mapping.Mappings[m.attributes().Name] = {};
+                                if (m.PropertyValue) {
+                                    m.PropertyValue.each((_, m2) => {
+                                        mapping.Mappings[m.attributes().Name][m2.attributes().Name] = m2.attributes().Value;
+                                    });
+                                }
+                            });
+                        }
+                        const scalesNode = res.Log.Mapping.at(0).Scales.at(0);
+                        if (scalesNode.ScaleProperty) {
+                            scalesNode.ScaleProperty.each((_, m) => {
+                                mapping.Scales[m.attributes().Name] = m.attributes().Value;
+                            });
+                        }
+                    }
 
                     const matchsummary: ILogMatchingType[] = [];
                     res.Log.MatchSummery.at(0).Match.each((_, m) => {
@@ -65,7 +74,8 @@ export async function readResultZipFile(file: string, callback: (result: ILogRes
                         violations.push(
                             {
                                 Id: r.attributes().Id,
-                                Text: r.attributes().Text,
+                                // the writer stores the rule text in the "Name" attribute
+                                Text: r.attributes().Name,
                                 Count: r.attributes().Count,
                                 Rows: rows,
                                 RedFlag: (r.attributes().RedFlag === 'true')
@@ -80,9 +90,11 @@ export async function readResultZipFile(file: string, callback: (result: ILogRes
                             Violations: []
                         } as ILogRow;
 
-                        m.Violation.each((_, n) => {
-                            logRow.Violations.push(n.text());
-                        });
+                        if (m.Violation) {
+                            m.Violation.each((_, n) => {
+                                logRow.Violations.push(n.text());
+                            });
+                        }
                         rows.push(logRow);
                     });
 
@@ -91,7 +103,8 @@ export async function readResultZipFile(file: string, callback: (result: ILogRes
                             ClientVersion: res.Log.Meta.at(0).attributes().ClientVersion,
                             CsvEncoding: res.Log.Meta.at(0).attributes().CsvEncoding,
                             CsvRowCount: res.Log.Meta.at(0).attributes().CsvRowCount,
-                            CsvSeparator: res.Log.Meta.at(0).attributes().CsvSeparator,
+                            // the writer stores the separator in the "CsvDelimiter" attribute
+                            CsvSeparator: res.Log.Meta.at(0).attributes().CsvDelimiter,
                             DbPeriodFrom: moment(res.Log.Meta.at(0).attributes().DbPeriodFrom, "DD.MM.YYYY").valueOf(),
                             DbPeriodTo: moment(res.Log.Meta.at(0).attributes().DbPeriodTo, "DD.MM.YYYY").valueOf(),
                             DbVersion: res.Log.Meta.at(0).attributes().DbVersion,

@@ -12,6 +12,7 @@ A data enrichment tool for Swiss real estate price index processing. IMPI normal
 - **XML logging** -- structured processing logs in XML format
 - **Desktop application** -- Electron app with Angular frontend for interactive use
 - **Multilingual UI** -- German, English, French, and Italian interface translations
+- **Python geo-database generator** -- standalone, stdlib-only Python 3.11 port of the geo database builder for environments without Node.js (`src/python/`)
 
 ## Architecture
 
@@ -49,8 +50,8 @@ The Angular frontend communicates with the Electron main process via IPC channel
 ## Prerequisites
 
 - **Node.js** >= 20 (22.19.0 LTS recommended; pinned in `.nvmrc` / `.node-version`)
-- **pnpm** 10+ (enforced via `only-allow` preinstall hook) -- for libraries and Angular
-- **npm** -- for the Electron shell and CLI
+- **pnpm** 10+ (enforced via `only-allow` preinstall hook) -- used by all packages
+- **Python** 3.11 (optional) -- only for the standalone geo-database generator in `src/python/`
 - **Nix** (optional): run `nix develop` for a fully provisioned environment
 
 On Nix/Wayland systems, set `ELECTRON_OZONE_PLATFORM_HINT=x11` for native file dialogs.
@@ -58,25 +59,18 @@ On Nix/Wayland systems, set `ELECTRON_OZONE_PLATFORM_HINT=x11` for native file d
 ## Quick Start
 
 ```bash
-# 1. Install library dependencies
-cd src/libs
+# 1. Install all workspace dependencies
+cd src
 pnpm install
 
-# 2. Build all libraries (respects topological order)
+# 2. Build libraries (topological order), Angular, and Electron
 pnpm run build
+pnpm run build:angular
+pnpm run build:electron
 
-# 3. Install and build the Angular frontend
-cd ../apps/angular
-pnpm install
-pnpm run build
-
-# 4. Install and build the Electron app
-cd ../../electron
-npm install
-npm run build
-
-# 5. Launch the desktop app
-npm run start
+# 3. Launch the desktop app
+cd electron
+pnpm run start
 ```
 
 ## Development
@@ -97,11 +91,11 @@ In a separate terminal:
 
 ```bash
 cd src/electron
-npm run tsc && npm run copyPreload && npm run copyBackground
+pnpm run tsc && pnpm run copyPreload
 IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 ```
 
-When `IMPI_DEV=1` is set, Electron loads the UI from `http://localhost:4200`. Angular changes auto-reload without restarting Electron. If you change Electron main-process code, re-run `npm run tsc` and restart Electron.
+When `IMPI_DEV=1` is set, Electron loads the UI from `http://localhost:4200`. Angular changes auto-reload without restarting Electron. If you change Electron main-process code, re-run `pnpm run tsc` and restart Electron.
 
 Renderer console logs are forwarded to stdout as `[RENDERER:LEVEL]`.
 
@@ -120,9 +114,11 @@ impi/
       impilib/                       # core processing library
       generate-impi-geo-database/    # geo database builder (CSV to SQLite)
     apps/
-      angular/                       # Angular 20 frontend (separate pnpm workspace)
+      angular/                       # Angular 20 frontend
     electron/                        # Electron desktop app shell
     cli/                             # standalone CLI for batch processing
+    python/                          # stdlib-only Python 3.11 geo database generator
+  scripts/                           # dev/release helpers (bump-version, DB parity check, test harnesses)
 ```
 
 ## Libraries
@@ -170,23 +166,29 @@ pnpm run build       # production build to dist/angular/
 
 ```bash
 cd src/electron
-npm install
-npm run build        # clean + compile + copy assets + create build package.json
-npm run release      # build + package with electron-builder (produces AppImage)
+pnpm run build       # clean + compile + copy assets + create build package.json
+pnpm run release     # build + package with electron-builder (produces AppImage)
 ```
 
 ### CLI
 
 ```bash
 cd src/cli
-npm install
-npm run build        # compile to dist/
+pnpm run build       # compile to dist/
 
 # Run directly
 node dist/index.js --db geodb.db --csv input.csv --out ./output
+```
 
-# Package as standalone binary
-npm run package      # produces binaries for Linux and Windows (node22)
+### Python geo-database generator
+
+A standalone, dependency-free Python 3.11 port of `generate-impi-geo-database` for
+environments without Node.js. Produces a database logically identical to the Node
+tool's output (verified with `scripts/verify-db-parity.py`). See `src/python/README.md`.
+
+```bash
+python3 src/python/generate_impi_db.py -g geo.db -q 1.0.0 -f 01.01.2025 -t 31.12.2025 \
+    -s CENTER_STREET.csv -c CENTER_PLZ.csv -b BUILDINGS.csv -a ALTERNATIVE_ZIPCODES.csv
 ```
 
 #### CLI Options

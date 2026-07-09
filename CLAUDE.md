@@ -17,6 +17,8 @@ IMPI (Immobilienpreisindex) is a data enrichment tool for Swiss real estate pric
 - `src/apps/angular/` — Angular 20 frontend (separate pnpm workspace)
 - `src/electron/` — Electron desktop app shell (depends on impilib)
 - `src/cli/` — Standalone CLI for batch processing (depends on impilib)
+- `src/python/` — Stdlib-only Python 3.11 port of the geo DB generator (verified output-identical; see its README)
+- `scripts/` — Dev/release helpers: `bump-version.mjs` (version stamping + release tagging), `verify-db-parity.py`, BFS test harnesses (`test-matching.mjs`, `test-validation.mjs`), `generate-db.sh`
 - `flake.nix` — Nix dev environment (Node.js 22, pnpm, Electron deps)
 
 ## Library Dependency Graph
@@ -43,15 +45,20 @@ normalize-common          ← foundation: string utils, base normalizer
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`ci.yml`** — runs on push/PR to `develop` and `master`. Builds all libs, runs tests, builds Angular, Electron, and CLI.
+- **`ci.yml`** — runs on push/PR to `develop` and `master`. Checks version sync, builds all libs, runs lib + Angular tests, builds Angular, Electron, and CLI. A `python` job runs the `src/python` unittest suite; a `generator-parity` job builds a mini geo DB from `test-data/fixtures/` with both the Node and Python generators and requires identical output (guards against normalization-rule drift).
 - **`release.yml`** — runs on `v*` tags or manual dispatch. Tests first, then builds in parallel:
   - **Electron** (Linux + Windows) — published as draft GitHub Release via electron-builder
   - **CLI** binaries (Linux + Windows) — packaged with `@yao-pkg/pkg`, uploaded to the same release
 
 ### Release Process
 
-1. Bump `version` in `src/package.json`, `src/electron/package.json`, and `src/cli/package.json`
-2. Commit and tag: `git tag v<version>`
-3. Push tag: `git push origin v<version>`
-4. CI runs tests → builds Electron installers (AppImage, deb, rpm, pacman, tar.gz, NSIS exe) + CLI binaries
-5. Review and publish the draft release on GitHub
+The version has a single source of truth: `src/package.json`. `scripts/bump-version.mjs`
+stamps it into every other location (all workspace `package.json` files, the hardcoded
+string in `generate-impi-db-cli.ts`, and `src/python/generate_impi_db.py`); CI fails on
+drift (`node scripts/bump-version.mjs --check`).
+
+1. From `src/`: `pnpm run release <version>` — stamps all files, commits `release: v<version>`, creates the tag
+   (or `pnpm run bump <version>` to only stamp the files)
+2. Push: `git push && git push origin v<version>`
+3. CI runs tests → builds Electron installers (AppImage, deb, rpm, pacman, tar.gz, NSIS exe) + CLI binaries
+4. Review and publish the draft release on GitHub

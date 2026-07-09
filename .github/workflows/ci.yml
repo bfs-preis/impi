@@ -26,6 +26,9 @@ jobs:
           cache: pnpm
           cache-dependency-path: src/pnpm-lock.yaml
 
+      - name: Check version sync
+        run: node scripts/bump-version.mjs --check
+
       - name: Install dependencies
         run: pnpm install
         working-directory: src
@@ -36,6 +39,10 @@ jobs:
 
       - name: Run tests
         run: pnpm run test
+        working-directory: src
+
+      - name: Run Angular tests
+        run: pnpm run test:angular
         working-directory: src
 
       - name: Build Angular frontend
@@ -65,3 +72,49 @@ jobs:
       - name: Run tests
         run: python -m unittest discover -v tests
         working-directory: src/python
+
+  # Build a mini geo DB from the committed fixture CSVs with BOTH the Node
+  # generator and the Python port, then require logically identical output.
+  # This is the guard against normalization-rule drift between the two.
+  generator-parity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: src/pnpm-lock.yaml
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: src
+
+      - name: Build generator
+        run: pnpm --filter normalize-common --filter normalize-street --filter normalize-city --filter generate-impi-geo-database run build
+        working-directory: src
+
+      - name: Generate DB with both implementations and compare
+        run: |
+          F=test-data/fixtures
+          ARGS="-q FIXTURE -f 01.01.2025 -t 31.12.2025 \
+            -s $F/centerstreets.csv -c $F/centercommunities.csv \
+            -b $F/buildings.csv -a $F/additionalcommunities.csv \
+            -y $F/yeargroups.csv -e utf8"
+          node src/libs/generate-impi-geo-database/dist/generate-impi-db-cli.js -g /tmp/node.db $ARGS
+          python3 src/python/generate_impi_db.py -g /tmp/py.db $ARGS
+          python3 scripts/verify-db-parity.py /tmp/node.db /tmp/py.db

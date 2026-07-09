@@ -13,7 +13,7 @@ Depends on `normalize-common`, `normalize-street`, `normalize-city`.
 - `processFile()` — main entry point for processing input files
 - `ValidationRules`, `IValidationRule` — validation framework
 - `GeoDatabase`, `IDbInfo` — geographic database interfaces
-- `MatchingTypeEnum` — matching type enumeration
+- `MatchingTypeEnum` — matching type enumeration (codes 0–10: 0–4 address cascade only, 5–10 combined EGID/address outcomes; on EGID/point conflict the point match wins)
 - `ILogResult`, `ILogMeta`, `ILogViolation`, `ILogRow`, `ILogMatchingType` — result logging types
 
 ## Build & Test

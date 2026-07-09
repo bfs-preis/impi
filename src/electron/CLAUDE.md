@@ -36,6 +36,7 @@ IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 
 | Channel | Direction | Purpose |
 |---------|-----------|---------|
+| `get-app-version` | renderer → main (sync) | App version for the help dialog, fetched by the preload at load time |
 | `select-file` / `select-file-response` | renderer → main → renderer | Native file open dialog |
 | `select-directory` / `select-directory-response` | renderer → main → renderer | Native directory picker |
 | `verify db` / `verify db response` | renderer → main → renderer | Validate geo database |
@@ -48,7 +49,7 @@ IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 ### Window Configuration
 
 - Main window: 1200x800, resizable, preload + contextIsolation
-- Background window: hidden, nodeIntegration (runs impilib processing)
+- File processing runs in an Electron `utilityProcess` (spawned on `background-start`, killable via `background-cancel`) — no hidden background window
 - Result window: created on-demand after processing completes
 
 ### CLI Mode

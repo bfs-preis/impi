@@ -10,8 +10,16 @@ Depends on `normalize-common`, `normalize-street`, `normalize-city`.
 
 ## Key Exports
 
-- `generateImpiDb()` — main function to generate the geo database
+- `generate()` — main function to generate the geo database
+- `checkDoubles()`, `checkKFactor()` — post-build sanity checks
 - CLI binary: `generate-impi-db`
+
+## Python Port
+
+`src/python/generate_impi_db.py` is a stdlib-only Python 3.11 port of this tool with
+verified-identical output (`scripts/verify-db-parity.py`). The normalization rules are
+duplicated there — when changing any rule here (or in the normalize-* libs), update the
+Python port and re-run the parity check.
 
 ## Build
 

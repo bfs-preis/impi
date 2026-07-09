@@ -1,5 +1,7 @@
 //https://github.com/SamDecrock/node-xmlreader/blob/master/xmlreader.js
-import * as sax from "sax";
+// Default import: sax is CommonJS, so its named exports are not statically
+// analyzable from ESM — `import * as sax` yields `parser: undefined` at runtime.
+import sax from "sax";
 
 export function read(xmlstring, callback) {
     const saxparser = sax.parser(true);

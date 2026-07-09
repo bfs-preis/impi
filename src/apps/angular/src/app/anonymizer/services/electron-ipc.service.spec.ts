@@ -16,8 +16,19 @@ describe('ElectronIpcService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should return app version', () => {
-		expect(service.getAppVersion()).toBe('1.5.2');
+	it('should return the app version exposed by the preload bridge', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		(window as any).electron = { appVersion: '2.0.0-test' };
+		try {
+			expect(service.getAppVersion()).toBe('2.0.0-test');
+		} finally {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			delete (window as any).electron;
+		}
+	});
+
+	it('should return empty string when the preload bridge is absent', () => {
+		expect(service.getAppVersion()).toBe('');
 	});
 
 	describe('getSetting', () => {

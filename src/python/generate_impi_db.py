@@ -537,11 +537,16 @@ def _load_csv(conn, table, csv_path, encoding, progress):
 
 def _insert_batch(conn, insert_sql, batch):
     """Insert a batch; on failure replay row-by-row, logging and skipping bad
-    rows like the Node tool (skipped rows are not counted)."""
+    rows like the Node tool (skipped rows are not counted). The savepoint
+    discards the partial executemany so the replay cannot duplicate rows."""
+    conn.execute("SAVEPOINT batch_insert")
     try:
         conn.executemany(insert_sql, batch)
+        conn.execute("RELEASE batch_insert")
         return len(batch)
     except sqlite3.Error:
+        conn.execute("ROLLBACK TO batch_insert")
+        conn.execute("RELEASE batch_insert")
         inserted = 0
         for values in batch:
             try:

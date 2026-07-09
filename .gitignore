@@ -48,3 +48,4 @@ test-files
 
 # Legacy
 old_impi/
+__pycache__/
