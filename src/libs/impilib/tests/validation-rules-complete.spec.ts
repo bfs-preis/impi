@@ -67,10 +67,22 @@ describe('Validation Rule 50: ObjectType=EFH and StandardOfVolume value', () => 
     });
 });
 
-describe('Validation Rule 51: EGID Format', () => {
+describe('Validation Rule 51: EGID missing', () => {
     const rule = getRule(51);
 
-    it('should pass when egid is empty (optional)', () => {
+    it('should fail when egid is empty', () => {
+        expect(rule.ValCode(makeRow({ egid: '' }))).to.equal(false);
+    });
+
+    it('should pass when egid is present', () => {
+        expect(rule.ValCode(makeRow({ egid: '123456' }))).to.equal(true);
+    });
+});
+
+describe('Validation Rule 52: EGID Format', () => {
+    const rule = getRule(52);
+
+    it('should pass when egid is empty (missing is rule 51)', () => {
         expect(rule.ValCode(makeRow({ egid: '' }))).to.equal(true);
     });
 

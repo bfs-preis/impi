@@ -32,6 +32,10 @@ let activeChild: Electron.UtilityProcess | null = null;
 
 export function registerAnonMessages() {
 
+    ipcMain.on('get-app-version', (event: IpcMainEvent) => {
+        event.returnValue = app.getVersion();
+    });
+
     ipcMain.on('background-cancel', () => {
         if (activeChild) {
             console.log('[MAIN] killing background process');

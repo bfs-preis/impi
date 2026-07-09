@@ -319,7 +319,12 @@ export const ValidationRules: IValidationRule[] = [
         }, RedFlag: false
     },
     {
-        Id: 51, Message: "EGID Format ≠ Number", ValCode: (row: IBankDataCsv): boolean => {
+        Id: 51, Message: "EGID is missing", ValCode: (row: IBankDataCsv): boolean => {
+            return !(!row.egid || row.egid.length === 0);
+        }, RedFlag: false
+    },
+    {
+        Id: 52, Message: "EGID Format ≠ Number", ValCode: (row: IBankDataCsv): boolean => {
             if (!row.egid || row.egid.length === 0) return true;
             return isNumeric(row.egid);
         }, RedFlag: false

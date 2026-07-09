@@ -62,8 +62,34 @@ describe('check single validation errors', () => {
     yearofconstruction: "1999",
     zipcode: "3000",
     standardofvolume:"2",
-    egid: ""
+    egid: "123456"
   };
+
+  it('should have EGID missing', () => {
+
+    const row = Object.assign({}, Row);
+
+    row.egid = "";
+
+    const result = checkValidationRules(row);
+
+    expect(result.ViolatedRules.length).to.equal(1);
+    expect(result.Flags).to.equalBigInt(getBigInt(51));
+
+  });
+
+  it('should have EGID Format ≠ Number', () => {
+
+    const row = Object.assign({}, Row);
+
+    row.egid = "abc123";
+
+    const result = checkValidationRules(row);
+
+    expect(result.ViolatedRules.length).to.equal(1);
+    expect(result.Flags).to.equalBigInt(getBigInt(52));
+
+  });
 
   it('should have no validation error', () => {
     const result = checkValidationRules(Row);

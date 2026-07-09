@@ -9,7 +9,6 @@ import { MatListModule } from '@angular/material/list';
 
 import { MainComponent } from './components/main/main.component';
 import { ChartsComponent } from './components/shared/charts/charts.component';
-import { ChartCorrectComponent } from './components/chart-correct/chart-correct.component';
 import { ChartMatchesComponent } from './components/chart-matches/chart-matches.component';
 import { ChartViolationsComponent } from './components/chart-violations/chart-violations.component';
 import { ProcessResultService } from './services/process-result.service';
@@ -25,7 +24,6 @@ import { ProcessResultService } from './services/process-result.service';
     // Standalone components
     MainComponent,
     ChartsComponent,
-    ChartCorrectComponent,
     ChartMatchesComponent,
     ChartViolationsComponent,
   ],

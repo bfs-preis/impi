@@ -15,10 +15,10 @@ Part of the root pnpm workspace at `src/`.
 
 ## Development Workflow
 
-Start Angular dev server first (`cd src/apps/angular && pnpm run start`), then:
+Start Angular dev server first (`cd src/apps/angular && pnpm run start`), then, from `src/electron`:
 
 ```bash
-pnpm run tsc && pnpm run copyPreload && pnpm run copyBackground
+pnpm run tsc && pnpm run copyPreload
 IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 ```
 
@@ -30,7 +30,7 @@ IMPI_DEV=1 ELECTRON_OZONE_PLATFORM_HINT=x11 npx electron --no-sandbox ./app
 
 ### Preload Script
 
-`src/preload.cjs` (CommonJS, not ESM) uses `contextBridge` to expose `window.electron.ipcRenderer` with `send`, `once`, `on` methods. Must be `.cjs` because Electron preload runs in CommonJS context while the rest of the app is ESM.
+`src/preload.cjs` (CommonJS, not ESM) uses `contextBridge` to expose `window.electron.ipcRenderer` with `send`, `once`, `on` methods, plus `window.electron.appVersion` (fetched synchronously from the main process via the `get-app-version` channel). Must be `.cjs` because Electron preload runs in CommonJS context while the rest of the app is ESM.
 
 ### IPC Channels
 

@@ -10,15 +10,17 @@ export enum MatchingTypeEnum {
     CenterCommunitiesMatching = 2,
     NoMatching = 3,
     NoMatchingWithError = 4,
-    EGIDMatching = 5
+    EGIDPointMatchingIdentical = 5,
+    EGIDPointMatchingDifferent = 6,
+    EGIDMatchingCenterStreet = 7,
+    EGIDMatchingCenterCommunities = 8,
+    EGIDMatchingNoMatching = 9,
+    EGIDMatchingNoMatchingWithError = 10
 }
 
 export interface MatchResult {
     record: IBuildingRecord | null;
     matchingType: MatchingTypeEnum;
-    egidProvided: boolean;
-    egidMatched: boolean;
-    addressMatched: boolean;
 }
 
 export function match(
@@ -27,51 +29,55 @@ export function match(
     callback: (result: MatchResult, err: Error | null) => void): void {
 
     _matchAsync(record, geoDatabase)
-        .then((result) => callback(result, null))
+        .then(([result, err]) => callback(result, err))
         .catch((error) => callback({
             record: null,
-            matchingType: MatchingTypeEnum.NoMatchingWithError,
-            egidProvided: !!record.egid?.length,
-            egidMatched: false,
-            addressMatched: false
+            matchingType: MatchingTypeEnum.NoMatchingWithError
         }, error));
 }
 
 async function _matchAsync(
     record: IBankDataCsv,
     geoDatabase: GeoDatabase
-): Promise<MatchResult> {
+): Promise<[MatchResult, Error | null]> {
 
     const hasEgid = !!record.egid?.length && !isNaN(+record.egid);
 
-    // Run EGID lookup and address cascade in parallel
-    const [egidRow, addressResult] = await Promise.all([
-        hasEgid ? _searchEGID(geoDatabase, +record.egid) : Promise.resolve(null),
+    // Run EGID lookup and address cascade in parallel.
+    // A failing EGID lookup counts as "no EGID match"; a failing address
+    // cascade is only fatal when the EGID didn't match either (code 10 vs 4).
+    const [egidRow, [addressRow, addressType, addressError]] = await Promise.all([
+        hasEgid ? _searchEGID(geoDatabase, +record.egid).catch(() => null) : Promise.resolve(null),
         _addressCascade(record, geoDatabase)
+            .then((r): [IBuildingRecord | null, MatchingTypeEnum, Error | null] => [r[0], r[1], null])
+            .catch((err: Error): [IBuildingRecord | null, MatchingTypeEnum, Error | null] =>
+                [null, MatchingTypeEnum.NoMatchingWithError, err])
     ]);
 
-    const egidMatched = egidRow !== null;
-    const addressMatched = addressResult[0] !== null;
-
-    // EGID wins if it matched
-    if (egidMatched) {
-        return {
-            record: egidRow,
-            matchingType: MatchingTypeEnum.EGIDMatching,
-            egidProvided: hasEgid,
-            egidMatched: true,
-            addressMatched
-        };
+    // No EGID match: the address cascade result stands as-is (codes 0-4)
+    if (egidRow === null) {
+        return [{ record: addressRow, matchingType: addressType }, addressError];
     }
 
-    // Fall back to address result
-    return {
-        record: addressResult[0],
-        matchingType: addressResult[1],
-        egidProvided: hasEgid,
-        egidMatched: false,
-        addressMatched
-    };
+    // EGID matched: combine with the address cascade outcome (codes 5-10)
+    switch (addressType) {
+        case MatchingTypeEnum.PointMatching:
+            // Identical building: either result works, take the EGID row.
+            // Different buildings: the address is less prone to false
+            // positives (typos in an EGID silently hit another building),
+            // so point matching wins.
+            return addressRow!.egid === egidRow.egid
+                ? [{ record: egidRow, matchingType: MatchingTypeEnum.EGIDPointMatchingIdentical }, null]
+                : [{ record: addressRow, matchingType: MatchingTypeEnum.EGIDPointMatchingDifferent }, null];
+        case MatchingTypeEnum.CenterStreetMatching:
+            return [{ record: egidRow, matchingType: MatchingTypeEnum.EGIDMatchingCenterStreet }, null];
+        case MatchingTypeEnum.CenterCommunitiesMatching:
+            return [{ record: egidRow, matchingType: MatchingTypeEnum.EGIDMatchingCenterCommunities }, null];
+        case MatchingTypeEnum.NoMatchingWithError:
+            return [{ record: egidRow, matchingType: MatchingTypeEnum.EGIDMatchingNoMatchingWithError }, null];
+        default:
+            return [{ record: egidRow, matchingType: MatchingTypeEnum.EGIDMatchingNoMatching }, null];
+    }
 }
 
 async function _addressCascade(

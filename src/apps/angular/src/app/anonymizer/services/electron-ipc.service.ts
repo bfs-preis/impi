@@ -31,7 +31,9 @@ export class ElectronIpcService extends ElectronService {
 	}
 
 	getAppVersion(): string {
-		return '1.5.2';
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const win = window as any;
+		return (win.electron?.appVersion as string | undefined) ?? '';
 	}
 
 	getSetting<T>(key: string, defaultValue?: T): T {

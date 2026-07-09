@@ -1,14 +1,10 @@
 import { expect } from 'chai';
 import 'mocha';
-import { MatchingTypeEnum, MatchResult } from '../src/match/match.js';
+import { MatchingTypeEnum } from '../src/match/match.js';
 import { IBankDataCsv } from '../src/types/IBankDataCsv.js';
 import { ValidationRules } from '../src/validation/ValidationRules.js';
 
 describe('EGID Matching Types', () => {
-
-    it('should have EGIDMatching enum value', () => {
-        expect(MatchingTypeEnum.EGIDMatching).to.equal(5);
-    });
 
     it('should have all original matching types unchanged', () => {
         expect(MatchingTypeEnum.PointMatching).to.equal(0);
@@ -17,73 +13,71 @@ describe('EGID Matching Types', () => {
         expect(MatchingTypeEnum.NoMatching).to.equal(3);
         expect(MatchingTypeEnum.NoMatchingWithError).to.equal(4);
     });
-});
 
-describe('MatchResult interface', () => {
-
-    it('should represent an EGID match result', () => {
-        const result: MatchResult = {
-            record: null,
-            matchingType: MatchingTypeEnum.EGIDMatching,
-            egidProvided: true,
-            egidMatched: true,
-            addressMatched: false
-        };
-        expect(result.egidProvided).to.equal(true);
-        expect(result.egidMatched).to.equal(true);
-        expect(result.addressMatched).to.equal(false);
-        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatching);
-    });
-
-    it('should represent a fallback to address match', () => {
-        const result: MatchResult = {
-            record: null,
-            matchingType: MatchingTypeEnum.PointMatching,
-            egidProvided: true,
-            egidMatched: false,
-            addressMatched: true
-        };
-        expect(result.egidProvided).to.equal(true);
-        expect(result.egidMatched).to.equal(false);
-        expect(result.addressMatched).to.equal(true);
-    });
-
-    it('should represent no EGID provided', () => {
-        const result: MatchResult = {
-            record: null,
-            matchingType: MatchingTypeEnum.NoMatching,
-            egidProvided: false,
-            egidMatched: false,
-            addressMatched: false
-        };
-        expect(result.egidProvided).to.equal(false);
+    it('should have the combined EGID/address matching types', () => {
+        expect(MatchingTypeEnum.EGIDPointMatchingIdentical).to.equal(5);
+        expect(MatchingTypeEnum.EGIDPointMatchingDifferent).to.equal(6);
+        expect(MatchingTypeEnum.EGIDMatchingCenterStreet).to.equal(7);
+        expect(MatchingTypeEnum.EGIDMatchingCenterCommunities).to.equal(8);
+        expect(MatchingTypeEnum.EGIDMatchingNoMatching).to.equal(9);
+        expect(MatchingTypeEnum.EGIDMatchingNoMatchingWithError).to.equal(10);
     });
 });
 
-describe('EGID Validation Rule (ID 51)', () => {
+describe('EGID Validation Rule 51 (EGID is missing)', () => {
 
-    const egidRule = ValidationRules.find(r => r.Id === 51);
+    const rule = ValidationRules.find(r => r.Id === 51);
 
     it('should exist', () => {
-        expect(egidRule).to.not.be.undefined;
+        expect(rule).to.not.be.undefined;
+        expect(rule!.Message).to.equal('EGID is missing');
     });
 
-    it('should pass when egid is empty (optional field)', () => {
+    it('should fail when egid is empty', () => {
         const row = { egid: '' } as IBankDataCsv;
-        expect(egidRule!.ValCode(row)).to.equal(true);
+        expect(rule!.ValCode(row)).to.equal(false);
+    });
+
+    it('should fail when egid is undefined', () => {
+        const row = {} as IBankDataCsv;
+        expect(rule!.ValCode(row)).to.equal(false);
+    });
+
+    it('should pass when egid is present', () => {
+        const row = { egid: '123456' } as IBankDataCsv;
+        expect(rule!.ValCode(row)).to.equal(true);
+    });
+
+    it('should not be a red flag', () => {
+        expect(rule!.RedFlag).to.equal(false);
+    });
+});
+
+describe('EGID Validation Rule 52 (EGID Format ≠ Number)', () => {
+
+    const rule = ValidationRules.find(r => r.Id === 52);
+
+    it('should exist', () => {
+        expect(rule).to.not.be.undefined;
+        expect(rule!.Message).to.equal('EGID Format ≠ Number');
+    });
+
+    it('should pass when egid is empty (missing is rule 51)', () => {
+        const row = { egid: '' } as IBankDataCsv;
+        expect(rule!.ValCode(row)).to.equal(true);
     });
 
     it('should pass when egid is a valid number', () => {
         const row = { egid: '123456' } as IBankDataCsv;
-        expect(egidRule!.ValCode(row)).to.equal(true);
+        expect(rule!.ValCode(row)).to.equal(true);
     });
 
     it('should fail when egid is non-numeric', () => {
         const row = { egid: 'abc123' } as IBankDataCsv;
-        expect(egidRule!.ValCode(row)).to.equal(false);
+        expect(rule!.ValCode(row)).to.equal(false);
     });
 
     it('should not be a red flag', () => {
-        expect(egidRule!.RedFlag).to.equal(false);
+        expect(rule!.RedFlag).to.equal(false);
     });
 });

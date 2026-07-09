@@ -26,7 +26,7 @@
       "Step": "Step 1"
     },
     "Csv": {
-      "Title": "Bankdata File",
+      "Title": "Input File",
       "File": "File:",
       "Rows": "Rows:",
       "SelectFile": "Select CSV File",
@@ -101,16 +101,12 @@
       "ClientVersion": "Client Version:"
     },
     "Charts": {
-      "Legend": "Legend",
-      "ValidationErrors": "Validation Errors",
-      "CorrectRows": "Correct Rows",
-      "RowsWithViolations": "Rows with Violations"
+      "Legend": "Legend"
     },
     "ResultViewer": {
       "Title": "Result",
       "Rows": "Rows",
       "Duration": "Duration",
-      "SuccessRate": "Success Rate",
       "Matching": "Matching Types",
       "Violations": "Validation Errors",
       "NoData": "No results available"

@@ -271,9 +271,6 @@ function myTransform(record: Record<string, string>, callback: (err: Error | nul
     //GWR & Geodata
     return match((record as unknown as IBankDataCsv), geodb, (matchResult: MatchResult, err: Error | null) => {
         outRecord.matchingtype = (+matchResult.matchingType).toString();
-        outRecord.egidprovided = matchResult.egidProvided ? "1" : "0";
-        outRecord.egidmatched = matchResult.egidMatched ? "1" : "0";
-        outRecord.addressmatched = matchResult.addressMatched ? "1" : "0";
 
         //MatchingType Summary
         const logMatchigType = processResult.MatchSummary.find((m) => m.Id === +(matchResult.matchingType));

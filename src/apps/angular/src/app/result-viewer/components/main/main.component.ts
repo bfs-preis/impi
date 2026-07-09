@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProcessResultService } from '../../services/process-result.service';
 import { ILogResult } from '../../models';
-import { ChartCorrectComponent } from '../chart-correct/chart-correct.component';
 import { ChartMatchesComponent } from '../chart-matches/chart-matches.component';
 import { ChartViolationsComponent } from '../chart-violations/chart-violations.component';
 
@@ -21,7 +20,7 @@ function formatDuration(ms: number): string {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
   standalone: true,
-  imports: [MatCardModule, MatIconModule, TranslateModule, ChartCorrectComponent, ChartMatchesComponent, ChartViolationsComponent]
+  imports: [MatCardModule, MatIconModule, TranslateModule, ChartMatchesComponent, ChartViolationsComponent]
 })
 export class MainComponent implements OnInit {
 
@@ -29,7 +28,6 @@ export class MainComponent implements OnInit {
 
   totalRows = 0;
   duration = '00:00:00';
-  successRate = '0.0';
   violationCount = 0;
   outZipFile = '';
   outSedexFile = '';
@@ -64,14 +62,6 @@ export class MainComponent implements OnInit {
 
     const durationMs = this.processResult.Meta.EndTime - this.processResult.Meta.StartTime;
     this.duration = formatDuration(durationMs);
-
-    const rowsWithViolations = this.processResult.Rows
-      ? new Set(this.processResult.Rows.filter(r => r.Violations.length > 0).map(r => r.Index)).size
-      : 0;
-
-    if (this.totalRows > 0) {
-      this.successRate = ((this.totalRows - rowsWithViolations) / this.totalRows * 100).toFixed(1);
-    }
 
     this.outZipFile = this.processResult.Meta.OutZipFile || '';
     this.outSedexFile = this.processResult.Meta.OutSedexFile || '';

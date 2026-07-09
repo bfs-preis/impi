@@ -17,7 +17,7 @@
       "ButtonProcessing": "Verarbeitung..."
     },
     "Db": {
-      "Title": "Geodaten Datei",
+      "Title": "Geodatenbank",
       "File": "Datei:",
       "Period": "Periode:",
       "Version": "Version:",
@@ -26,14 +26,14 @@
       "Step": "Schritt 1"
     },
     "Csv": {
-      "Title": "Bankdaten Datei",
+      "Title": "Inputdatei",
       "File": "Datei:",
       "Rows": "Zeilen:",
       "SelectFile": "Auswählen der Csv Datei",
       "Step": "Schritt 2"
     },
     "Out": {
-      "Title": "Ausgabe Verzeichnis",
+      "Title": "Ausgabeverzeichnis",
       "Directory": "Pfad:",
       "SelectFile": "Auswählen des Ausgabe Verzeichnises",
       "Step": "Schritt 3"
@@ -101,16 +101,12 @@
       "ClientVersion": "Client Version:"
     },
     "Charts": {
-      "Legend": "Legende",
-      "ValidationErrors": "Validierungsfehler",
-      "CorrectRows": "Korrekte Zeilen",
-      "RowsWithViolations": "Zeilen mit Fehlern"
+      "Legend": "Legende"
     },
     "ResultViewer": {
       "Title": "Ergebnis",
       "Rows": "Zeilen",
       "Duration": "Dauer",
-      "SuccessRate": "Erfolgsrate",
       "Matching": "Matching Typen",
       "Violations": "Validierungsfehler",
       "NoData": "Keine Ergebnisse vorhanden"

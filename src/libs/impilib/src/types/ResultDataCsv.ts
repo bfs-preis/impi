@@ -31,9 +31,6 @@ export class ResultDataCsv {
     distancetolakes: string="";
     distancetorivers: string="";
     distancetohighvoltagepowerlines: string="";
-    egidprovided: string="";
-    egidmatched: string="";
-    addressmatched: string="";
     validationflags: string="";
     matchingtype: string="";
 }

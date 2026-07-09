@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
+    appVersion: ipcRenderer.sendSync('get-app-version'),
     ipcRenderer: {
         send: (channel, ...args) => ipcRenderer.send(channel, ...args),
         once: (channel, listener) => {

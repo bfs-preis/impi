@@ -5,7 +5,7 @@
   },
   "anonymizer": {
     "Main": {
-      "Title": "IMPI Arricchimento Dati",
+      "Title": "IMPI Arricchimento dati",
       "Description": "Con questa applicazione i dati bancari vengono arricchiti con i geodati e anonimizzati.",
       "Row": "Linea:",
       "Time": "Ora:",
@@ -26,7 +26,7 @@
       "Step": "Passo 1"
     },
     "Csv": {
-      "Title": "File banca dati",
+      "Title": "File input",
       "File": "File:",
       "Rows": "Linee:",
       "SelectFile": "Scelta del file CSV",
@@ -101,16 +101,12 @@
       "ClientVersion": "Versione client:"
     },
     "Charts": {
-      "Legend": "Legenda",
-      "ValidationErrors": "Errori di validazione",
-      "CorrectRows": "Righe corrette",
-      "RowsWithViolations": "Righe con errori"
+      "Legend": "Legenda"
     },
     "ResultViewer": {
       "Title": "Risultato",
       "Rows": "Righe",
       "Duration": "Durata",
-      "SuccessRate": "Tasso di successo",
       "Matching": "Tipi di matching",
       "Violations": "Errori di validazione",
       "NoData": "Nessun risultato disponibile"

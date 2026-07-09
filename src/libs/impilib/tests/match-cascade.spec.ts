@@ -144,20 +144,18 @@ describe('Match cascade (address only)', () => {
 
 describe('Match with EGID (parallel)', () => {
 
-    it('should set egidProvided=false when no EGID in input', async () => {
-        const db = createMockGeoDatabase();
+    it('should use the plain address codes when no EGID in input', async () => {
+        const addrBuilding = makeBuilding({ street: 'teststr', street_number: '1' });
+        const db = createMockGeoDatabase({ addressRows: [addrBuilding] });
         const { result } = await runMatch(makeInput({ egid: '' }), db);
-        expect(result.egidProvided).to.equal(false);
-        expect(result.egidMatched).to.equal(false);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.PointMatching);
     });
 
-    it('should return EGIDMatching when EGID matches', async () => {
+    it('should return EGIDMatchingNoMatching when only the EGID matches', async () => {
         const egidBuilding = makeBuilding({ egid: 5005 });
         const db = createMockGeoDatabase({ egidRow: egidBuilding });
         const { result } = await runMatch(makeInput({ egid: '5005' }), db);
-        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatching);
-        expect(result.egidProvided).to.equal(true);
-        expect(result.egidMatched).to.equal(true);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatchingNoMatching);
         expect(result.record?.egid).to.equal(5005);
     });
 
@@ -166,34 +164,48 @@ describe('Match with EGID (parallel)', () => {
         const db = createMockGeoDatabase({ egidRow: null, addressRows: [addrBuilding] });
         const { result } = await runMatch(makeInput({ egid: '9999' }), db);
         expect(result.matchingType).to.equal(MatchingTypeEnum.PointMatching);
-        expect(result.egidProvided).to.equal(true);
-        expect(result.egidMatched).to.equal(false);
-        expect(result.addressMatched).to.equal(true);
     });
 
-    it('should prefer EGID over address when both match', async () => {
+    it('should return EGIDPointMatchingIdentical when EGID and point matching agree', async () => {
+        const egidBuilding = makeBuilding({ egid: 5005, canton: 99 });
+        const addrBuilding = makeBuilding({ egid: 5005, canton: 99, street: 'teststr', street_number: '1' });
+        const db = createMockGeoDatabase({ egidRow: egidBuilding, addressRows: [addrBuilding] });
+        const { result } = await runMatch(makeInput({ egid: '5005' }), db);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDPointMatchingIdentical);
+        expect(result.record?.egid).to.equal(5005);
+    });
+
+    it('should prefer point matching when EGID and point matching disagree', async () => {
         const egidBuilding = makeBuilding({ egid: 5005, canton: 99 });
         const addrBuilding = makeBuilding({ egid: 6006, canton: 1, street: 'teststr', street_number: '1' });
         const db = createMockGeoDatabase({ egidRow: egidBuilding, addressRows: [addrBuilding] });
         const { result } = await runMatch(makeInput({ egid: '5005' }), db);
-        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatching);
-        expect(result.record?.canton).to.equal(99); // EGID building used
-        expect(result.egidMatched).to.equal(true);
-        expect(result.addressMatched).to.equal(true);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDPointMatchingDifferent);
+        expect(result.record?.canton).to.equal(1); // point-matched building used
+        expect(result.record?.egid).to.equal(6006);
     });
 
-    it('should set addressMatched=false when EGID hits but address misses', async () => {
-        const egidBuilding = makeBuilding({ egid: 5005 });
-        const db = createMockGeoDatabase({ egidRow: egidBuilding });
+    it('should return EGIDMatchingCenterStreet when EGID matches and address only center-street-matches', async () => {
+        const egidBuilding = makeBuilding({ egid: 5005, canton: 99 });
+        const centerBuilding = makeBuilding({ egid: 2002, canton: 1 });
+        const db = createMockGeoDatabase({ egidRow: egidBuilding, centerStreetRow: centerBuilding });
         const { result } = await runMatch(makeInput({ egid: '5005' }), db);
-        expect(result.egidMatched).to.equal(true);
-        expect(result.addressMatched).to.equal(false);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatchingCenterStreet);
+        expect(result.record?.egid).to.equal(5005); // EGID building used
+    });
+
+    it('should return EGIDMatchingCenterCommunities when EGID matches and address only center-plz-matches', async () => {
+        const egidBuilding = makeBuilding({ egid: 5005 });
+        const centerBuilding = makeBuilding({ egid: 3003 });
+        const db = createMockGeoDatabase({ egidRow: egidBuilding, centerCommunityRow: centerBuilding });
+        const { result } = await runMatch(makeInput({ egid: '5005' }), db);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.EGIDMatchingCenterCommunities);
+        expect(result.record?.egid).to.equal(5005); // EGID building used
     });
 
     it('should ignore non-numeric EGID', async () => {
         const db = createMockGeoDatabase();
         const { result } = await runMatch(makeInput({ egid: 'abc' }), db);
-        expect(result.egidProvided).to.equal(false);
-        expect(result.egidMatched).to.equal(false);
+        expect(result.matchingType).to.equal(MatchingTypeEnum.NoMatching);
     });
 });

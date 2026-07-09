@@ -5,7 +5,7 @@
   },
   "anonymizer": {
     "Main": {
-      "Title": "IMPI Enrichissement des Données",
+      "Title": "Enrichissement des données IMPI",
       "Description": "Par cet outil, les données bancaires sont enrichies avec des données géolocalisées et anonymisées ensuite.",
       "Row": "Ligne:",
       "Time": "Heure:",
@@ -17,7 +17,7 @@
       "ButtonProcessing": "Traitement..."
     },
     "Db": {
-      "Title": "Fichier des géodonnées",
+      "Title": "Base de données géolocalisées",
       "File": "Fichier:",
       "Period": "Période:",
       "Version": "Version:",
@@ -26,7 +26,7 @@
       "Step": "Étape 1"
     },
     "Csv": {
-      "Title": "Fichier données bancaires",
+      "Title": "Fichier d'entrée",
       "File": "Fichier:",
       "Rows": "Lignes:",
       "SelectFile": "Choisir le fichier Csv",
@@ -101,16 +101,12 @@
       "ClientVersion": "Version client:"
     },
     "Charts": {
-      "Legend": "Légende",
-      "ValidationErrors": "Erreurs de validation",
-      "CorrectRows": "Lignes correctes",
-      "RowsWithViolations": "Lignes avec erreurs"
+      "Legend": "Légende"
     },
     "ResultViewer": {
       "Title": "Résultat",
       "Rows": "Lignes",
       "Duration": "Durée",
-      "SuccessRate": "Taux de réussite",
       "Matching": "Types de matching",
       "Violations": "Erreurs de validation",
       "NoData": "Aucun résultat disponible"
